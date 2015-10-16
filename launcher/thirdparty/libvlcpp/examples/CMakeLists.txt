@@ -1,0 +1,2 @@
+subdirs(helloworld)
+subdirs(imem)

@@ -1,0 +1,43 @@
+.title, h1, h2, h3, h4, h5 ,h6 {
+	color: #A03703;
+	font-family: 'Monda', Lucida Grande, Verdana, Geneva, Arial, sans-serif;
+}
+
+h2.groupheader {
+	color: #A03703;
+}
+
+a {
+	color: #3D578C;
+}
+
+.contents a:visited {
+	color:#2F617F;
+}
+
+a:hover, a:focus {
+	color:#3E81A8;
+}
+
+#titlearea {
+	height:90px;
+}
+
+#projectname
+{
+	font-family: 'Monda', Lucida Grande, Verdana, Geneva, Arial, sans-serif;
+	margin: 0px;
+	padding: 2px 0px;
+	font-size: 20px;
+	position:absolute;
+	right: 20px;
+	top: 20px;
+}
+
+#projectlogo
+{
+	position:absolute;
+	top:20px;
+	left:20px;
+}
+

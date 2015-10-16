@@ -1,0 +1,6 @@
+/download
+/sources
+/systemroot
+/tempinstall
+*.tar*
+*~

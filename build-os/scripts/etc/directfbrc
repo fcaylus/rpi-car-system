@@ -1,0 +1,7 @@
+mode=1280x720
+depth=16
+pixelformat=RGB16
+system=egl
+module-dir=/usr/lib/directfb-1.6-0
+log-file=directfb.log
+trace

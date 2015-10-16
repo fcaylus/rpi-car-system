@@ -1,0 +1,41 @@
+<!ELEMENT palette (application, default, disabled, exposed, pressed)>
+
+<!ELEMENT color (hex | (red, green, blue)) >
+<!-- alpha transparency [0-255] -->
+<!ATTLIST color alpha CDATA "255">
+	<!-- 6 digit hex color -->
+	<!ELEMENT hex (#PCDATA)>
+	<!-- RGB components [0-255] -->
+	<!ELEMENT red (#PCDATA)>
+	<!ELEMENT green (#PCDATA)>
+	<!ELEMENT blue (#PCDATA)>
+
+<!-- Interactive area colors -->
+<!ELEMENT base (color)>
+<!ELEMENT baseText (color)>
+<!ELEMENT baseAlt (color)>
+<!ELEMENT baseAltText (color)>
+
+<!-- Background fill colors -->
+<!ELEMENT bg (color)> 
+
+<!-- Border colors -->
+<!ELEMENT border (color)>
+
+<!-- Focus indication colors -->
+<!ELEMENT focus (color)>
+
+<!-- Fill inside colors -->
+<!ELEMENT fill (color)>
+
+<!-- Text drawing colors -->		
+<!ELEMENT text (color)>
+<!ELEMENT textDisabled (color)>
+
+<!-- Color groups -->	
+<!ELEMENT application (bg, focus, text, textDisabled)>
+<!ELEMENT default (base, baseText, baseAlt, baseAltText, bg, border, fill, text)>
+<!ELEMENT disabled (base, baseText, baseAlt, baseAltText, bg, border, fill, text)>
+<!ELEMENT exposed (base, baseText, baseAlt, baseAltText, bg, border, fill, text)>
+<!ELEMENT pressed (base, baseText, baseAlt, baseAltText, bg, border, fill, text)>
+

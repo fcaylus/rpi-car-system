@@ -1,0 +1,43 @@
+<!ELEMENT Configuration (HardwareLayers, LogicLayers, Screen, Window, Theme, Sounds, Cursor, PixelFormat?) >
+   
+<!ELEMENT HardwareLayers (DFBLayer+) >
+    <!ELEMENT DFBLayer EMPTY >
+    <!ATTLIST DFBLayer  id CDATA #REQUIRED
+                        fsu (on|off) #REQUIRED 
+                        flipMode (none|onSync|waitForSync|new) #REQUIRED 
+                        bufferMode (unknown|frontOnly|backVideo|backSystem|triple|windows) #REQUIRED >    
+   
+<!ELEMENT LogicLayers (Layer+) >
+    <!ELEMENT Layer EMPTY >
+    <!ATTLIST Layer name ID #REQUIRED 
+                    hwID CDATA #REQUIRED >
+
+<!ELEMENT Screen (TvStandard, OutConnectors, ScanMode, Resolution?, Frequency?) >
+    <!ELEMENT TvStandard    (#PCDATA) >
+    <!ELEMENT OutConnectors (#PCDATA) >
+    <!ELEMENT ScanMode      (#PCDATA) >
+    <!ELEMENT Resolution    (#PCDATA) >
+    <!ELEMENT Frequency     (#PCDATA) >
+    
+<!ELEMENT Window (FullScreenUpdate, FlipMode, BufferMode) >
+    <!ELEMENT FullScreenUpdate  (#PCDATA) >
+    <!ELEMENT FlipMode          (#PCDATA) >
+    <!ELEMENT BufferMode        (#PCDATA) >
+        
+<!ELEMENT Theme (Background?, FontPack, IconPack, Style, Palette) >
+    <!ELEMENT Background (#PCDATA) >
+    <!ELEMENT FontPack  (#PCDATA) >
+    <!ELEMENT IconPack  (#PCDATA) >
+    <!ELEMENT Style     (#PCDATA) >
+    <!ELEMENT Palette   (#PCDATA) >
+    
+<!ELEMENT Sounds (Sound*)>
+	<!ATTLIST Sounds level CDATA "100" >
+    <!ELEMENT Sound (#PCDATA) >   
+		<!ATTLIST Sound id CDATA #REQUIRED >
+		
+<!ELEMENT Cursor (#PCDATA) >
+    <!ATTLIST Cursor    visible (yes|no) "yes" 
+                        useLayer (yes|no) "yes" >
+                        
+<!ELEMENT PixelFormat (#PCDATA) >

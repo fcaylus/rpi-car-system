@@ -1,0 +1,19 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+includedir=@includedir@
+
+docdir=${datarootdir}/doc/@PACKAGE@-@VERSION@
+doxytagfile=${docdir}/reference/@PACKAGE@-@VERSION@.tag
+htmlrefdir=${docdir}/reference/html
+version_info=@LT_CURRENT@:@LT_REVISION@:@LT_AGE@
+release=@LT_RELEASE@
+
+Name: @PACKAGE@
+Description: Lightweight C++ user interface toolkit for embedded Linux systems.
+Version: @VERSION@
+URL: @PACKAGE_URL@
+Requires: @REQ_PACKAGES@
+Libs: -L${libdir} -l@PACKAGE@-@VERSION@
+Cflags: -I${includedir}/@PACKAGE@-@VERSION@
