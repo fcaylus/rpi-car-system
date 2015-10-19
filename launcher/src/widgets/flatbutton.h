@@ -4,6 +4,7 @@
 #include <ilixiGUI.h>
 #include <string>
 #include <vector>
+#include <functional>
 
 class FlatIcon;
 
@@ -11,7 +12,7 @@ class FlatButton : public ilixi::ToolButton
 {
     public:
         // Will assume it's a launcher icon
-        FlatButton(const std::string& iconName, ilixi::Widget* parent = 0);
+        FlatButton(const std::string& iconName, int width = 0, bool enableLongPress = false, ilixi::Widget* parent = 0);
 
         // Add a state (for example, play <-> pause)
         // When the button is checkable, there is 3 states and the second
@@ -22,6 +23,8 @@ class FlatButton : public ilixi::ToolButton
         int currentState();
 
         void setCurrentState(int state);
+
+        void setOnClickHandler(std::function<void(int)> handler);
 
         // Re-imp
         void setIcon(FlatIcon* icon);
@@ -41,6 +44,12 @@ class FlatButton : public ilixi::ToolButton
         std::vector<FlatIcon *> _icons;
 
         bool _checked = false;
+
+        ilixi::Timer _longPressTimer; // First timer, after a delay
+        ilixi::Timer _longPressTimer2; // Second timer, fast click
+        bool _enableLongPress = false;
+
+        std::function<void(int)> _onClickHandler = [](int newState){ (void)newState; };
 };
 
 class FlatIcon: public ilixi::Icon

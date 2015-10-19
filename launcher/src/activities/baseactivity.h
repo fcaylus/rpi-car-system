@@ -20,6 +20,8 @@ class BaseActivity : public ContainerWidget
 
         std::string name() const;
 
+        static ilixi::Size availableArea();
+
     private:
 
         std::string _name;

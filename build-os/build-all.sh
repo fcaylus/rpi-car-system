@@ -11,18 +11,21 @@ cd build
 # Use Build root to compile the system
 #
 
-wget -nc http://buildroot.uclibc.org/downloads/buildroot-2015.05.tar.gz
+wget -nc http://buildroot.uclibc.org/downloads/buildroot-2015.08.1.tar.gz
 
-if [ ! -d buildroot-2015.05 ]; then
-    tar xvzf buildroot-2015.05.tar.gz
+if [ ! -d buildroot-2015.08.1 ]; then
+    tar xvzf buildroot-2015.08.1.tar.gz
 fi
 
 if [ ! -f toolchain.alreadydo ]; then
 
-	cd buildroot-2015.05
+	cd buildroot-2015.08.1
     
-    # copy config file
-    cp "$SCRIPT_DIR/scripts/buildroot.config" .config
+    # copy config files
+    cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
+	cp "$SCRIPT_DIR/buildroot-patches/Config.in" package/Config.in
+	cp -r "$SCRIPT_DIR/buildroot-patches/ilixi" package/
+	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 
     make
 
@@ -32,24 +35,7 @@ else
     echo "System already built !!!"
 fi
 
-#
-# Copy ilixi files
-# TODO: cross build ilixi also
-#
-
-SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-2015.05/output/target"
-
-cd "${SCRIPT_DIR}/scripts/bin"
-
-cp -r * "${SYSTEM_ROOT}/usr/bin"
-cd ../lib
-cp -r * "${SYSTEM_ROOT}/usr/lib"
-cd ../share
-cp -r * "${SYSTEM_ROOT}/usr/share"
-
-# Copy directfb egl driver
-#cd ../directfb-1.6-0
-#cp -r * "${SYSTEM_ROOT}/usr/lib/directfb-1.6-0/systems"
+SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-2015.08.1/output/target"
 
 #
 # Build the launcher

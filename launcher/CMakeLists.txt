@@ -16,8 +16,6 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     if(NOT (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7))
         message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater for c++11 features.")
     endif()
-elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 else()
     message(FATAL_ERROR "Your C++ compiler does not support C++11.")
 endif()
@@ -41,63 +39,30 @@ include_directories(.)
 
 include_directories(thirdparty)
 
-find_package(Threads REQUIRED)
-find_package(LibXml2 REQUIRED)
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}/thirdparty/libvlcpp/cmake" "${CMAKE_SOURCE_DIR}/cmake")
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}/thirdparty/libvlcpp/cmake")
+find_package(Threads REQUIRED)
+
+# Find LibXML2
+find_package(LibXml2 REQUIRED)
+include_directories(${LIBXML2_INCLUDE_DIR})
+
+# Add libvlc and libvlcpp
 find_package(LIBVLC REQUIRED)
 include_directories("${LIBVLC_INCLUDE_DIR}" "${CMAKE_SOURCE_DIR}/thirdparty/libvlcpp")
 file(GLOB LIBVLCPP_HEADERS "${CMAKE_SOURCE_DIR}/thirdparty/libvlcpp/vlcpp/*.hpp")
 
-#####################################
-## Check path for ilixi
-#####################################
+# Add ilixi
+find_package(ILIXI REQUIRED)
+include_directories("${ILIXI_INCLUDE_DIR}")
 
-if("${ILIXI_INCLUDE_PATH}" STREQUAL "")
-    message(WARNING "ILIXI_INCLUDE_PATH not set, use default !")
-    set(ILIXI_INCLUDE_PATH "/opt/ilx/include/ilixi-1.0.0")
-endif()
-include_directories("${ILIXI_INCLUDE_PATH}")
+# Add DirectFB
+find_package(DirectFB REQUIRED)
+include_directories("${DIRECTFB_INCLUDE_DIR}")
 
-if("${ILIXI_LIB_PATH}" STREQUAL "")
-    message(WARNING "ILIXI_LIB_PATH not set, use default !")
-    set(ILIXI_LIB_PATH "/opt/ilx/lib")
-endif()
-link_directories("${ILIXI_LIB_PATH}")
-
-if("${DIRECTFB_INCLUDE_PATH}" STREQUAL "")
-    message(WARNING "DIRECTFB_INCLUDE_PATH not set, use default !")
-    set(DIRECTFB_INCLUDE_PATH "/opt/ilx/include/directfb")
-endif()
-include_directories("${DIRECTFB_INCLUDE_PATH}")
-
-if("${SIGCPP_INCLUDE_PATH}" STREQUAL "")
-    message(WARNING "SIGCPP_INCLUDE_PATH not set, use default !")
-    set(SIGCPP_INCLUDE_PATH "/usr/include/sigc++-2.0")
-endif()
-include_directories("${SIGCPP_INCLUDE_PATH}")
-
-if("${SIGCPP_CONFIG_PATH}" STREQUAL "")
-    message(WARNING "SIGCPP_CONFIG_PATH not set, use default !")
-    set(SIGCPP_CONFIG_PATH "/usr/lib/x86_64-linux-gnu/sigc++-2.0/include")
-endif()
-include_directories("${SIGCPP_CONFIG_PATH}")
-
-if("${SIGCPP_LIB_PATH}" STREQUAL "")
-    message(WARNING "SIGCPP_LIB_PATH not set, use default !")
-    set(SIGCPP_LIB_PATH "/usr/lib/x86_64-linux-gnu")
-endif()
-link_directories("${SIGCPP_LIB_PATH}")
-
-include_directories(${LIBXML2_INCLUDE_DIR})
-
-message(STATUS "Use these path for ilixi:")
-message(STATUS "   ILIXI_INCLUDE_PATH: ${ILIXI_INCLUDE_PATH}")
-message(STATUS "   ILIXI_LIB_PATH: ${ILIXI_LIB_PATH}")
-message(STATUS "   DIRECTFB_INCLUDE_PATH: ${DIRECTFB_INCLUDE_PATH}")
-message(STATUS "   SIGCPP_INCLUDE_PATH: ${SIGCPP_INCLUDE_PATH}")
-message(STATUS "   SIGCPP_CONFIG_PATH: ${SIGCPP_CONFIG_PATH}")
-message(STATUS "   SIGCPP_LIB_PATH: ${SIGCPP_LIB_PATH}")
+# Add sigcpp
+find_package(SIGC++ REQUIRED)
+include_directories("${SIGC++_INCLUDE_DIR}")
 
 #####################################
 ## Check cross compilation for rpi-car-system
@@ -155,11 +120,11 @@ add_executable(
 target_link_libraries(
     ${EXE_NAME}
     ${CMAKE_THREAD_LIBS_INIT}
-    -lilixi-1.0.0
-    -lsigc-2.0
+    ${SIGC++_LIBRARY}
     ${LIBXML2_LIBRARIES}
     ${LIBVLCCORE_LIBRARY}
     ${LIBVLC_LIBRARY}
+    ${ILIXI_LIBRARY}
 )
 
 # Copy "theme" files when build finish

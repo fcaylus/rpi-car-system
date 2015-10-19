@@ -1,4 +1,4 @@
-
+#
 # CMake module to search for LIBVLC (VLC library)
 # Author: Rohit Yadav <rohityadav89@gmail.com>
 #

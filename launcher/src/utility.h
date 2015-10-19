@@ -16,6 +16,10 @@
 
 namespace StringUtility
 {
+    static inline bool startsWith(const std::string &str, const std::string& start)
+    {
+        return str.find(start) == 0;
+    }
 
     static inline bool endsWith(const std::string &str, const std::string &end)
     {
@@ -65,6 +69,46 @@ namespace StringUtility
         }
         return elements;
     }
+
+    static inline std::string uriDecode(const std::string &str)
+    {
+        std::string decodedStr;
+        std::string::const_iterator it  = str.begin();
+        std::string::const_iterator end = str.end();
+        while (it != end)
+        {
+            char c = *it++;
+            if (c == '%')
+            {
+                // Check the two characters after
+                if (it == end)
+                    continue;
+                char hi = *it++;
+                if (it == end)
+                    continue;
+                char lo = *it++;
+                if (hi >= '0' && hi <= '9')
+                    c = hi - '0';
+                else if (hi >= 'A' && hi <= 'F')
+                    c = hi - 'A' + 10;
+                else if (hi >= 'a' && hi <= 'f')
+                    c = hi - 'a' + 10;
+                else
+                    continue;
+                c *= 16;
+                if (lo >= '0' && lo <= '9')
+                    c += lo - '0';
+                else if (lo >= 'A' && lo <= 'F')
+                    c += lo - 'A' + 10;
+                else if (lo >= 'a' && lo <= 'f')
+                    c += lo - 'a' + 10;
+                else
+                    continue;
+            }
+            decodedStr += c;
+        }
+        return decodedStr;
+    }
 }
 
 #include <unistd.h>
@@ -72,6 +116,14 @@ namespace StringUtility
 
 namespace DirUtility
 {
+    // Return the file path for the specified URI
+    static inline std::string filePathForURI(std::string uri)
+    {
+        if(StringUtility::startsWith(uri, "file://"))
+            uri.erase(0, 7);
+
+        return StringUtility::uriDecode(uri);
+    }
 
     // Return the directory of the specified file
     static inline std::string dirFromFullPath(const std::string& path)

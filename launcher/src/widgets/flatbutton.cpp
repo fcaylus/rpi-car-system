@@ -8,11 +8,13 @@
 
 using namespace ilixi;
 
-FlatButton::FlatButton(const std::string &iconName, Widget *parent): ToolButton("", parent)
+FlatButton::FlatButton(const std::string &iconName, int width, bool enableLongPress, Widget *parent): ToolButton("", parent)
 {
     setDrawFrame(false);
 
-    FlatIcon *icon = new FlatIcon(iconName, 0, this);
+    _enableLongPress = enableLongPress;
+
+    FlatIcon *icon = new FlatIcon(iconName, width, this);
     _icons.push_back(icon);
     setIcon(icon);
     _currentState = 0;
@@ -22,12 +24,38 @@ FlatButton::FlatButton(const std::string &iconName, Widget *parent): ToolButton(
     sigClicked.connect([this](){
         if(stateNumber() > 1)
             setCurrentState(_currentState + 1);
+        _onClickHandler(currentState());
     });
+
+    if(_enableLongPress)
+    {
+        _longPressTimer2.sigExec.connect([this]() {
+            if(!_checked)
+                _longPressTimer2.stop();
+            else
+            {
+                _onClickHandler(currentState());
+            }
+        });
+        _longPressTimer.sigExec.connect([this]() {
+            if(_checked)
+                _longPressTimer2.start(70, 100);
+        });
+    }
 
     // Animate the button when pressed
     sigPressed.connect([this](){
         _checked = true;
         translate(0, 2);
+
+        // Handle long press
+        if(_enableLongPress)
+        {
+            _longPressTimer.stop();
+            _longPressTimer2.stop();
+
+            _longPressTimer.start(500, 1);
+        }
     });
     sigReleased.connect([this](){
         _checked = false;
@@ -52,6 +80,9 @@ int FlatButton::currentState()
 
 void FlatButton::setCurrentState(int state)
 {
+    if(state == _currentState)
+        return;
+
     _currentState = state % stateNumber();
 
     if(checkable())
@@ -66,7 +97,14 @@ void FlatButton::setCurrentState(int state)
             setIcon(_icons[_currentState - 1]);
     }
     else
+    {
         setIcon(_icons[_currentState]);
+    }
+}
+
+void FlatButton::setOnClickHandler(std::function<void (int)> handler)
+{
+    _onClickHandler = handler;
 }
 
 // Public re-implemented

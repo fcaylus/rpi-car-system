@@ -7,6 +7,7 @@
 
 #include "widgets/launchertoolbar.h"
 #include "activities/baseactivity.h"
+#include "menudialog.h"
 
 // Make argc and argv static since they are used by the singleton app
 namespace ProgramArgs {
@@ -21,12 +22,14 @@ class LauncherApp : public ilixi::Application
     public:
         static LauncherApp& instance();
 
+        // dtor
+        ~LauncherApp();
+
         // This method allow an activity to register a widget in the toolbar
         // If there are several widgets, pack them into a ContainerWidget
         void registerToolBarWidget(const std::string& activityName, ilixi::Widget* widget);
 
-        void showActivity(const std::string& activityName);
-        void showPreviousActivity();
+        void showActivity(std::string activityName);
 
         // Return stylist object
         ilixi::StylistBase* stylist() const;
@@ -37,16 +40,16 @@ class LauncherApp : public ilixi::Application
         static std::string iconPathForName(const std::string& name);
 
     private:
-        LauncherApp(int* argc, char*** argv);
+        LauncherApp(int* argc, char*** argv); // ctor
         std::string _executableDir;
 
         LauncherToolBar *_toolBar;
         ilixi::ToolButton *_menuButton;
+        MenuDialog *_menuDialog;
 
         std::map<std::string, ilixi::Widget*> _toolBarWidgetsMap;
         std::map<std::string, BaseActivity*> _activitiesMap;
         std::string _launchedActivity = "";
-        std::string _previousActivity = "";
 
         void registerActivity(BaseActivity *act);
 
