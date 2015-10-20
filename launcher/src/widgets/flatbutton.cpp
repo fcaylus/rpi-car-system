@@ -1,6 +1,5 @@
 #include "flatbutton.h"
 #include "../launcherapp.h"
-#include "../utility.h"
 
 #include "easylogging++.h"
 

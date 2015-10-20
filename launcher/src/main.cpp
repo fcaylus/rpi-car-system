@@ -2,7 +2,6 @@
 
 #include "easylogging++.h"
 
-#include "utility.h"
 #include "launcherapp.h"
 
 INITIALIZE_EASYLOGGINGPP

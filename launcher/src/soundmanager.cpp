@@ -1,7 +1,12 @@
 #include "soundmanager.h"
 
 #include "easylogging++.h"
-#include "utility.h"
+#include <lib/FileSystem.h>
+#include <fstream>
+#include <algorithm>
+#include <set>
+#include <stdio.h>
+
 
 SoundManager SoundManager::_instance = SoundManager();
 
@@ -27,19 +32,7 @@ void SoundManager::playFromFile(const std::string &path)
 
     LOG(INFO) << "Play media from file: " << path;
 
-    _currentMedia->parse();
-
-    std::string coverPath = DirUtility::filePathForURI(_currentMedia->meta(libvlc_meta_ArtworkURL));
-    // Replace with the default artwork if no cover
-    if(coverPath.empty())
-        coverPath = DirUtility::executableDir() + "/theme/default_artwork.png";
-
-    _onNewMediaHandler(MediaInfo({_currentMedia->meta(libvlc_meta_Title),
-                                 _currentMedia->meta(libvlc_meta_Artist),
-                                 _currentMedia->meta(libvlc_meta_Album),
-                                 coverPath,
-                                 _vlcMediaPlayer->length()}),
-                                 true);
+    _onNewMediaHandler(MediaInfo::fromMedia(_currentMedia, path), true);
 }
 
 void SoundManager::pauseMusic()
@@ -140,6 +133,211 @@ void SoundManager::setOnEndReachedHandler(std::function<void ()> handler)
     _onEndReachedHandler = handler;
 }
 
+void SoundManager::checkForNewMusicFiles()
+{
+    // If the index file doesn't exist, create it
+    if(!ilixi::FileSystem::fileExists(_indexFilePath))
+    {
+        recreateMusicIndex();
+        return;
+    }
+
+    // Here, the index file exist, but maybe it's not up to date
+    // Refresh it !
+
+    std::ifstream indexFile;
+    indexFile.open(_indexFilePath);
+
+    std::ofstream indexFileNew;
+    const std::string indexFileNewPath = _indexFilePath + ".new";
+    indexFileNew.open(indexFileNewPath);
+
+    std::string line;
+
+    // Check first line
+    std::getline(indexFile, line);
+    if(line != "v1")
+    {
+        // The file is not in the correct version, recreate it !
+        indexFile.close();
+        indexFileNew.close();
+        recreateMusicIndex();
+        return;
+    }
+
+    indexFileNew << line << std::endl;
+
+    //
+    // First step, parse each line in the index to find files to remove and files to update
+    //
+
+    std::string currentFilePath = "";
+    std::set<std::string> filesList;
+
+    bool needToRemove = false;
+    bool needToUpdate = false;
+
+    int varCount = 0; // Used to check if the media have the correct number of argument
+    for(; std::getline(indexFile, line);)
+    {
+        if(line != "")
+        {
+            varCount += 1;
+            if(varCount == 1)
+            {
+                currentFilePath = line;
+                if(!ilixi::FileSystem::fileExists(currentFilePath))
+                    needToRemove = true;
+                else
+                    filesList.insert(currentFilePath);
+            }
+            else if(varCount == 2 && !needToRemove)
+            {
+                const long size = std::stol(line);
+                const long realSize = DirUtility::fileSize(currentFilePath);
+                if(size != realSize)
+                {
+                    // Need to update all values
+                    needToUpdate = true;
+                    VLC::Media *media = new VLC::Media(*_vlcInstance, currentFilePath, VLC::Media::FromPath);
+                    MediaInfo info = MediaInfo::fromMedia(media, currentFilePath);
+                    indexFileNew << realSize << std::endl
+                                 << info.title << std::endl
+                                 << info.artist << std::endl
+                                 << info.album << std::endl
+                                 << info.coverFile << std::endl;
+                    delete media;
+                }
+
+            }
+
+            if(!needToRemove && !needToUpdate)
+                indexFileNew << line << std::endl;
+        }
+        else
+        {
+            // We reach the end of the media
+            if(!needToRemove)
+                indexFileNew << std::endl;
+
+            needToRemove = false;
+            needToUpdate = false;
+            varCount = 0;
+        }
+    }
+
+    //
+    // Second step: list all files and check if some are missing from the index
+    //
+
+    indexFile.close();
+
+    DirUtility::listAllFilesInDir(musicDirectory(), [this, &filesList, &indexFileNew](const std::string& path) {
+        if(isMusicFileFormat(path))
+        {
+            // If not in the index file
+            if(filesList.find(path) == filesList.end())
+            {
+                // Append the file to the index
+                VLC::Media *media = new VLC::Media(*_vlcInstance, path, VLC::Media::FromPath);
+                MediaInfo info = MediaInfo::fromMedia(media, path);
+                indexFileNew << path << std::endl
+                             << info.fileSize << std::endl
+                             << info.title << std::endl
+                             << info.artist << std::endl
+                             << info.album << std::endl
+                             << info.coverFile << std::endl << std::endl;
+                delete media;
+            }
+        }
+    });
+
+    // Remove the old file and copy the new one
+    remove(_indexFilePath.c_str());
+    std::rename(indexFileNewPath.c_str(), _indexFilePath.c_str());
+
+    indexFileNew.close();
+}
+
+void SoundManager::recreateMusicIndex()
+{
+    std::ofstream indexFileStream;
+    indexFileStream.open(_indexFilePath);
+
+    // Output the version
+    indexFileStream << "v1" << std::endl;
+
+    // Output all files name to the file
+    DirUtility::listAllFilesInDir(musicDirectory(), [this, &indexFileStream](const std::string& path) {
+        if(isMusicFileFormat(path))
+        {
+            //
+            // Structure of each media in the index file
+            // (blank lines separate the media):
+            //
+            //    <filePath>
+            //    <fileSize>  (used to check if the file has changed)
+            //    <musicTitle>
+            //    <musicArtist>
+            //    <musicAlbum>
+            //    <coverFilePath>
+            //
+
+            VLC::Media *media = new VLC::Media(*_vlcInstance, path, VLC::Media::FromPath);
+            MediaInfo info = MediaInfo::fromMedia(media, path);
+
+            indexFileStream << path << std::endl
+                            << DirUtility::fileSize(path) << std::endl
+                            << info.title << std::endl
+                            << info.artist << std::endl
+                            << info.album << std::endl
+                            << info.coverFile << std::endl << std::endl;
+
+            delete media;
+        }
+    });
+
+    indexFileStream.close();
+}
+
+// Static
+bool SoundManager::isMusicFileFormat(const std::string &file)
+{
+    // Based on the list at : https://en.wikipedia.org/wiki/Audio_file_format
+
+    std::string last4 = file.substr(file.size() - 4);
+    std::transform(last4.begin(), last4.end(), last4.begin(), ::tolower);
+    if(last4 == ".mp3" || last4 == ".m4a" || last4 == ".m4p"  || last4 == ".ogg"
+       || last4 == ".wav" || last4 == ".wma" || last4 == ".dct"  || last4 == ".dss"
+       || last4 == ".act" || last4 == ".ivs" || last4 == ".gsm"  || last4 == ".dvf"
+       || last4 == ".amr" || last4 == ".mmf" || last4 == ".3gp"  || last4 == ".mpc"
+       || last4 == ".msv" || last4 == ".aac" || last4 == ".oga"  || last4 == ".raw"
+       || last4 == ".sln" || last4 == ".tta" || last4 == ".vox"  || last4 == ".ape"
+       || last4 == ".awb")
+        return true;
+
+    std::string last5 = file.substr(file.size() - 5);
+    std::transform(last5.begin(), last5.end(), last5.begin(), ::tolower);
+    if(last5 == ".aiff" || last5 == ".flac" || last5 == ".opus" || last5 == ".webm")
+        return true;
+
+    std::string last3 = file.substr(file.size() - 3);
+    std::transform(last3.begin(), last3.end(), last3.begin(), ::tolower);
+
+    return last3 == ".au" || last3 == ".ra" || last3 == ".rm" || last3 == ".wv";
+}
+
+// Static
+std::string SoundManager::musicDirectory()
+{
+#ifdef READY_FOR_CARSYSTEM
+    return "/home/pi/music";
+#else
+    //return "/media/fabien/Disque Multimedia/Music/Ma musique";
+    return "/home/fabien/Musique";
+#endif
+}
+
 // Static
 std::string SoundManager::timeToString(libvlc_time_t time)
 {
@@ -171,6 +369,8 @@ std::string SoundManager::timeToString(libvlc_time_t time)
 // Private constructor
 SoundManager::SoundManager()
 {
+    _indexFilePath = DirUtility::executableDir() + "/music-index.txt";
+
     // Load the engine
     _vlcInstance = new VLC::Instance(0, nullptr);
     _vlcMediaPlayer = new VLC::MediaPlayer(*_vlcInstance);
@@ -190,6 +390,8 @@ SoundManager::SoundManager()
             _vlcMediaPlayer->play();
         }
     });
+
+    checkForNewMusicFiles();
 }
 
 // Public destructor

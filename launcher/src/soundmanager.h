@@ -3,8 +3,8 @@
 
 #include <vlcpp/vlc.hpp>
 #include <functional>
+#include "dirutility.h"
 
-// Simple struct with some media infos
 struct MediaInfo
 {
     std::string title;
@@ -12,6 +12,31 @@ struct MediaInfo
     std::string album;
     std::string coverFile;
     libvlc_time_t length;
+
+    std::string filePath;
+    long fileSize;
+
+    static MediaInfo fromMedia(VLC::Media *media, std::string path = "")
+    {
+        if(path.empty())
+            path = DirUtility::filePathForURI(media->mrl());
+
+        if(!media->isParsed())
+            media->parse();
+
+        std::string coverPath = DirUtility::filePathForURI(media->meta(libvlc_meta_ArtworkURL));
+        // Replace with the default artwork if no cover
+        if(coverPath.empty())
+            coverPath = DirUtility::executableDir() + "/theme/default_artwork.png";
+
+        return MediaInfo({media->meta(libvlc_meta_Title),
+                          media->meta(libvlc_meta_Artist),
+                          media->meta(libvlc_meta_Album),
+                          coverPath,
+                          media->duration(),
+                          path,
+                          DirUtility::fileSize(path)});
+    }
 };
 
 // Singleton sound manager
@@ -50,8 +75,17 @@ class SoundManager
         void setOnNewTimeHandler(std::function<void(libvlc_time_t /*new_time_in_ms*/)> handler);
         void setOnEndReachedHandler(std::function<void(void)> handler);
 
+        // Check if there are new files in the music dir
+        void checkForNewMusicFiles();
+
+        // Re-create the entire index file
+        void recreateMusicIndex();
+
         // Convert time in ms to "hh:mm:ss"
         static std::string timeToString(libvlc_time_t time);
+
+        static bool isMusicFileFormat(const std::string& file);
+        static std::string musicDirectory();
 
     private:
 
@@ -64,6 +98,8 @@ class SoundManager
         RepeatMode _repeatMode = NoRepeat;
 
         bool _endReached = false;
+
+        std::string _indexFilePath;
 
         std::function<void(MediaInfo, bool)> _onNewMediaHandler = [](MediaInfo, bool){};
         std::function<void(void)> _onEndReachedHandler = [](){};

@@ -53,6 +53,24 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         SoundManager::instance().setRandom(newState == 1);
     });
 
+    _tbToggleLibrary = new FlatButton("music", 0, false, this);
+    _tbToggleLibrary->setCheckable(true);
+    _tbToggleLibrary->setOnClickHandler([this](int newState) {
+        if(newState == 1)
+        {
+            _container1->setVisible(false);
+            _container2->setVisible(true);
+        }
+        else
+        {
+            _container1->setVisible(true);
+            _container2->setVisible(false);
+        }
+    });
+
+    _toolBarContainer->addWidget(new Spacer(Horizontal, this));
+    _toolBarContainer->addWidget(_tbToggleLibrary);
+    _toolBarContainer->addWidget(new Spacer(Horizontal, this));
     _toolBarContainer->addWidget(new Spacer(Horizontal, this));
     _toolBarContainer->addWidget(_tbRepeatButton);
     _toolBarContainer->addWidget(new Spacer(Horizontal, this));
@@ -66,128 +84,141 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
     LauncherApp::instance().registerToolBarWidget(name(), _toolBarContainer);
 
     // ---------------------------------------
-    // Set Central Widgets
+    // Set "Playing" widgets
     // ---------------------------------------
 
-    _coverWidget = new CoverIcon(this);
+    setLayout(new VBoxLayout(this));
+    _container1 = new ContainerWidget(this);
+    addWidget(_container1);
 
-    _titleLabel = new Label("", this);
-    _titleLabel->setSingleLine(true);
-    _titleLabel->setLayoutAlignment(TextLayout::Center);
-    Font *titleFont = new Font(*_titleLabel->font());
-    titleFont->setStyle(Font::Style::Bold);
-    titleFont->setSize(titleFont->size() + 15);
-    _titleLabel->setFont(titleFont);
+    _c1_coverWidget = new CoverIcon(this);
 
-    _artistLabel = new Label("", this);
-    _artistLabel->setSingleLine(true);
-    _artistLabel->setLayoutAlignment(TextLayout::Center);
-    Font *artistFont = new Font(*_artistLabel->font());
-    artistFont->setStyle(Font::Style::Italic);
-    artistFont->setSize(artistFont->size() + 3);
-    _artistLabel->setFont(artistFont);
+    _c1_titleLabel = new Label("", this);
+    _c1_titleLabel->setSingleLine(true);
+    _c1_titleLabel->setLayoutAlignment(TextLayout::Center);
+    Font *c1_titleFont = new Font(*_c1_titleLabel->font());
+    c1_titleFont->setStyle(Font::Style::Bold);
+    c1_titleFont->setSize(c1_titleFont->size() + 15);
+    _c1_titleLabel->setFont(c1_titleFont);
 
-    _musicProgressBar = new ProgressBar(this);
-    _musicProgressBar->setRange(0, 100);
+    _c1_artistLabel = new Label("", this);
+    _c1_artistLabel->setSingleLine(true);
+    _c1_artistLabel->setLayoutAlignment(TextLayout::Center);
+    Font *c1_artistFont = new Font(*_c1_artistLabel->font());
+    c1_artistFont->setStyle(Font::Style::Italic);
+    c1_artistFont->setSize(c1_artistFont->size() + 3);
+    _c1_artistLabel->setFont(c1_artistFont);
 
-    _musicTimeLabel = new Label("0:00 / 0:00");
-    _musicTimeLabel->setSingleLine(true);
-    _musicTimeLabel->setLayoutAlignment(TextLayout::Left);
+    _c1_musicProgressBar = new ProgressBar(this);
+    _c1_musicProgressBar->setRange(0, 100);
 
-    _volumeBar = new ProgressBar(this);
-    _volumeBar->setRange(0, 100);
-    _volumeBar->setValue(SoundManager::instance().volume());
-    _volumeBar->sigValueChanged.connect([this](int newValue) {
+    _c1_musicTimeLabel = new Label("0:00 / 0:00");
+    _c1_musicTimeLabel->setSingleLine(true);
+    _c1_musicTimeLabel->setLayoutAlignment(TextLayout::Left);
+
+    _c1_volumeBar = new ProgressBar(this);
+    _c1_volumeBar->setRange(0, 100);
+    _c1_volumeBar->setValue(SoundManager::instance().volume());
+    _c1_volumeBar->sigValueChanged.connect([this](int newValue) {
         SoundManager::instance().setVolume(newValue);
     });
 
-    _volumeMinus = new FlatButton("minus", 40, true, this);
-    _volumeMinus->setOnClickHandler([this](int) {
-        _volumeBar->setValue(_volumeBar->value() - 2);
+    _c1_volumeMinus = new FlatButton("minus", 40, true, this);
+    _c1_volumeMinus->setOnClickHandler([this](int) {
+        _c1_volumeBar->setValue(_c1_volumeBar->value() - 2);
     });
 
-    _volumePlus = new FlatButton("plus", 40, true, this);
-    _volumePlus->setOnClickHandler([this](int) {
-        _volumeBar->setValue(_volumeBar->value() + 2);
+    _c1_volumePlus = new FlatButton("plus", 40, true, this);
+    _c1_volumePlus->setOnClickHandler([this](int) {
+        _c1_volumeBar->setValue(_c1_volumeBar->value() + 2);
     });
 
-    _musicForward = new FlatButton("fast_forward", 50, false, this);
-    _musicForward->setOnClickHandler([](int){
+    _c1_musicForward = new FlatButton("fast_forward", 50, false, this);
+    _c1_musicForward->setOnClickHandler([](int){
         SoundManager::instance().forward();
     });
 
-    _musicRewind = new FlatButton("fast_rewind", 50, false, this);
-    _musicRewind->setOnClickHandler([](int){
+    _c1_musicRewind = new FlatButton("fast_rewind", 50, false, this);
+    _c1_musicRewind->setOnClickHandler([](int){
         SoundManager::instance().rewind();
     });
 
-    _queueButton = new ToolButton("", this);
-    _queueButton->setToolButtonStyle(ToolButton::ToolButtonStyle::IconOnly);
-    _queueButton->setIcon(LauncherApp::iconPathForName("playlist"));
-    _queueButton->setRepeatable(false);
-    _queueButton->setDrawFrame(true);
+    _c1_queueButton = new ToolButton("", this);
+    _c1_queueButton->setToolButtonStyle(ToolButton::ToolButtonStyle::IconOnly);
+    _c1_queueButton->setIcon(LauncherApp::iconPathForName("playlist"));
+    _c1_queueButton->setRepeatable(false);
+    _c1_queueButton->setDrawFrame(true);
 
     // Layouts
 
-    ContainerWidget *volumeContainer = new ContainerWidget(this);
-    volumeContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
-    HBoxLayout *volumeLayout = new HBoxLayout(this);
-    volumeLayout->setVerticalAlignment(Alignment::Vertical::Middle);
-    volumeContainer->setLayout(volumeLayout);
-    volumeContainer->addWidget(new Spacer(Orientation::Horizontal, this));
-    volumeContainer->addWidget(_volumeMinus);
-    volumeContainer->addWidget(_volumeBar);
-    volumeContainer->addWidget(_volumePlus);
-    volumeContainer->addWidget(new Spacer(Orientation::Horizontal, this));
+    ContainerWidget *c1_volumeContainer = new ContainerWidget(this);
+    c1_volumeContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
+    HBoxLayout *c1_volumeLayout = new HBoxLayout(this);
+    c1_volumeLayout->setVerticalAlignment(Alignment::Vertical::Middle);
+    c1_volumeContainer->setLayout(c1_volumeLayout);
+    c1_volumeContainer->addWidget(new Spacer(Horizontal, this));
+    c1_volumeContainer->addWidget(_c1_volumeMinus);
+    c1_volumeContainer->addWidget(_c1_volumeBar);
+    c1_volumeContainer->addWidget(_c1_volumePlus);
+    c1_volumeContainer->addWidget(new Spacer(Horizontal, this));
 
-    ContainerWidget *textContainer = new ContainerWidget(this);
-    textContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
-    VBoxLayout *textLayout = new VBoxLayout(this);
-    textLayout->setHorizontalAlignment(Alignment::Horizontal::Center);
-    textContainer->setLayout(textLayout);
-    textContainer->addWidget(new LineSeperator(Orientation::Horizontal, this));
-    textContainer->addWidget(_titleLabel);
-    textContainer->addWidget(_artistLabel);
-    textContainer->addWidget(new LineSeperator(Orientation::Horizontal, this));
-    textContainer->addWidget(new LineSeperator(Orientation::Horizontal, this));
+    ContainerWidget *c1_textContainer = new ContainerWidget(this);
+    c1_textContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
+    VBoxLayout *c1_textLayout = new VBoxLayout(this);
+    c1_textLayout->setHorizontalAlignment(Alignment::Horizontal::Center);
+    c1_textContainer->setLayout(c1_textLayout);
+    c1_textContainer->addWidget(new LineSeperator(Horizontal, this));
+    c1_textContainer->addWidget(_c1_titleLabel);
+    c1_textContainer->addWidget(_c1_artistLabel);
+    c1_textContainer->addWidget(new LineSeperator(Horizontal, this));
+    c1_textContainer->addWidget(new LineSeperator(Horizontal, this));
 
-    ContainerWidget *buttonsContainer = new ContainerWidget(this);
-    buttonsContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
-    HBoxLayout *buttonsLayout = new HBoxLayout(this);
-    buttonsLayout->setVerticalAlignment(Alignment::Vertical::Middle);
-    buttonsContainer->setLayout(buttonsLayout);
-    buttonsContainer->addWidget(new Spacer(Orientation::Horizontal, this));
-    buttonsContainer->addWidget(_musicRewind);
-    buttonsContainer->addWidget(new Label("    ", this));
-    buttonsContainer->addWidget(_queueButton);
-    buttonsContainer->addWidget(new Label("    ", this));
-    buttonsContainer->addWidget(_musicForward);
-    buttonsContainer->addWidget(new Spacer(Orientation::Horizontal, this));
+    ContainerWidget *c1_buttonsContainer = new ContainerWidget(this);
+    c1_buttonsContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
+    HBoxLayout *c1_buttonsLayout = new HBoxLayout(this);
+    c1_buttonsLayout->setVerticalAlignment(Alignment::Vertical::Middle);
+    c1_buttonsContainer->setLayout(c1_buttonsLayout);
+    c1_buttonsContainer->addWidget(new Spacer(Horizontal, this));
+    c1_buttonsContainer->addWidget(_c1_musicRewind);
+    c1_buttonsContainer->addWidget(new Label("    ", this));
+    c1_buttonsContainer->addWidget(_c1_queueButton);
+    c1_buttonsContainer->addWidget(new Label("    ", this));
+    c1_buttonsContainer->addWidget(_c1_musicForward);
+    c1_buttonsContainer->addWidget(new Spacer(Horizontal, this));
 
-    VBoxLayout *rightLayout = new VBoxLayout(this);
-    textLayout->setHorizontalAlignment(Alignment::Horizontal::Center);
-    rightLayout->addWidget(textContainer);
-    //rightLayout->addWidget(new Spacer(Orientation::Vertical, this));
-    rightLayout->addWidget(volumeContainer);
-    rightLayout->addWidget(new LineSeperator(Orientation::Horizontal, this));
-    rightLayout->addWidget(buttonsContainer);
+    VBoxLayout *c1_rightLayout = new VBoxLayout(this);
+    c1_textLayout->setHorizontalAlignment(Alignment::Horizontal::Center);
+    c1_rightLayout->addWidget(c1_textContainer);
+    c1_rightLayout->addWidget(c1_volumeContainer);
+    c1_rightLayout->addWidget(new LineSeperator(Horizontal, this));
+    c1_rightLayout->addWidget(c1_buttonsContainer);
 
-    ContainerWidget *progressContainer = new ContainerWidget(this);
-    progressContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
-    HBoxLayout *progressLayout = new HBoxLayout(this);
-    progressLayout->setVerticalAlignment(Alignment::Vertical::Middle);
-    progressContainer->setLayout(progressLayout);
-    progressContainer->addWidget(_musicProgressBar);
-    progressContainer->addWidget(_musicTimeLabel);
+    ContainerWidget *c1_progressContainer = new ContainerWidget(this);
+    c1_progressContainer->setYConstraint(WidgetResizeConstraint::FixedConstraint);
+    HBoxLayout *c1_progressLayout = new HBoxLayout(this);
+    c1_progressLayout->setVerticalAlignment(Alignment::Vertical::Middle);
+    c1_progressContainer->setLayout(c1_progressLayout);
+    c1_progressContainer->addWidget(_c1_musicProgressBar);
+    c1_progressContainer->addWidget(_c1_musicTimeLabel);
 
-    GridLayout *centralLayout = new GridLayout(4, 4);
-    centralLayout->setSpacing(20);
-    centralLayout->addWidget(new Spacer(Orientation::Vertical, this), 0, 0, 1, 4);
-    centralLayout->addWidget(_coverWidget, 1, 0);
-    centralLayout->addWidget(rightLayout, 1, 1, 1, 3);
-    centralLayout->addWidget(new Spacer(Orientation::Vertical, this), 2, 0, 1, 4);
-    centralLayout->addWidget(progressContainer, 3, 0, 1, 4);
-    setLayout(centralLayout);
+    GridLayout *c1_centralLayout = new GridLayout(4, 4);
+    c1_centralLayout->setSpacing(20);
+    c1_centralLayout->addWidget(new Spacer(Vertical, this), 0, 0, 1, 4);
+    c1_centralLayout->addWidget(_c1_coverWidget, 1, 0);
+    c1_centralLayout->addWidget(c1_rightLayout, 1, 1, 1, 3);
+    c1_centralLayout->addWidget(new Spacer(Vertical, this), 2, 0, 1, 4);
+    c1_centralLayout->addWidget(c1_progressContainer, 3, 0, 1, 4);
+    _container1->setLayout(c1_centralLayout);
+
+    // ---------------------------------------
+    // Set "Library" widgets
+    // ---------------------------------------
+
+    _container2 = new ContainerWidget(this);
+    _container2->setVisible(false);
+    addWidget(_container2);
+
+
 
     // ---------------------------------------
     // Register new media listener
@@ -199,31 +230,31 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         else
             _tbPlayButton->setCurrentState(0);
 
-        _coverWidget->setImage(info.coverFile);
+        _c1_coverWidget->setImage(info.coverFile);
 
-        _titleLabel->setText(info.title);
-        _artistLabel->setText(info.artist);
+        _c1_titleLabel->setText(info.title);
+        _c1_artistLabel->setText(info.artist);
 
-        _musicProgressBar->setValue(0);
+        _c1_musicProgressBar->setValue(0);
         _musicLength = info.length;
         _musicLengthStr = SoundManager::timeToString(info.length);
-        _musicTimeLabel->setText(std::string("0:00 / ") + _musicLengthStr);
+        _c1_musicTimeLabel->setText(std::string("0:00 / ") + _musicLengthStr);
     });
 
     SoundManager::instance().setOnNewTimeHandler([this](libvlc_time_t time) {
-        _musicProgressBar->setValue((time * 100) / _musicLength);
-        _musicTimeLabel->setText(SoundManager::timeToString(time) + std::string(" / ") + _musicLengthStr);
+        _c1_musicProgressBar->setValue((time * 100) / _musicLength);
+        _c1_musicTimeLabel->setText(SoundManager::timeToString(time) + std::string(" / ") + _musicLengthStr);
 
         _tbPlayButton->setCurrentState(1);
 
         // Update volume
-        _volumeBar->setValue(SoundManager::instance().volume());
+        _c1_volumeBar->setValue(SoundManager::instance().volume());
 
     });
 
     SoundManager::instance().setOnEndReachedHandler([this]() {
-        _musicProgressBar->setValue(100);
-        _musicTimeLabel->setText(_musicLengthStr + std::string(" / ") + _musicLengthStr);
+        _c1_musicProgressBar->setValue(100);
+        _c1_musicTimeLabel->setText(_musicLengthStr + std::string(" / ") + _musicLengthStr);
         _tbPlayButton->setCurrentState(0);
     });
 }

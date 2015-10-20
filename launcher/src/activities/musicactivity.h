@@ -27,23 +27,39 @@ class MusicActivity : public BaseActivity
         FlatButton *_tbPreviousButton;
         FlatButton *_tbRepeatButton;
         FlatButton *_tbShuffleButton;
+        FlatButton *_tbToggleLibrary;
 
-        CoverIcon *_coverWidget;
-        ilixi::Label *_titleLabel;
-        ilixi::Label *_artistLabel;
+        //
+        // "Playing" widgets
+        //
 
-        ilixi::ProgressBar *_musicProgressBar;
-        ilixi::Label *_musicTimeLabel;
+        ContainerWidget *_container1;
+
+        CoverIcon *_c1_coverWidget;
+        ilixi::Label *_c1_titleLabel;
+        ilixi::Label *_c1_artistLabel;
+
+        ilixi::ProgressBar *_c1_musicProgressBar;
+        ilixi::Label *_c1_musicTimeLabel;
+
+        ilixi::ProgressBar *_c1_volumeBar;
+        FlatButton *_c1_volumePlus;
+        FlatButton *_c1_volumeMinus;
+
+        FlatButton *_c1_musicForward;
+        FlatButton *_c1_musicRewind;
+        ilixi::ToolButton *_c1_queueButton;
+
         int64_t _musicLength;
         std::string _musicLengthStr;
 
-        ilixi::ProgressBar *_volumeBar;
-        FlatButton *_volumePlus;
-        FlatButton *_volumeMinus;
+        //
+        // "Library" widgets
+        //
 
-        FlatButton *_musicForward;
-        FlatButton *_musicRewind;
-        ilixi::ToolButton *_queueButton;
+        ContainerWidget *_container2;
+
+
 };
 
 class CoverIcon : public ilixi::Icon

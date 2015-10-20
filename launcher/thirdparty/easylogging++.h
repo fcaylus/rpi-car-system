@@ -1028,6 +1028,7 @@ static inline std::string getCurrentThreadId(void) {
 }
 static inline void msleep(int ms) {
     // Only when async logging enabled - this is because async is strict on compiler
+    (void)ms;
 #if ELPP_ASYNC_LOGGING
     std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 #endif  // ELPP_ASYNC_LOGGING

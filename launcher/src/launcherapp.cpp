@@ -1,5 +1,5 @@
 #include "launcherapp.h"
-#include "utility.h"
+#include "dirutility.h"
 #include "soundmanager.h"
 
 #include "easylogging++.h"
