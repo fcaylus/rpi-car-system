@@ -1,7 +1,7 @@
 #ifndef LAUNCHERAPP_H
 #define LAUNCHERAPP_H
 
-#include <ilixiGUI.h>
+#include <core/Application.h>
 #include <map>
 #include <string>
 
@@ -11,8 +11,8 @@
 
 // Make argc and argv static since they are used by the singleton app
 namespace ProgramArgs {
-    static int argc;
-    static char** argv;
+    static int p_argc = 0;
+    static char** p_argv = nullptr;
 }
 
 // Singleton application object

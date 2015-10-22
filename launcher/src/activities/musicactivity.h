@@ -5,6 +5,12 @@
 
 #include "../widgets/flatbutton.h"
 
+#include <ui/Label.h>
+#include <ui/ProgressBar.h>
+#include <ui/ButtonGroup.h>
+#include <ui/DirectionalButton.h>
+#include <ui/ListBox.h>
+
 class CoverIcon;
 
 /*
@@ -59,6 +65,23 @@ class MusicActivity : public BaseActivity
 
         ContainerWidget *_container2;
 
+        ilixi::ButtonGroup *_c2_chooseModeButton;
+        ilixi::DirectionalButton *_c2_modeGenre;
+        ilixi::DirectionalButton *_c2_modeArtist;
+        ilixi::DirectionalButton *_c2_modeAlbum;
+        ilixi::DirectionalButton *_c2_modeTrack;
+
+        ContainerWidget *_c2_artistContainer;
+        ContainerWidget *_c2_albumContainer;
+        ContainerWidget *_c2_trackContainer;
+
+        // Artists widgets
+
+        ilixi::ListBox *_c2_artistListBox;
+
+        // Albums widgets
+
+        // Tracks widgets
 
 };
 
@@ -67,6 +90,22 @@ class CoverIcon : public ilixi::Icon
     public:
         CoverIcon(ilixi::Widget* parent = 0);
         ilixi::Size preferredSize() const;
+};
+
+class ScrollItem : public ContainerWidget
+{
+    public:
+        ScrollItem(const std::string& label, const std::string& iconName, ilixi::Widget* parent = 0);
+        ilixi::Size preferredSize() const;
+
+    protected:
+        virtual void compose(const ilixi::PaintEvent& event);
+
+    private:
+
+        ilixi::Icon *_icon;
+        ilixi::Label *_label;
+
 };
 
 #endif // MUSICACTIVITY_H

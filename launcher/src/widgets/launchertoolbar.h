@@ -1,7 +1,7 @@
 #ifndef LAUNCHERTOOLBAR_H
 #define LAUNCHERTOOLBAR_H
 
-#include "ilixiGUI.h"
+#include <ui/ToolBar.h>
 
 class LauncherToolBar : public ilixi::ToolBar
 {

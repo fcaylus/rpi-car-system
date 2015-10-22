@@ -3,6 +3,8 @@
 #include "launcherapp.h"
 #include "easylogging++.h"
 
+#include <ui/Spacer.h>
+
 using namespace ilixi;
 
 MenuDialog::MenuDialog(Widget* parent): Dialog("", ButtonOption::NoButtonOption, parent)

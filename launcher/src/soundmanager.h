@@ -74,6 +74,7 @@ class SoundManager
         void setOnNewMediaHandler(std::function<void(MediaInfo /*info*/, bool /*autoPlay*/)> handler);
         void setOnNewTimeHandler(std::function<void(libvlc_time_t /*new_time_in_ms*/)> handler);
         void setOnEndReachedHandler(std::function<void(void)> handler);
+        void setOnMediaListUpdatedHandler(std::function<void(std::vector<MediaInfo> /*mediaList*/)> handler);
 
         // Check if there are new files in the music dir
         void checkForNewMusicFiles();
@@ -100,9 +101,13 @@ class SoundManager
         bool _endReached = false;
 
         std::string _indexFilePath;
+        std::vector<MediaInfo> _mediaList;
 
+        std::function<void(std::vector<MediaInfo>)> _onMediaListUpdatedHandler = [](std::vector<MediaInfo>){};
         std::function<void(MediaInfo, bool)> _onNewMediaHandler = [](MediaInfo, bool){};
         std::function<void(void)> _onEndReachedHandler = [](){};
+
+        void updateMediaListObject();
 
         SoundManager(); // ctor
 

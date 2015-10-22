@@ -1,7 +1,10 @@
 #ifndef MENUDIALOG_H
 #define MENUDIALOG_H
 
-#include <ilixiGUI.h>
+#include <ui/GridLayout.h>
+#include <ui/Dialog.h>
+#include <ui/ToolButton.h>
+#include <ui/Icon.h>
 
 /*
  * This is a special activity that allow to launch the others

@@ -1,7 +1,9 @@
 #ifndef FLATBUTTON_H
 #define FLATBUTTON_H
 
-#include <ilixiGUI.h>
+#include <ui/ToolButton.h>
+#include <ui/Icon.h>
+#include <lib/Timer.h>
 #include <string>
 #include <vector>
 #include <functional>

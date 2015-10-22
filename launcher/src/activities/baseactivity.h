@@ -2,6 +2,7 @@
 #define BASEACTIVITY_H
 
 #include "../widgets/containerwidget.h"
+#include <ui/TextBase.h>
 
 /*
  * Base class for all activities
@@ -21,6 +22,7 @@ class BaseActivity : public ContainerWidget
         std::string name() const;
 
         static ilixi::Size availableArea();
+        static void setWidgetFont(ilixi::TextBase *widget, int increaseSizeValue, ilixi::Font::Style style = ilixi::Font::Style::Plain);
 
     private:
 

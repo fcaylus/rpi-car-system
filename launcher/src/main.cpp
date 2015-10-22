@@ -25,8 +25,8 @@ int main(int argc, char* argv[])
     LOG(INFO) << "Program start !";
 
     // Set param args
-    ProgramArgs::argc = argc;
-    ProgramArgs::argv = argv;
+    ProgramArgs::p_argc = argc;
+    ProgramArgs::p_argv = argv;
 
     LauncherApp &app = LauncherApp::instance();
 

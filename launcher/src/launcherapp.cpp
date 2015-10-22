@@ -1,14 +1,14 @@
 #include "launcherapp.h"
+
 #include "dirutility.h"
 #include "soundmanager.h"
-
 #include "easylogging++.h"
-
 #include "activities/musicactivity.h"
+#include <ui/VBoxLayout.h>
 
 using namespace ilixi;
 
-LauncherApp LauncherApp::_instance = LauncherApp(&ProgramArgs::argc, &ProgramArgs::argv);
+LauncherApp LauncherApp::_instance = LauncherApp(&ProgramArgs::p_argc, &ProgramArgs::p_argv);
 
 // Instance getter
 LauncherApp& LauncherApp::instance()
@@ -77,7 +77,7 @@ LauncherApp::LauncherApp(int *argc, char ***argv): ilixi::Application(argc, argv
     showActivity("act_music");
 
     // Play a test sound
-    SoundManager::instance().playFromFile("/home/fabien/test.mp3");
+    //SoundManager::instance().playFromFile("/home/fabien/test.mp3");
 }
 
 // Public destructor

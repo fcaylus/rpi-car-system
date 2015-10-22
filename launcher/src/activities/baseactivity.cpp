@@ -22,3 +22,12 @@ ilixi::Size BaseActivity::availableArea()
                 LauncherApp::instance().height() - LauncherApp::instance().stylist()->defaultParameter(StyleHint::ToolBarHeight)*2);
 }
 
+// Static
+void BaseActivity::setWidgetFont(TextBase *widget, int increaseSizeValue, Font::Style style)
+{
+    Font *font = new Font(*widget->font());
+    font->setSize(font->size() + increaseSizeValue);
+    font->setStyle(style);
+    widget->setFont(font);
+}
+
