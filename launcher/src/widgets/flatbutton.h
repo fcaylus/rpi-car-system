@@ -15,6 +15,7 @@ class FlatButton : public ilixi::ToolButton
     public:
         // Will assume it's a launcher icon
         FlatButton(const std::string& iconName, int width = 0, bool enableLongPress = false, ilixi::Widget* parent = 0);
+        ~FlatButton();
 
         // Add a state (for example, play <-> pause)
         // When the button is checkable, there is 3 states and the second

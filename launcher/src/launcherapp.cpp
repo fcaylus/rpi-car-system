@@ -4,7 +4,9 @@
 #include "soundmanager.h"
 #include "easylogging++.h"
 #include "activities/musicactivity.h"
+
 #include <ui/VBoxLayout.h>
+#include <core/Engine.h>
 
 using namespace ilixi;
 
@@ -43,7 +45,7 @@ LauncherApp::LauncherApp(int *argc, char ***argv): ilixi::Application(argc, argv
     LOG(INFO) << "Theme initialized !";
 
     // Set the toolbar
-    _toolBar = new LauncherToolBar();
+    _toolBar = new LauncherToolBar(appWindow());
     setToolbar(_toolBar, false);
 
     _menuButton = new ToolButton("", _toolBar);
@@ -52,7 +54,7 @@ LauncherApp::LauncherApp(int *argc, char ***argv): ilixi::Application(argc, argv
     _menuButton->setCheckable(false);
     _toolBar->addWidget(_menuButton);
 
-    _menuDialog = new MenuDialog();
+    _menuDialog = new MenuDialog(appWindow());
     _menuDialog->sigAccepted.connect([this](){
         showActivity(_menuDialog->requestedActivity());
     });
@@ -65,6 +67,7 @@ LauncherApp::LauncherApp(int *argc, char ***argv): ilixi::Application(argc, argv
     VBoxLayout *mainLayout = new VBoxLayout();
     mainLayout->setHorizontalAlignment(Alignment::Horizontal::Center);
     setLayout(mainLayout);
+
     registerActivity(new MusicActivity());
 
     _menuDialog->addMenuTile(0, 0, "music", "Ma Musique", "act_music");
@@ -78,18 +81,6 @@ LauncherApp::LauncherApp(int *argc, char ***argv): ilixi::Application(argc, argv
 
     // Play a test sound
     //SoundManager::instance().playFromFile("/home/fabien/test.mp3");
-}
-
-// Public destructor
-LauncherApp::~LauncherApp()
-{
-    delete _toolBar;
-    _toolBar = nullptr;
-
-    delete _menuDialog;
-    _menuDialog = nullptr;
-
-    LOG(INFO) << "LauncherApp deleted !";
 }
 
 StylistBase* LauncherApp::stylist() const
@@ -161,6 +152,77 @@ void LauncherApp::registerActivity(BaseActivity *act)
 {
     _activitiesMap.insert(std::make_pair(act->name(), act));
     addWidget(act);
+}
+
+// Public, re-implemented
+void LauncherApp::exec()
+{
+    //searchUSBDevice();
+
+    show();
+
+    while(true)
+    {
+        if(Engine::instance().stopped())
+            break;
+        else
+        {
+            handleEvents(Engine::instance().cycle());
+            updateWindows();
+
+            // Try to join usb thread
+            /*if(_usbThread && _usbThread->finished())
+            {
+                _usbManagerReady = _usbThread->succeed();
+            }
+
+            if(_usbManagerReady)
+            {
+                if(_usbManager->handleEvents() < 0)
+                {
+                    _usbManagerReady = false;
+                    LOG(ERROR) << "Error in libusb events !!!";
+                }
+            }*/
+        }
+    }
+
+    /*_usbThread->join();
+    delete _usbThread;
+
+    _usbManager->uninit();
+    delete _usbManager;
+
+    LOG(INFO) << "Exiting the application ...";*/
+
+    hide();
+    sigQuit();
+}
+
+void LauncherApp::searchUSBDevice()
+{
+    // Manager already created, so recreate it !
+    if(_usbManager)
+    {
+        _usbThread->join();
+        delete _usbThread;
+
+        _usbManager->uninit();
+        delete _usbManager;
+    }
+
+    _usbManager = new USBManager();
+    _usbManager->init((char *) "Allow communication between the phone and the car",
+                      (char *) "1.0",
+                      (char *) "tjdev.fr",
+                      (char *) "1245398564792");
+
+    _usbManagerReady = false;
+
+    _usbThread = new USBManagerThread(_usbManager, [this](){_usbManagerReady = false;}, [this](unsigned char* buffer, ssize_t length) {
+        SoundManager::instance().onNewStreamingData(buffer, length);
+    });
+    _usbThread->start();
 }
 
 

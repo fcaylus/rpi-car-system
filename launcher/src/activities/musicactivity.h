@@ -4,6 +4,7 @@
 #include "baseactivity.h"
 
 #include "../widgets/flatbutton.h"
+#include "../soundmanager.h"
 
 #include <ui/Label.h>
 #include <ui/ProgressBar.h>
@@ -11,7 +12,10 @@
 #include <ui/DirectionalButton.h>
 #include <ui/ListBox.h>
 
+#include <sigc++/connection.h>
+
 class CoverIcon;
+class CustomListBox;
 
 /*
  * This class launch a music activity
@@ -66,7 +70,6 @@ class MusicActivity : public BaseActivity
         ContainerWidget *_container2;
 
         ilixi::ButtonGroup *_c2_chooseModeButton;
-        ilixi::DirectionalButton *_c2_modeGenre;
         ilixi::DirectionalButton *_c2_modeArtist;
         ilixi::DirectionalButton *_c2_modeAlbum;
         ilixi::DirectionalButton *_c2_modeTrack;
@@ -77,12 +80,29 @@ class MusicActivity : public BaseActivity
 
         // Artists widgets
 
-        ilixi::ListBox *_c2_artistListBox;
+        CustomListBox *_c2_artistListBox;
+        ilixi::Label *_c2_artistLabel;
+        std::string _c2_artistLabelPreviousText = "";
+        ilixi::ToolButton *_c2_artistBackButton;
+        sigc::connection _c2_artistBackButtonConnection;
 
         // Albums widgets
 
+        CustomListBox *_c2_albumListBox;
+        ilixi::Label *_c2_albumLabel;
+        ilixi::ToolButton *_c2_albumBackButton;
+        sigc::connection _c2_albumBackButtonConnection;
+
         // Tracks widgets
 
+        CustomListBox *_c2_trackListBox;
+        ilixi::Label *_c2_trackLabel;
+        ilixi::ToolButton *_c2_trackBackButton;
+
+        // Private methods
+        void updateArtistWidgets(SortedMediaMap artistMap);
+        void updateAlbumWidgets(MediaMap albumMap);
+        void updateTrackWidgets(MediaList mediaList);
 };
 
 class CoverIcon : public ilixi::Icon
@@ -92,19 +112,33 @@ class CoverIcon : public ilixi::Icon
         ilixi::Size preferredSize() const;
 };
 
+class CustomListBox : public ilixi::ListBox
+{
+    public:
+        CustomListBox(ilixi::Widget* parent = 0);
+        ilixi::Size preferredSize() const;
+};
+
 class ScrollItem : public ContainerWidget
 {
     public:
-        ScrollItem(const std::string& label, const std::string& iconName, ilixi::Widget* parent = 0);
+        ScrollItem(const std::string& label, const std::string& iconPath, const int iconSize, ilixi::Widget* parent = 0);
         ilixi::Size preferredSize() const;
+
+        sigc::signal<void, std::string> sigClicked;
 
     protected:
         virtual void compose(const ilixi::PaintEvent& event);
+        virtual bool consumePointerEvent(const ilixi::PointerEvent &pointerEvent);
 
     private:
 
         ilixi::Icon *_icon;
         ilixi::Label *_label;
+
+        bool _pressed = false;
+
+        int _iconSize;
 
 };
 

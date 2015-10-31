@@ -62,6 +62,12 @@ FlatButton::FlatButton(const std::string &iconName, int width, bool enableLongPr
     });
 }
 
+FlatButton::~FlatButton()
+{
+    /*while(!_icons.empty())
+        delete _icons.front();*/
+}
+
 void FlatButton::addAdditionnalState(const std::string &iconName)
 {
     _icons.push_back(new FlatIcon(iconName, 0, this));

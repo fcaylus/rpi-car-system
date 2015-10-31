@@ -64,6 +64,11 @@ include_directories("${DIRECTFB_INCLUDE_DIR}")
 find_package(SIGC++ REQUIRED)
 include_directories("${SIGC++_INCLUDE_DIR}")
 
+# Add libusb
+find_package(libusb-1.0 REQUIRED)
+include_directories(${LIBUSB_1_INCLUDE_DIRS})
+
+
 #####################################
 ## Check cross compilation for rpi-car-system
 #####################################
@@ -120,6 +125,7 @@ add_executable(
 target_link_libraries(
     ${EXE_NAME}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${LIBUSB_1_LIBRARIES}
     ${SIGC++_LIBRARY}
     ${LIBXML2_LIBRARIES}
     ${LIBVLCCORE_LIBRARY}

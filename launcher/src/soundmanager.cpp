@@ -28,13 +28,60 @@ void SoundManager::playFromFile(const std::string &path)
     _endReached = false;
 
     _currentMedia = new VLC::Media(*_vlcInstance, path, VLC::Media::FromPath);
-    _vlcMediaPlayer->stop();
+    //_vlcMediaPlayer->stop();
     _vlcMediaPlayer->setMedia(*_currentMedia);
     _vlcMediaPlayer->play();
 
     LOG(INFO) << "Play media from file: " << path;
 
-    _onNewMediaHandler(MediaInfo::fromMedia(_currentMedia, path), true);
+   // _onNewMediaHandler(MediaInfo::fromMedia(_currentMedia, path), true);
+}
+
+void SoundManager::playFromMedia(const MediaInfo &info)
+{
+    if(_currentMedia != nullptr)
+        delete _currentMedia;
+
+    _endReached = false;
+
+    _currentMedia = new VLC::Media(*_vlcInstance, info.filePath, VLC::Media::FromPath);
+    //_vlcMediaPlayer->stop();
+    _vlcMediaPlayer->setMedia(*_currentMedia);
+    _vlcMediaPlayer->play();
+
+    _currentMedia->parse();
+
+    _onNewMediaHandler(info, _vlcMediaPlayer->length(), true);
+}
+
+void SoundManager::onNewStreamingData(unsigned char *newData, ssize_t length)
+{
+    // Start the stream on the first non-null data
+    if(!_inStream && length != 0)
+    {
+        _inStream = true;
+        _stream = open_memstream(&_streamBuffer, &_streamLength);
+        fseek(_stream, 0, SEEK_SET);
+        fwrite(newData, 1, length, _stream);
+
+        // Start playing media
+
+        if(_currentMedia != nullptr)
+            delete _currentMedia;
+
+        _endReached = false;
+
+        _currentMedia = new VLC::Media(*_vlcInstance, fileno(_stream));
+        //_vlcMediaPlayer->stop();
+        _vlcMediaPlayer->setMedia(*_currentMedia);
+        _vlcMediaPlayer->play();
+    }
+    else if(_inStream)
+    {
+        // Here we append the data
+        fseek(_stream, -1, SEEK_END);
+        fwrite(newData, 1, length, _stream);
+    }
 }
 
 void SoundManager::pauseMusic()
@@ -48,9 +95,7 @@ void SoundManager::resumeMusic()
 
     if(_endReached)
     {
-        _endReached = false;
-        _vlcMediaPlayer->setMedia(*_currentMedia);
-        _vlcMediaPlayer->play();
+        playFromMedia(MediaInfo::fromMedia(_currentMedia));
     }
 }
 
@@ -75,9 +120,7 @@ void SoundManager::previousMusic()
     // Re-start if the media reach the end
     if(_endReached)
     {
-        _endReached = false;
-        _vlcMediaPlayer->setMedia(*_currentMedia);
-        _vlcMediaPlayer->play();
+        playFromMedia(MediaInfo::fromMedia(_currentMedia));
     }
 }
 
@@ -120,7 +163,7 @@ void SoundManager::setVolume(int volume)
         _vlcMediaPlayer->setVolume(volume);
 }
 
-void SoundManager::setOnNewMediaHandler(std::function<void (MediaInfo, bool)> handler)
+void SoundManager::setOnNewMediaHandler(std::function<void(MediaInfo, libvlc_time_t, bool)> handler)
 {
     _onNewMediaHandler = handler;
 }
@@ -135,7 +178,8 @@ void SoundManager::setOnEndReachedHandler(std::function<void ()> handler)
     _onEndReachedHandler = handler;
 }
 
-void SoundManager::setOnMediaListUpdatedHandler(std::function<void (std::vector<MediaInfo>)> handler)
+
+void SoundManager::setOnMediaListUpdatedHandler(std::function<void (MediaList, MediaMap, SortedMediaMap)> handler)
 {
     _onMediaListUpdatedHandler = handler;
 }
@@ -146,11 +190,15 @@ void SoundManager::checkForNewMusicFiles()
     if(!ilixi::FileSystem::fileExists(_indexFilePath))
     {
         recreateMusicIndex();
+        createMediaMapsFromList();
+        _onMediaListUpdatedHandler(_mediaList, _albumMediaMap, _artistMediaMap);
         return;
     }
 
     // Send the media list before update
     updateMediaListObject();
+    createMediaMapsFromList();
+    _onMediaListUpdatedHandler(_mediaList, _albumMediaMap, _artistMediaMap);
 
     // Here, the index file exist, but maybe it's not up to date
     // Refresh it !
@@ -166,7 +214,7 @@ void SoundManager::checkForNewMusicFiles()
 
     // Check first line
     std::getline(indexFile, line);
-    if(line != "v1")
+    if(line != "v2")
     {
         // The file is not in the correct version, recreate it !
         indexFile.close();
@@ -221,6 +269,7 @@ void SoundManager::checkForNewMusicFiles()
                                  << info.title << std::endl
                                  << info.artist << std::endl
                                  << info.album << std::endl
+                                 << info.trackNumber << std::endl
                                  << info.coverFile << std::endl;
                     delete media;
                 }
@@ -262,6 +311,7 @@ void SoundManager::checkForNewMusicFiles()
                              << info.title << std::endl
                              << info.artist << std::endl
                              << info.album << std::endl
+                             << info.trackNumber << std::endl
                              << info.coverFile << std::endl << std::endl;
                 delete media;
 
@@ -278,7 +328,11 @@ void SoundManager::checkForNewMusicFiles()
 
     // Send the media list after update (only if there are changes)
     if(changeOccur)
+    {
         updateMediaListObject();
+        createMediaMapsFromList();
+        _onMediaListUpdatedHandler(_mediaList, _albumMediaMap, _artistMediaMap);
+    }
 }
 
 void SoundManager::recreateMusicIndex()
@@ -287,7 +341,7 @@ void SoundManager::recreateMusicIndex()
     indexFileStream.open(_indexFilePath);
 
     // Output the version
-    indexFileStream << "v1" << std::endl;
+    indexFileStream << "v2" << std::endl;
 
     _mediaList.clear();
 
@@ -304,6 +358,7 @@ void SoundManager::recreateMusicIndex()
             //    <musicTitle>
             //    <musicArtist>
             //    <musicAlbum>
+            //    <trackNumber>
             //    <coverFilePath>
             //
 
@@ -316,6 +371,7 @@ void SoundManager::recreateMusicIndex()
                             << info.title << std::endl
                             << info.artist << std::endl
                             << info.album << std::endl
+                            << info.trackNumber << std::endl
                             << info.coverFile << std::endl << std::endl;
 
             delete media;
@@ -323,8 +379,6 @@ void SoundManager::recreateMusicIndex()
     });
 
     indexFileStream.close();
-
-    _onMediaListUpdatedHandler(_mediaList);
 }
 
 // Private
@@ -334,7 +388,7 @@ void SoundManager::updateMediaListObject()
     indexFile.open(_indexFilePath);
     std::string line;
     std::getline(indexFile, line);
-    if(line != "v1")
+    if(line != "v2")
     {
         indexFile.close();
         return;
@@ -347,6 +401,7 @@ void SoundManager::updateMediaListObject()
     std::string album = "";
     std::string title = "";
     std::string coverPath = "";
+    int trackNumber = 0;
     long fileSize = -1;
 
     int varCount = 0;
@@ -366,12 +421,14 @@ void SoundManager::updateMediaListObject()
             else if(varCount == 5)
                 album = line;
             else if(varCount == 6)
+                trackNumber = std::stoi(line);
+            else if(varCount == 7)
                 coverPath = line;
         }
         else if(!fileName.empty() && !artist.empty()
                 && !album.empty() && !title.empty()
                 && !coverPath.empty() && fileSize != -1
-                && varCount == 6)
+                && varCount == 7)
         {
             varCount = 0;
 
@@ -382,10 +439,8 @@ void SoundManager::updateMediaListObject()
             info.coverFile = coverPath;
             info.filePath = fileName;
             info.fileSize = fileSize;
+            info.trackNumber = trackNumber;
             info.title = title;
-            VLC::Media *media = new VLC::Media(*_vlcInstance, fileName, VLC::Media::FromPath);
-            info.length = media->duration();
-            delete media;
 
             _mediaList.push_back(info);
 
@@ -395,11 +450,80 @@ void SoundManager::updateMediaListObject()
             artist = "";
             album = "";
             coverPath = "";
+            trackNumber = 0;
         }
     }
 
     indexFile.close();
-    _onMediaListUpdatedHandler(_mediaList);
+}
+
+void SoundManager::createMediaMapsFromList()
+{
+    _artistMediaMap.clear();
+    _albumMediaMap.clear();
+
+    MediaMap artistMap;
+
+    //
+    // First step, list all artist and all albums
+
+    for(MediaInfo info : _mediaList)
+    {
+        // Not yet in the list
+        if(_albumMediaMap.count(info.album) == 0)
+        {
+            MediaList trackList;
+            trackList.push_back(info);
+            _albumMediaMap[info.album] = trackList;
+        }
+        else
+            _albumMediaMap[info.album].push_back(info);
+
+        if(artistMap.count(info.artist) == 0)
+        {
+            MediaList trackList;
+            trackList.push_back(info);
+            artistMap[info.artist] = trackList;
+        }
+        else
+            artistMap[info.artist].push_back(info);
+    }
+
+    //
+    // Second step, sort albums in artist map
+
+    for(MediaMap::iterator it = artistMap.begin(); it != artistMap.end(); ++it)
+    {
+        MediaMap tempAlbumMap;
+
+        for(MediaInfo &info : (*it).second)
+        {
+            if(tempAlbumMap.count(info.album) == 0)
+            {
+                MediaList trackList;
+                trackList.push_back(info);
+                tempAlbumMap[info.album] = trackList;
+            }
+            else
+                tempAlbumMap[info.album].push_back(info);
+        }
+
+        // Sort the map
+        for(MediaMap::iterator it2 = tempAlbumMap.begin(); it2 != tempAlbumMap.end(); ++it2)
+            std::sort(it2->second.begin(), it2->second.end(), MediaInfo::sort);
+
+        // Copy
+        _artistMediaMap[it->first] = tempAlbumMap;
+    }
+
+    //
+    // Third step, order tracks in album list
+    for(MediaMap::iterator it = _albumMediaMap.begin(); it != _albumMediaMap.end(); ++it)
+        std::sort(it->second.begin(), it->second.end(), MediaInfo::sort);
+
+    //
+    // Last step, order media list
+    std::sort(_mediaList.begin(), _mediaList.end(), MediaInfo::sortAlpha);
 }
 
 // Static
@@ -471,7 +595,6 @@ std::string SoundManager::timeToString(libvlc_time_t time)
 // Private constructor
 SoundManager::SoundManager()
 {
-
     _indexFilePath = DirUtility::executableDir() + "/music-index.txt";
 
     // Load the engine
@@ -483,19 +606,17 @@ SoundManager::SoundManager()
 
         _onEndReachedHandler();
 
+        LOG(INFO) << "End reached !!";
+
         _endReached = true;
 
        // Check if we are in repeat-one mode
         if(_repeatMode == RepeatOne)
         {
-            _endReached = false;
-            _vlcMediaPlayer->setMedia(*_currentMedia);
-            _vlcMediaPlayer->play();
+            LOG(INFO) << "Repeat ";
+            playFromMedia(MediaInfo::fromMedia(_currentMedia));
         }
     });
-
-    // The music activity need to start the check process
-    //checkForNewMusicFiles();
 }
 
 // Public destructor
@@ -514,7 +635,5 @@ SoundManager::~SoundManager()
 
     delete _vlcMediaPlayer;
     _vlcMediaPlayer = nullptr;
-
-    LOG(INFO) << "SoundManager deleted !";
 }
 

@@ -3,11 +3,16 @@
 #include "../launcherapp.h"
 #include "../soundmanager.h"
 #include "easylogging++.h"
-#include <set>
+
 #include <ui/Spacer.h>
 #include <ui/LineSeperator.h>
 #include <ui/VBoxLayout.h>
 #include <ui/HBoxLayout.h>
+#include <ui/ScrollArea.h>
+
+#include <map>
+#include <set>
+#include <vector>
 
 using namespace ilixi;
 
@@ -60,6 +65,8 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
 
     _tbToggleLibrary = new FlatButton("music", 0, false, this);
     _tbToggleLibrary->setCheckable(true);
+
+    _tbToggleLibrary->setCurrentState(1);
     _tbToggleLibrary->setOnClickHandler([this](int newState) {
         if(newState == 1)
         {
@@ -94,6 +101,7 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
 
     setLayout(new HBoxLayout(this));
     _container1 = new ContainerWidget(this);
+    _container1->setVisible(false);
     addWidget(_container1);
 
     _c1_coverWidget = new CoverIcon(this);
@@ -147,6 +155,7 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
     _c1_queueButton->setIcon(LauncherApp::iconPathForName("playlist"));
     _c1_queueButton->setRepeatable(false);
     _c1_queueButton->setDrawFrame(true);
+    _c1_queueButton->setDisabled();
 
     // Layouts
 
@@ -215,13 +224,7 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
 
     _container2 = new ContainerWidget(this);
     _container2->setConstraints(NoConstraint, FixedConstraint);
-    _container2->setVisible(false);
     addWidget(_container2);
-
-    _c2_modeGenre = new DirectionalButton("Genres", this);
-    _c2_modeGenre->setIcon(LauncherApp::iconPathForName("list"), Size(32,32));
-    _c2_modeGenre->setDisabled();
-    setWidgetFont(_c2_modeGenre, 4);
 
     _c2_modeAlbum = new DirectionalButton("Albums", this);
     _c2_modeAlbum->setIcon(LauncherApp::iconPathForName("album"), Size(32,32));
@@ -230,6 +233,10 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         _c2_artistContainer->setVisible(false);
         _c2_trackContainer->setVisible(false);
         _c2_albumContainer->setVisible(true);
+
+        _c2_artistBackButton->setVisible(false);
+        _c2_trackBackButton->setVisible(false);
+        _c2_albumBackButton->setVisible(true);
     });
 
     _c2_modeArtist = new DirectionalButton("Artistes", this);
@@ -239,6 +246,10 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         _c2_albumContainer->setVisible(false);
         _c2_trackContainer->setVisible(false);
         _c2_artistContainer->setVisible(true);
+
+        _c2_albumBackButton->setVisible(false);
+        _c2_trackBackButton->setVisible(false);
+        _c2_artistBackButton->setVisible(true);
     });
 
     _c2_modeTrack = new DirectionalButton("Titres", this);
@@ -248,25 +259,63 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         _c2_artistContainer->setVisible(false);
         _c2_albumContainer->setVisible(false);
         _c2_trackContainer->setVisible(true);
+
+        _c2_albumBackButton->setVisible(false);
+        _c2_artistBackButton->setVisible(false);
+        _c2_trackBackButton->setVisible(true);
     });
 
     _c2_chooseModeButton = new ButtonGroup(Vertical, this);
-    _c2_chooseModeButton->addButton(_c2_modeGenre);
     _c2_chooseModeButton->addButton(_c2_modeArtist);
     _c2_chooseModeButton->addButton(_c2_modeAlbum);
     _c2_chooseModeButton->addButton(_c2_modeTrack);
 
     _c2_artistContainer = new ContainerWidget(this);
     _c2_artistContainer->setConstraints(NoConstraint, FixedConstraint);
+    _c2_artistContainer->setVisible(false);
     _c2_albumContainer = new ContainerWidget(this);
-    _c2_albumContainer->setVisible(false);
+    _c2_albumContainer->setConstraints(NoConstraint, FixedConstraint);
     _c2_trackContainer = new ContainerWidget(this);
+    _c2_trackContainer->setConstraints(NoConstraint, FixedConstraint);
     _c2_trackContainer->setVisible(false);
 
-    _c2_artistListBox = new ListBox(this);
+    _c2_artistListBox = new CustomListBox(this);
     _c2_artistListBox->setDrawFrame(true);
-    _c2_artistListBox->setUseThumbs(false);
 
+    _c2_artistLabel = new Label("Liste des artistes", this);
+    _c2_artistLabel->setConstraints(NoConstraint, FixedConstraint);
+    setWidgetFont(_c2_artistLabel, 3);
+
+    _c2_artistBackButton = new ToolButton("", this);
+    _c2_artistBackButton->setToolButtonStyle(ToolButton::IconOnly);
+    _c2_artistBackButton->setIcon(LauncherApp::iconPathForName("back"));
+    _c2_artistBackButton->setDisabled();
+    _c2_artistBackButton->setVisible(false);
+
+    _c2_albumListBox = new CustomListBox(this);
+    _c2_albumListBox->setDrawFrame(true);
+
+    _c2_albumLabel = new Label("Liste des albums", this);
+    _c2_albumLabel->setConstraints(NoConstraint, FixedConstraint);
+    setWidgetFont(_c2_albumLabel, 3);
+
+    _c2_albumBackButton = new ToolButton("", this);
+    _c2_albumBackButton->setToolButtonStyle(ToolButton::IconOnly);
+    _c2_albumBackButton->setIcon(LauncherApp::iconPathForName("back"));
+    _c2_albumBackButton->setDisabled();
+
+    _c2_trackListBox = new CustomListBox(this);
+    _c2_trackListBox->setDrawFrame(true);
+
+    _c2_trackLabel = new Label("Liste des morceaux", this);
+    _c2_trackLabel->setConstraints(NoConstraint, FixedConstraint);
+    setWidgetFont(_c2_trackLabel, 3);
+
+    _c2_trackBackButton = new ToolButton("", this);
+    _c2_trackBackButton->setToolButtonStyle(ToolButton::IconOnly);
+    _c2_trackBackButton->setIcon(LauncherApp::iconPathForName("back"));
+    _c2_trackBackButton->setDisabled();
+    _c2_trackBackButton->setVisible(false);
 
     // Layouts
 
@@ -276,23 +325,48 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
     c2_centralLayout->setYConstraint(FixedConstraint);
     _container2->setLayout(c2_centralLayout);
 
-    c2_centralLayout->addWidget(_c2_chooseModeButton);
+    ContainerWidget *c2_buttonsContainer = new ContainerWidget(this);
+    c2_buttonsContainer->setConstraints(FixedConstraint, FixedConstraint);
+    VBoxLayout *c2_buttonsLayout = new VBoxLayout(this);
+    c2_buttonsLayout->setHorizontalAlignment(Alignment::Center);
+    c2_buttonsContainer->setLayout(c2_buttonsLayout);
+    c2_buttonsContainer->addWidget(_c2_chooseModeButton);
+    c2_buttonsContainer->addWidget(new Spacer(Vertical, this));
+    c2_buttonsContainer->addWidget(new LineSeperator(Horizontal, this));
+    c2_buttonsContainer->addWidget(new Spacer(Vertical, this));
+    c2_buttonsContainer->addWidget(_c2_artistBackButton);
+    c2_buttonsContainer->addWidget(_c2_albumBackButton);
+    c2_buttonsContainer->addWidget(_c2_trackBackButton);
+
+    c2_centralLayout->addWidget(c2_buttonsContainer);
     c2_centralLayout->addWidget(new LineSeperator(Vertical, this));
     c2_centralLayout->addWidget(_c2_albumContainer);
     c2_centralLayout->addWidget(_c2_artistContainer);
     c2_centralLayout->addWidget(_c2_trackContainer);
 
-    HBoxLayout *c2_artistContainerLayout = new HBoxLayout(this);
-    c2_artistContainerLayout->setYConstraint(FixedConstraint);
+    VBoxLayout *c2_artistContainerLayout = new VBoxLayout(this);
+    c2_artistContainerLayout->setConstraints(FixedConstraint, FixedConstraint);
     _c2_artistContainer->setLayout(c2_artistContainerLayout);
+    _c2_artistContainer->addWidget(_c2_artistLabel);
     _c2_artistContainer->addWidget(_c2_artistListBox);
 
+    VBoxLayout *c2_albumContainerLayout = new VBoxLayout(this);
+    c2_albumContainerLayout->setConstraints(FixedConstraint, FixedConstraint);
+    _c2_albumContainer->setLayout(c2_albumContainerLayout);
+    _c2_albumContainer->addWidget(_c2_albumLabel);
+    _c2_albumContainer->addWidget(_c2_albumListBox);
+
+    VBoxLayout *c2_trackContainerLayout = new VBoxLayout(this);
+    c2_trackContainerLayout->setConstraints(FixedConstraint, FixedConstraint);
+    _c2_trackContainer->setLayout(c2_trackContainerLayout);
+    _c2_trackContainer->addWidget(_c2_trackLabel);
+    _c2_trackContainer->addWidget(_c2_trackListBox);
 
     // ---------------------------------------
     // Register all media listeners
     // ---------------------------------------
 
-    SoundManager::instance().setOnNewMediaHandler([this](MediaInfo info, bool autoPlay){
+    SoundManager::instance().setOnNewMediaHandler([this](MediaInfo info, libvlc_time_t duration, bool autoPlay){
         if(autoPlay)
             _tbPlayButton->setCurrentState(1);
         else
@@ -304,8 +378,8 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         _c1_artistLabel->setText(info.artist);
 
         _c1_musicProgressBar->setValue(0);
-        _musicLength = info.length;
-        _musicLengthStr = SoundManager::timeToString(info.length);
+        _musicLength = duration;
+        _musicLengthStr = SoundManager::timeToString(duration);
         _c1_musicTimeLabel->setText(std::string("0:00 / ") + _musicLengthStr);
     });
 
@@ -326,24 +400,188 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
         _tbPlayButton->setCurrentState(0);
     });
 
-    SoundManager::instance().setOnMediaListUpdatedHandler([this](std::vector<MediaInfo> mediaList) {
-        _c2_artistListBox->clear();
+    SoundManager::instance().setOnMediaListUpdatedHandler([this](MediaList mediaList, MediaMap albumMap, SortedMediaMap artistMap) {
 
-        std::set<std::string> artistList;
-        for(MediaInfo info : mediaList)
-        {
-            // The artist is not yet in the list
-            //if(artistList.find(info.artist) == artistList.end())
-            //{
-                artistList.insert(info.artist);
-                ScrollItem *item = new ScrollItem(info.artist, "person", this);
-                _c2_artistListBox->addItem(item);
-            //}
-        }
+        updateArtistWidgets(artistMap);
+        updateAlbumWidgets(albumMap);
+        updateTrackWidgets(mediaList);
+
     });
 
     // Check for music files
     SoundManager::instance().checkForNewMusicFiles();
+}
+
+//
+// Private methods
+//
+void MusicActivity::updateArtistWidgets(SortedMediaMap artistMap)
+{
+    _c2_artistListBox->clear();
+
+    for(SortedMediaMap::iterator it = artistMap.begin(); it != artistMap.end(); ++it)
+    {
+        CustomListBox *albumListBox = new CustomListBox(this);
+        albumListBox->setDrawFrame(true);
+        albumListBox->setVisible(false);
+        _c2_artistContainer->addWidget(albumListBox);
+
+        for(MediaMap::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+        {
+            CustomListBox *trackListBox = new CustomListBox(this);
+            trackListBox->setDrawFrame(true);
+            trackListBox->setVisible(false);
+            _c2_artistContainer->addWidget(trackListBox);
+
+            // The cover of the first song is used as album cover
+            std::string albumCover = "";
+
+            for(MediaInfo trackInfo : it2->second)
+            {
+                std::string iconPath = trackInfo.coverFile;
+                if(iconPath == DirUtility::executableDir() + "/theme/default_artwork.png")
+                    iconPath = LauncherApp::iconPathForName("track");
+
+                if(albumCover.empty())
+                {
+                    albumCover = iconPath;
+                    if(albumCover == LauncherApp::iconPathForName("track"))
+                        albumCover = LauncherApp::iconPathForName("album");
+                }
+
+                ScrollItem *trackItem = new ScrollItem(trackInfo.title, iconPath, 48, this);
+                trackListBox->addItem(trackItem);
+                trackItem->sigClicked.connect([this, trackInfo](std::string) {
+                    _tbToggleLibrary->click();
+                    SoundManager::instance().playFromMedia(trackInfo);
+                });
+            }
+
+            ScrollItem *albumItem = new ScrollItem(it2->first, albumCover, 64, this);
+            albumListBox->addItem(albumItem);
+            albumItem->sigClicked.connect([this, trackListBox, albumListBox](std::string label) {
+                albumListBox->setVisible(false);
+                trackListBox->setVisible(true);
+
+                _c2_artistLabelPreviousText = _c2_artistLabel->text();
+                _c2_artistLabel->setText(label + std::string(" - ") + _c2_artistLabel->text());
+
+                _c2_artistBackButtonConnection.disconnect();
+                _c2_artistBackButtonConnection = sigc::connection(_c2_artistBackButton->sigClicked.connect([this, trackListBox, albumListBox]() {
+                    trackListBox->setVisible(false);
+                    albumListBox->setVisible(true);
+
+                    _c2_artistLabel->setText(_c2_artistLabelPreviousText);
+
+                    _c2_artistBackButtonConnection.disconnect();
+                    _c2_artistBackButtonConnection = sigc::connection(_c2_artistBackButton->sigClicked.connect([this, albumListBox](){
+                        _c2_artistBackButton->setDisabled();
+                        albumListBox->setVisible(false);
+                        _c2_artistListBox->setVisible(true);
+
+                        _c2_artistLabel->setText("Liste des artistes");
+                    }));
+                }));
+            });
+        }
+
+        ScrollItem *item = new ScrollItem(it->first, LauncherApp::iconPathForName("person"), 48, this);
+        item->sigClicked.connect([this, albumListBox](std::string label) {
+            _c2_artistListBox->setVisible(false);
+            albumListBox->setVisible(true);
+            _c2_artistBackButton->setEnabled();
+
+            _c2_artistLabelPreviousText = _c2_artistLabel->text();
+            _c2_artistLabel->setText(label);
+
+            _c2_artistBackButtonConnection.disconnect();
+            _c2_artistBackButtonConnection = sigc::connection(_c2_artistBackButton->sigClicked.connect([this, albumListBox](){
+                _c2_artistBackButton->setDisabled();
+                albumListBox->setVisible(false);
+                _c2_artistListBox->setVisible(true);
+
+                _c2_artistLabel->setText(_c2_artistLabelPreviousText);
+            }));
+
+        });
+
+        _c2_artistListBox->addItem(item);
+
+    }
+}
+
+void MusicActivity::updateAlbumWidgets(MediaMap albumMap)
+{
+    _c2_albumListBox->clear();
+
+    for(MediaMap::iterator it = albumMap.begin(); it != albumMap.end(); ++it)
+    {
+        CustomListBox *trackListBox = new CustomListBox(this);
+        trackListBox->setDrawFrame(true);
+        trackListBox->setVisible(false);
+        _c2_albumContainer->addWidget(trackListBox);
+
+        // The cover of the first song is used as album cover
+        std::string albumCover = "";
+
+        for(MediaInfo trackInfo : it->second)
+        {
+            std::string iconPath = trackInfo.coverFile;
+            if(iconPath == DirUtility::executableDir() + "/theme/default_artwork.png")
+                iconPath = LauncherApp::iconPathForName("track");
+
+            if(albumCover.empty())
+            {
+                albumCover = iconPath;
+                if(albumCover == LauncherApp::iconPathForName("track"))
+                    albumCover = LauncherApp::iconPathForName("album");
+            }
+
+            ScrollItem *trackItem = new ScrollItem(trackInfo.title, iconPath, 48, this);
+            trackListBox->addItem(trackItem);
+            trackItem->sigClicked.connect([this, trackInfo](std::string) {
+                _tbToggleLibrary->click();
+                SoundManager::instance().playFromMedia(trackInfo);
+            });
+        }
+
+        ScrollItem *albumItem = new ScrollItem(it->first, albumCover, 64, this);
+        _c2_albumListBox->addItem(albumItem);
+        albumItem->sigClicked.connect([this, trackListBox](std::string label) {
+            _c2_albumListBox->setVisible(false);
+            trackListBox->setVisible(true);
+            _c2_albumBackButton->setEnabled();
+
+            _c2_albumLabel->setText(label);
+
+            _c2_albumBackButton->sigClicked.connect([this, trackListBox](){
+                _c2_albumBackButton->setDisabled();
+                trackListBox->setVisible(false);
+                _c2_albumListBox->setVisible(true);
+
+                _c2_artistLabel->setText("Liste des albums");
+            });
+        });
+    }
+}
+
+void MusicActivity::updateTrackWidgets(MediaList mediaList)
+{
+    _c2_trackListBox->clear();
+
+    for(MediaInfo &trackInfo : mediaList)
+    {
+        std::string iconPath = trackInfo.coverFile;
+        if(iconPath == DirUtility::executableDir() + "/theme/default_artwork.png")
+            iconPath = LauncherApp::iconPathForName("track");
+
+        ScrollItem *trackItem = new ScrollItem(trackInfo.title, iconPath, 48, this);
+        _c2_trackListBox->addItem(trackItem);
+        trackItem->sigClicked.connect([this, trackInfo](std::string) {
+            _tbToggleLibrary->click();
+            SoundManager::instance().playFromMedia(trackInfo);
+        });
+    }
 }
 
 /***********************************/
@@ -352,7 +590,6 @@ MusicActivity::MusicActivity(Widget *parent): BaseActivity("act_music", parent)
 
 CoverIcon::CoverIcon(Widget *parent): Icon(parent)
 {
-
 }
 
 Size CoverIcon::preferredSize() const
@@ -363,18 +600,33 @@ Size CoverIcon::preferredSize() const
 }
 
 /***********************************/
+/***** CustomListBox Class *********/
+/***********************************/
+
+CustomListBox::CustomListBox(Widget *parent): ListBox(parent)
+{
+}
+
+Size CustomListBox::preferredSize() const
+{
+    return Size(BaseActivity::availableArea().width() * 0.6, BaseActivity::availableArea().height()-30*2);
+}
+
+/***********************************/
 /***** ScrollItem Class ************/
 /***********************************/
 
-ScrollItem::ScrollItem(const std::string& label, const std::string &iconName, Widget *parent): ContainerWidget(parent)
+ScrollItem::ScrollItem(const std::string& label, const std::string &iconPath, const int iconSize, Widget *parent): ContainerWidget(parent)
 {
     setConstraints(NoConstraint, FixedConstraint);
-    setInputMethod(KeyPointer);
+    setInputMethod(PointerInput);
 
-    _icon = new Icon(LauncherApp::iconPathForName(iconName), this);
-    _icon->setMaximumSize(48,48);
-    _label = new Label(label, this);
-    BaseActivity::setWidgetFont(_label, 3);
+    _icon = new Icon(iconPath, this);
+    _icon->setMaximumSize(iconSize, iconSize);
+    _icon->setMinimumSize(iconSize, iconSize);
+    _iconSize = iconSize;
+    _label = new Label(" " + label, this);
+    BaseActivity::setWidgetFont(_label, _iconSize / 16);
 
     HBoxLayout *layout = new HBoxLayout(this);
     setLayout(layout);
@@ -386,7 +638,7 @@ ScrollItem::ScrollItem(const std::string& label, const std::string &iconName, Wi
 
 Size ScrollItem::preferredSize() const
 {
-    return Size(200, 50);
+    return Size(200, _iconSize + 4);
 }
 
 void ScrollItem::compose(const PaintEvent &event)
@@ -394,6 +646,22 @@ void ScrollItem::compose(const PaintEvent &event)
     (void)event;
 }
 
+bool ScrollItem::consumePointerEvent(const PointerEvent &pointerEvent)
+{
+    if(frameGeometry().contains(pointerEvent.x, pointerEvent.y, true)
+       && pointerEvent.button == PointerButton::ButtonLeft)
+    {
+        if(pointerEvent.eventType == PointerButtonDown)
+            _pressed = true;
+        else if(pointerEvent.eventType == PointerButtonUp && _pressed)
+        {
+            _pressed = false;
+            sigClicked(_label->text());
+        }
+        return true;
+    }
+    _pressed = false;
 
-
+    return false;
+}
 

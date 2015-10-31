@@ -8,6 +8,7 @@
 #include "widgets/launchertoolbar.h"
 #include "activities/baseactivity.h"
 #include "menudialog.h"
+#include "usbmanager.h"
 
 // Make argc and argv static since they are used by the singleton app
 namespace ProgramArgs {
@@ -21,9 +22,6 @@ class LauncherApp : public ilixi::Application
 {
     public:
         static LauncherApp& instance();
-
-        // dtor
-        ~LauncherApp();
 
         // This method allow an activity to register a widget in the toolbar
         // If there are several widgets, pack them into a ContainerWidget
@@ -39,9 +37,17 @@ class LauncherApp : public ilixi::Application
         static ilixi::Icon* loadIcon(const std::string& name, const int width);
         static std::string iconPathForName(const std::string& name);
 
+        // Re-implemented
+        void exec();
+        void searchUSBDevice();
+
     private:
         LauncherApp(int* argc, char*** argv); // ctor
         std::string _executableDir;
+
+        USBManager *_usbManager = nullptr;
+        USBManagerThread *_usbThread = nullptr;
+        bool _usbManagerReady = false;
 
         LauncherToolBar *_toolBar;
         ilixi::ToolButton *_menuButton;
