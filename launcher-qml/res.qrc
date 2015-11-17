@@ -1,0 +1,64 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/Activity.qml</file>
+        <file>qml/ActivityToolbar.qml</file>
+        <file>qml/DarkButton.qml</file>
+        <file>qml/Style.qml</file>
+        <file>qml/qmldir</file>
+        <file>qml/MainMenuButton.qml</file>
+        <file>qml/DarkButtonStyle.qml</file>
+        <file>qml/ActivityMusic.qml</file>
+        <file>qml/ActivitySettings.qml</file>
+        <file>qml/music/MusicPlayer.qml</file>
+        <file>qml/StyledText.qml</file>
+        <file>qml/FlatButton.qml</file>
+        <file>qml/DarkProgressBar.qml</file>
+        <file>qml/music/MusicListView.qml</file>
+        <file>qml/music/ListViewTrack.qml</file>
+        <file>qml/music/ListViewAlbum.qml</file>
+        <file>qml/music/ListViewArtist.qml</file>
+        <file>qml/music/ListViewBase.qml</file>
+        <file>qml/music/MusicQueuePopup.qml</file>
+    </qresource>
+    <qresource prefix="/fonts">
+        <file>fonts/OpenSans-Regular.ttf</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="default_artwork">imgs/default_artwork.png</file>
+        <file alias="bg">imgs/bg.png</file>
+        <file alias="volume_up">imgs/icons/volume_up.png</file>
+        <file alias="volume_down">imgs/icons/volume_down.png</file>
+        <file alias="video">imgs/icons/video.png</file>
+        <file alias="upload">imgs/icons/upload.png</file>
+        <file alias="track">imgs/icons/track.png</file>
+        <file alias="skip_previous">imgs/icons/skip_previous.png</file>
+        <file alias="skip_next">imgs/icons/skip_next.png</file>
+        <file alias="shuffle">imgs/icons/shuffle.png</file>
+        <file alias="settings">imgs/icons/settings.png</file>
+        <file alias="search">imgs/icons/search.png</file>
+        <file alias="replay">imgs/icons/replay.png</file>
+        <file alias="repeat_one">imgs/icons/repeat_one.png</file>
+        <file alias="repeat">imgs/icons/repeat.png</file>
+        <file alias="radio">imgs/icons/radio.png</file>
+        <file alias="power">imgs/icons/power.png</file>
+        <file alias="plus">imgs/icons/plus.png</file>
+        <file alias="playlist">imgs/icons/playlist.png</file>
+        <file alias="play">imgs/icons/play.png</file>
+        <file alias="phone">imgs/icons/phone.png</file>
+        <file alias="person">imgs/icons/person.png</file>
+        <file alias="pause">imgs/icons/pause.png</file>
+        <file alias="music">imgs/icons/music.png</file>
+        <file alias="minus">imgs/icons/minus.png</file>
+        <file alias="list">imgs/icons/list.png</file>
+        <file alias="home">imgs/icons/home.png</file>
+        <file alias="fast_rewind">imgs/icons/fast_rewind.png</file>
+        <file alias="fast_forward">imgs/icons/fast_forward.png</file>
+        <file alias="back">imgs/icons/back.png</file>
+        <file alias="album">imgs/icons/album.png</file>
+        <file alias="next">imgs/icons/next.png</file>
+        <file alias="map">imgs/icons/map.png</file>
+        <file alias="car">imgs/icons/car.png</file>
+        <file alias="close">imgs/icons/close.png</file>
+    </qresource>
+</RCC>
