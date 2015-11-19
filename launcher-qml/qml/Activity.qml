@@ -45,18 +45,6 @@ Rectangle {
             width: parent.width
             height: parent.height
 
-            Behavior on x {
-                id: controlXBehavior
-                enabled: false
-                NumberAnimation {}
-            }
-
-            Behavior on y {
-                id: controlYBehavior
-                enabled: false
-                NumberAnimation {}
-            }
-
             Loader {
                 id: controlLoader
                 sourceComponent: control

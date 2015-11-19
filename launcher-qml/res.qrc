@@ -26,7 +26,6 @@
     </qresource>
     <qresource prefix="/images">
         <file alias="default_artwork">imgs/default_artwork.png</file>
-        <file alias="bg">imgs/bg.png</file>
         <file alias="volume_up">imgs/icons/volume_up.png</file>
         <file alias="volume_down">imgs/icons/volume_down.png</file>
         <file alias="video">imgs/icons/video.png</file>

@@ -164,7 +164,7 @@ Rectangle {
                 id: timeBar
                 width: Style.windowWidth - 160
                 anchors.verticalCenter: parent.verticalCenter
-                value: soundManager.time / 100
+                value: 0
             }
 
             StyledText {
@@ -174,6 +174,12 @@ Rectangle {
                 font.pixelSize: 15
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+            }
+
+            Connections {
+                target: soundManager
+                onTimeChanged: timeBar.value = soundManager.time / 100
+                onEndReached: timeBar.value = 1
             }
         }
     }

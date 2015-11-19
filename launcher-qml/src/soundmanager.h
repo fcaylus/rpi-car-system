@@ -102,6 +102,7 @@ class SoundManager: public QObject
         void timeChanged();
 
         void isPlayingChanged();
+        void endReached();
 
         void randomChanged();
         void repeatModeChanged();

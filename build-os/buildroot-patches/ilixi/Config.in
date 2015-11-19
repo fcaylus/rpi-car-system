@@ -1,7 +1,0 @@
-config BR2_PACKAGE_ILIXI
-	bool "ilixi"
-	depends on BR2_PACKAGE_DIRECTFB
-	select BR2_PACKAGE_LIBXML2
-	select BR2_PACKAGE_LIBSIGC
-	help
-	  http://www.ilixi.org/

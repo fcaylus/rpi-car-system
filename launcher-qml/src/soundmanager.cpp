@@ -43,6 +43,7 @@ SoundManager::SoundManager()
     // On end handler
     connect(_vlcMediaPlayer, &VlcMediaPlayer::end, this, [this](){
         emit isPlayingChanged();
+        emit endReached();
 
         if(_repeatMode == RepeatOne)
         {
@@ -417,10 +418,6 @@ void SoundManager::checkForNewMusicFiles()
     QFile indexFileNew(indexFileNewPath);
     if(!indexFileNew.open(QIODevice::ReadWrite | QIODevice::Text))
     {
-        Connections {
-            target: soundManager
-
-        }
         qCritical() << "Cannot open a temp index file at:" << indexFileNewPath;
         return;
     }
