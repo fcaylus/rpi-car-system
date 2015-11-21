@@ -13,6 +13,10 @@ Rectangle {
 
     color: Style.popupBackground
 
+    function centerView() {
+        queueListView.positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
+    }
+
     // This mouseArea disable backgound input
     MouseArea {
         anchors.fill: parent
@@ -116,6 +120,7 @@ Rectangle {
             }
 
             function fillData() {
+                model.clear()
                 var titlesList = soundManager.currentMediaQueueTitles
                 var coversList = soundManager.currentMediaQueueCovers
                 for (var i=0; i < titlesList.length; i++) {

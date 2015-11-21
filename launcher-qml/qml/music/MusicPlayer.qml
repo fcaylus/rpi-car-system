@@ -140,6 +140,7 @@ Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
                             musicQueuePopup.visible = true
+                            musicQueuePopup.centerView()
                         }
 
                     }

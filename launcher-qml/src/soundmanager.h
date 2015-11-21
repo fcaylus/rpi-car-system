@@ -172,6 +172,7 @@ class SoundManager: public QObject
         VlcMedia *_currentMedia = nullptr;
 
         MediaList _currentMediaList;
+        MediaList _currentMediaListRandomized;
         int _currentMediaIndex = 0;
 
         // Play parameters
@@ -203,6 +204,8 @@ class SoundManager: public QObject
 
         // Emits all signals for the qml part
         void emitNewMediaSignals();
+
+        void randomizeQueue();
 
         Q_DISABLE_COPY(SoundManager)
 };

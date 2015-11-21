@@ -15,6 +15,8 @@
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Audio.h>
 
+#include <algorithm>
+
 #include "pugixml.hpp"
 
 #include "dirutility.h"
@@ -76,6 +78,7 @@ void SoundManager::playFromFile(const QString &path, QString xmlSourceFile, cons
     if(_currentMedia != nullptr)
         delete _currentMedia;
 
+    _currentMediaListRandomized.clear();
     while(!_currentMediaList.isEmpty())
         delete _currentMediaList.takeLast();
     _currentMediaIndex = 0;
@@ -120,6 +123,9 @@ void SoundManager::playFromFile(const QString &path, QString xmlSourceFile, cons
         _currentMediaList.append(new MediaInfo(_currentMedia, path));
     }
 
+    if(_playRandom)
+        randomizeQueue();
+
     emitNewMediaSignals();
     emit currentMediaQueueChanged();
 
@@ -150,7 +156,7 @@ void SoundManager::playPreviousIndex()
         playFromIndex(_currentMediaIndex);
     else if(_repeatMode == RepeatAll)
         playFromIndex(_currentMediaIndex - 1 >= 0 ? _currentMediaIndex - 1: _currentMediaList.size() - 1);
-    else if(_currentMediaIndex -= 1 >= 0)
+    else if(_currentMediaIndex - 1 >= 0)
         playFromIndex(_currentMediaIndex - 1);
 }
 
@@ -162,7 +168,11 @@ void SoundManager::playFromIndex(const int& idx)
     if(_currentMedia != nullptr)
         delete _currentMedia;
 
-    _currentMedia = new VlcMedia(_currentMediaList[_currentMediaIndex]->filePath(), true, _vlcInstance);
+    if(_playRandom)
+        _currentMedia = new VlcMedia(_currentMediaListRandomized[_currentMediaIndex]->filePath(), true, _vlcInstance);
+    else
+        _currentMedia = new VlcMedia(_currentMediaList[_currentMediaIndex]->filePath(), true, _vlcInstance);
+
     emitNewMediaSignals();
     _vlcMediaPlayer->open(_currentMedia);
     _vlcMediaPlayer->play();
@@ -235,8 +245,19 @@ void SoundManager::setRandom(bool random)
     if(random == _playRandom)
         return;
 
+    if(random)
+        randomizeQueue();
+    else
+    {
+        // Update index
+        MediaInfo *currentInfo = _currentMediaListRandomized[_currentMediaIndex];
+        if(_currentMedia != nullptr)
+            _currentMediaIndex = _currentMediaList.indexOf(currentInfo);
+    }
+
     _playRandom = random;
     emit randomChanged();
+    emit currentMediaQueueChanged();
 }
 
 void SoundManager::setRepeatMode(RepeatMode mode)
@@ -263,28 +284,32 @@ void SoundManager::setPlayerVisibility(bool visible)
 QString SoundManager::mediaAlbum() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
-        return _currentMediaList[_currentMediaIndex]->album();
+        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->album()
+                           : _currentMediaList[_currentMediaIndex]->album();
     return MediaInfo::defaultAlbumName();
 }
 
 QString SoundManager::mediaArtist() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
-        return _currentMediaList[_currentMediaIndex]->artist();
+        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->artist()
+                           : _currentMediaList[_currentMediaIndex]->artist();
     return MediaInfo::defaultArtistName();
 }
 
 QString SoundManager::mediaTitle() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
-        return _currentMediaList[_currentMediaIndex]->title();
-    return "";
+        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->title()
+                           : _currentMediaList[_currentMediaIndex]->title();
+    return QString();
 }
 
 QUrl SoundManager::mediaCover() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
-        return _currentMediaList[_currentMediaIndex]->coverFileUrl();
+        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->coverFileUrl()
+                           : _currentMediaList[_currentMediaIndex]->coverFileUrl();
     return QUrl(MediaInfo::defaultCoverPath());
 }
 
@@ -357,6 +382,13 @@ bool SoundManager::isPlayerVisible()
 QStringList SoundManager::currentMediaQueueTitles()
 {
     QStringList list;
+    if(_playRandom)
+    {
+        for(MediaInfo *info: _currentMediaListRandomized)
+            list << info->title();
+
+        return list;
+    }
     for(MediaInfo *info: _currentMediaList)
         list << info->title();
 
@@ -366,8 +398,16 @@ QStringList SoundManager::currentMediaQueueTitles()
 QStringList SoundManager::currentMediaQueueCovers()
 {
     QStringList list;
+    if(_playRandom)
+    {
+        for(MediaInfo *info: _currentMediaListRandomized)
+            list << info->coverFileUrl().toString();
+
+        return list;
+    }
     for(MediaInfo *info: _currentMediaList)
         list << info->coverFileUrl().toString();
+
     return list;
 }
 
@@ -383,6 +423,20 @@ void SoundManager::emitNewMediaSignals()
     emit mediaArtistChanged();
     emit mediaTitleChanged();
     emit mediaCoverChanged();
+}
+
+void SoundManager::randomizeQueue()
+{
+    MediaInfo *currentInfo = _currentMediaList[_currentMediaIndex];
+
+    _currentMediaListRandomized = _currentMediaList;
+    std::random_device rng;
+    std::mt19937 urng(rng());
+    std::shuffle(_currentMediaListRandomized.begin(), _currentMediaListRandomized.end(), urng);
+
+    // Update current index
+    if(_currentMedia != nullptr)
+        _currentMediaIndex = _currentMediaListRandomized.indexOf(currentInfo);
 }
 
 void SoundManager::checkForNewMusicFiles()
