@@ -1,6 +1,5 @@
-/download
-/sources
-/systemroot
-/tempinstall
-*.tar*
+*.pro.user*
+Makefile
+build/
 *~
+
