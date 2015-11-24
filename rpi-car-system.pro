@@ -9,3 +9,4 @@ SUBDIRS += \
     launcher \
     musicindex-generator #\
     #updatemanager
+

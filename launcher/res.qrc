@@ -20,9 +20,16 @@
         <file>qml/music/ListViewArtist.qml</file>
         <file>qml/music/ListViewBase.qml</file>
         <file>qml/music/MusicQueuePopup.qml</file>
+        <file>qml/keyboard/InputPanel.qml</file>
+        <file>qml/keyboard/KeyButton.qml</file>
+        <file>qml/keyboard/KeyModel.qml</file>
+        <file>qml/DarkTextInput.qml</file>
+        <file>qml/DarkCheckBox.qml</file>
+        <file>qml/PasswordPrompt.qml</file>
     </qresource>
     <qresource prefix="/fonts">
-        <file>fonts/OpenSans-Regular.ttf</file>
+        <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
+        <file alias="FontAwesome">fonts/FontAwesome.otf</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="default_artwork">imgs/default_artwork.png</file>

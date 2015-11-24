@@ -7,7 +7,6 @@ TEMPLATE = app
 QT += core gui qml quick
 CONFIG += qtquickcompiler
 
-# Default defines
 APPLICATION_TARGET = launcher
 APPLICATION_NAME = Launcher
 
@@ -25,6 +24,9 @@ include(../thirdparty/pugixml.pri)
 # LibVLC
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lVLCQtCore
+
+# MockupVirtualKeyboard
+INCLUDEPATH += thirdparty/MockupVirtualKeyboard
 
 #
 # Project sources

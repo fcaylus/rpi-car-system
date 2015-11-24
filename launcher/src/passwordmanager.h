@@ -4,51 +4,56 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QCryptographicHash>
+#include <QObject>
 
 #include "common.h"
 
-namespace PasswordManager {
+class PasswordManager: public QObject
+{
+        Q_OBJECT
+    public:
+        PasswordManager() {}
 
-    static inline QString passwordFileName()
-    {
-        return QStringLiteral("rootpass");
-    }
+        static QString passwordFileName()
+        {
+            return QStringLiteral("rootpass");
+        }
 
-    static inline QString passwordFile()
-    {
-        return Common::configDir() + QStringLiteral("/") + passwordFileName();
-    }
+        static QString passwordFile()
+        {
+            return Common::configDir() + QStringLiteral("/") + passwordFileName();
+        }
 
-    static inline bool isPassFileExists()
-    {
-        return QFileInfo::exists(passwordFile());
-    }
+        static bool isPassFileExists()
+        {
+            return QFileInfo::exists(passwordFile());
+        }
 
-    static inline bool createPasswordFile(const QString& password)
-    {
-        if(isPassFileExists())
-            return false;
+        Q_INVOKABLE bool createPasswordFile(const QString& password)
+        {
+            if(isPassFileExists())
+                return false;
 
-        QFile file(passwordFile());
-        if(!file.open(QFile::ReadWrite))
-            return false;
+            QFile file(passwordFile());
+            if(!file.open(QFile::ReadWrite))
+                return false;
 
-        file.write(QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha3_512));
-        file.close();
-        return true;
-    }
+            file.write(QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha3_512));
+            file.close();
+            return true;
+        }
 
-    static inline bool checkPassword(const QString& password)
-    {
-        if(!isPassFileExists())
-            return false;
+        Q_INVOKABLE bool checkPassword(const QString& password)
+        {
+            if(!isPassFileExists())
+                return false;
 
-        QFile file(passwordFile());
-        if(!file.open(QFile::ReadOnly))
-            return false;
+            QFile file(passwordFile());
+            if(!file.open(QFile::ReadOnly))
+                return false;
 
-        return file.read(1024) == QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha3_512);
-    }
-}
+            return file.read(1024) == QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha3_512);
+        }
+};
 
 #endif // PASSWORDMANAGER_H

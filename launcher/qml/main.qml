@@ -7,6 +7,7 @@ import QtQuick.Extras 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 import "."
+import "./keyboard"
 
 Window {
     id: rootWindow
@@ -17,7 +18,12 @@ Window {
 
     FontLoader {
         id: mainFont
-        source: "qrc:/fonts/fonts/OpenSans-Regular.ttf"
+        source: "qrc:/fonts/OpenSans-Regular"
+    }
+
+    FontLoader {
+        id: awesomeFont
+        source: "qrc:/fonts/FontAwesome"
     }
 
     property Component activityMusic: ActivityMusic {}
@@ -56,7 +62,7 @@ Window {
             anchors.fill: parent
             anchors.left: parent.left
 
-            visible: true//isPassFileCreated
+            visible: isPassFileCreated
 
             initialItem: GridView {
                 width: rootWindow.width - Style.mainMenu.marginH
@@ -139,19 +145,40 @@ Window {
         }
 
         // This rectangle is only shown when password file is not created
-        Rectangle {
-            visible: false//!isPassFileCreated
-            anchors.fill: parent
-            color: "transparent"
+        PasswordPrompt {
+            id: askPassword
+            visible: !isPassFileCreated
+            titleText: qsTr("C'est la première fois que vous allumez votre autoradio !\nVeuillez entrez un nouveau mot de passe :")
+            onPromptFinish: {
+                if(text.length >= 1) {
+                    visible = false
+                    askPasswordConfirm.previousPass = text
+                    askPasswordConfirm.visible = true
+                }
+            }
+        }
 
-            StyledText {
-                y: 30
-                width: parent.width
-                text: qsTr("C'est la première fois que vous allumez votre autoradio !\nVeuillez entrez un nouveau mot de passe :")
-                font.pixelSize: 27
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+        // Confirmation prompt
+        PasswordPrompt {
+            id: askPasswordConfirm
+            visible: false
+            titleText: qsTr("Veuillez le confirmer :")
+            showBackButton: true
+
+            property string previousPass
+
+            onPromptFinish: {
+                if(text === previousPass) {
+                    if(passwordManager.createPasswordFile(text)) {
+                        visible = false
+                        stackView.visible = true
+                    }
+                }
+            }
+
+            onBackClicked: {
+                visible = false
+                askPassword.visible = true
             }
         }
     }

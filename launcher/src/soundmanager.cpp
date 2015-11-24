@@ -352,10 +352,7 @@ SoundManager::RepeatMode SoundManager::repeatMode() const
 
 bool SoundManager::mediaListReady()
 {
-    //_mediaListReadyMutex.lock();
-    const bool ready = _mediaListReady;
-    //_mediaListReadyMutex.unlock();
-    return ready;
+    return _mediaListReady;
 }
 
 QUrl SoundManager::albumMapFilePath() const
