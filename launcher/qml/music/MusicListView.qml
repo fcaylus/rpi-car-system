@@ -53,7 +53,7 @@ Item {
         visible: true
         width: parent.width
         height: parent.height
-        text: qsTr("Recherche de fichiers musicaux en cours ...");
+        text: qsTr("Search for music files ...");
         font.pixelSize: 25
         font.bold: true
         horizontalAlignment: Text.AlignHCenter
@@ -79,7 +79,7 @@ Item {
                 height: 80
                 alignCenter: true
                 bold: true
-                text: qsTr("Artistes")
+                text: qsTr("Artists")
 
                 onClicked: {
                     // Small trick to avoid addition of the first entry
@@ -88,7 +88,7 @@ Item {
                         loader.appendLastEntry()
                     }
 
-                    loader.headerText = qsTr("Liste des artistes ...");
+                    loader.headerText = qsTr("Artists list ...");
                     loader.sourceFile = soundManager.artistMapFilePath
                     loader.sourceQuery = "/artists/artist"
                     loader.source = "qrc:/qml/music/ListViewArtist.qml"
@@ -105,7 +105,7 @@ Item {
 
                 onClicked: {
                     loader.appendLastEntry()
-                    loader.headerText = qsTr("Liste des albums ...")
+                    loader.headerText = qsTr("Albums list ...")
                     loader.sourceFile = soundManager.albumMapFilePath
                     loader.sourceQuery = "/albums/album"
                     loader.source = "qrc:/qml/music/ListViewAlbum.qml"
@@ -118,11 +118,11 @@ Item {
                 height: 80
                 alignCenter: true
                 bold: true
-                text: qsTr("Titres")
+                text: qsTr("Tracks")
 
                 onClicked: {
                     loader.appendLastEntry()
-                    loader.headerText = qsTr("Liste des titres ...")
+                    loader.headerText = qsTr("Tracks list ...")
                     loader.sourceFile = soundManager.trackListFilePath
                     loader.sourceQuery = "/tracks/track"
                     loader.source = "qrc:/qml/music/ListViewTrack.qml"

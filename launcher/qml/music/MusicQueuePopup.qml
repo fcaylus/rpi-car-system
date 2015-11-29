@@ -72,7 +72,7 @@ Rectangle {
             anchors.topMargin: 15
             anchors.bottomMargin: 15
 
-            property string headerText: qsTr("Liste de lecture ...")
+            property string headerText: qsTr("Music queue ...")
 
             model: ListModel {
                 id: model

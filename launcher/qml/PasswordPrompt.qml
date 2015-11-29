@@ -72,7 +72,7 @@ Rectangle {
         }
 
         DarkCheckBox {
-            text: qsTr("Afficher le mot de passe")
+            text: qsTr("Show password")
             onClicked: passwordInput.echoMode = checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit
         }
     }

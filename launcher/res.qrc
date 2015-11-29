@@ -26,6 +26,7 @@
         <file>qml/DarkTextInput.qml</file>
         <file>qml/DarkCheckBox.qml</file>
         <file>qml/PasswordPrompt.qml</file>
+        <file>qml/ActivityTransfer.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
@@ -66,5 +67,12 @@
         <file alias="map">imgs/icons/map.png</file>
         <file alias="car">imgs/icons/car.png</file>
         <file alias="close">imgs/icons/close.png</file>
+        <file alias="usb">imgs/icons/usb.png</file>
+        <file alias="build">imgs/icons/build.png</file>
+        <file alias="equalizer">imgs/icons/equalizer.png</file>
+        <file alias="info">imgs/icons/info.png</file>
+        <file alias="world">imgs/icons/world.png</file>
+        <file alias="folder">imgs/icons/folder.png</file>
+        <file alias="update">imgs/icons/update.png</file>
     </qresource>
 </RCC>

@@ -88,6 +88,12 @@ Activity {
 
         onClicked: soundManager.setRandom(checked)
         currentState: soundManager.random ? 0 : 1
+
+        Component.onCompleted: {
+            if(soundManager.random) {
+                checked = true
+            }
+        }
     }
 
     DarkButton {
@@ -112,6 +118,11 @@ Activity {
                 repeatButton.currentState = soundManager.repeatMode
                 repeatButton.updateCheckedState()
             }
+        }
+
+        Component.onCompleted: {
+            repeatButton.currentState = soundManager.repeatMode
+            repeatButton.updateCheckedState()
         }
     }
 

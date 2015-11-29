@@ -48,7 +48,7 @@ ListViewBase {
             onClicked: {
                 loader.appendLastEntry()
                 // show the selected artist
-                loader.headerText = qsTr("Artiste: ") + name
+                loader.headerText = qsTr("Artist: ") + name
                 loader.sourceQuery = loader.sourceQuery + "[@name='" + name + "']/album"
                 loader.source = "qrc:/qml/music/ListViewAlbum.qml"
             }

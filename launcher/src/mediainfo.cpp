@@ -49,12 +49,12 @@ MediaInfo::MediaInfo(VlcMedia *media, QString path)
 // Statics
 QString MediaInfo::defaultAlbumName()
 {
-    return tr("Album inconnu");
+    return tr("Unknown Album");
 }
 
 QString MediaInfo::defaultArtistName()
 {
-    return tr("Artiste Inconnu");
+    return tr("Unknown Artist");
 }
 
 QString MediaInfo::defaultCoverPath()

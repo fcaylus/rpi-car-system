@@ -11,20 +11,19 @@ cd build
 # Use Build root to compile the system
 #
 
-wget -nc http://buildroot.uclibc.org/downloads/buildroot-2015.08.1.tar.gz
+wget -nc http://buildroot.uclibc.org/downloads/buildroot-2015.11-rc3.tar.gz
 
-if [ ! -d buildroot-2015.08.1 ]; then
-    tar xvzf buildroot-2015.08.1.tar.gz
+if [ ! -d buildroot-2015.11-rc3 ]; then
+    tar xvzf buildroot-2015.11-rc3.tar.gz
 fi
 
 if [ ! -f toolchain.alreadydo ]; then
 
-	cd buildroot-2015.08.1
+	cd buildroot-2015.11-rc3
     
     # copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
 	cp "$SCRIPT_DIR/buildroot-patches/Config.in" package/Config.in
-	cp -r "$SCRIPT_DIR/buildroot-patches/ilixi" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 
     make

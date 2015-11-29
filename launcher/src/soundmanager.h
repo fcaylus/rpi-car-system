@@ -10,6 +10,8 @@
 #include <QUrl>
 #include <QStack>
 
+class QSettings;
+
 struct ListViewHistoryEntry {
     QUrl source;
     QString sourceFile;
@@ -50,7 +52,7 @@ class SoundManager: public QObject
         Q_PROPERTY(QStringList currentMediaQueueCovers READ currentMediaQueueCovers NOTIFY currentMediaQueueChanged)
 
     public:
-        SoundManager(); // ctor
+        SoundManager(QSettings *settings); // ctor
 
         enum RepeatMode {
             NoRepeat = 0,
@@ -87,6 +89,8 @@ class SoundManager: public QObject
         // History related
         void addHistoryEntry(QUrl source, QString sourceFile, QString sourceQuery, QString headerText);
         void removeLastHistoryEntry();
+
+        void saveSettings();
 
     signals:
 
@@ -174,6 +178,9 @@ class SoundManager: public QObject
 
         // List view history
         QStack<ListViewHistoryEntry> _listViewHistory;
+
+        QSettings *_settings;
+
 
         // Emits all signals for the qml part
         void emitNewMediaSignals();

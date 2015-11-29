@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QProcess>
+#include <QSettings>
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Audio.h>
@@ -17,9 +18,15 @@
 #include "dirutility.h"
 #include "common.h"
 
+static const QString settingsGroupStr = "music";
+static const QString settingsRandomStr = "random";
+static const QString settingsRepeatModeStr = "repeat";
+
 // Public constructor
-SoundManager::SoundManager()
+SoundManager::SoundManager(QSettings *settings)
 {
+    _settings = settings;
+
     // Load the engine
     _vlcInstance = new VlcInstance(VlcCommon::args(), this);
     _vlcMediaPlayer = new VlcMediaPlayer(_vlcInstance);
@@ -71,6 +78,15 @@ SoundManager::SoundManager()
         }
     });
     musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
+
+    //
+    // Load settings
+    //
+
+    _settings->beginGroup(settingsGroupStr);
+    setRandom(_settings->value(settingsRandomStr, false).toBool());
+    setRepeatMode(static_cast<RepeatMode>(_settings->value(settingsRepeatModeStr, 0).toInt()));
+    _settings->endGroup();
 }
 
 //
@@ -251,7 +267,7 @@ void SoundManager::setRandom(bool random)
 
     if(random)
         randomizeQueue();
-    else
+    else if(!_currentMediaList.isEmpty())
     {
         // Update index
         MediaInfo *currentInfo = _currentMediaListRandomized[_currentMediaIndex];
@@ -428,6 +444,9 @@ void SoundManager::emitNewMediaSignals()
 
 void SoundManager::randomizeQueue()
 {
+    if(_currentMediaList.isEmpty())
+        return;
+
     MediaInfo *currentInfo = _currentMediaList[_currentMediaIndex];
 
     _currentMediaListRandomized = _currentMediaList;
@@ -480,6 +499,14 @@ QString SoundManager::lastHistoryEntrySourceQuery()
 QString SoundManager::lastHistoryEntryHeaderText()
 {
     return _listViewHistory.top().headerText;
+}
+
+void SoundManager::saveSettings()
+{
+    _settings->beginGroup(settingsGroupStr);
+    _settings->setValue(settingsRandomStr, random());
+    _settings->setValue(settingsRepeatModeStr, static_cast<int>(repeatMode()));
+    _settings->endGroup();
 }
 
 // Static

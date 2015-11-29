@@ -21,12 +21,9 @@ include(../common.pri)
 # PugiXml
 include(../thirdparty/pugixml.pri)
 
-# LibVLC
+# VLCQt
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lVLCQtCore
-
-# MockupVirtualKeyboard
-INCLUDEPATH += thirdparty/MockupVirtualKeyboard
 
 #
 # Project sources
@@ -50,4 +47,15 @@ RESOURCES += \
 OTHER_FILES += \
     qml/qmldir \
     res.qrc
+
+TRANSLATIONS += \
+    i18n/$${APPLICATION_TARGET}_fr.ts
+
+# For translations
+lupdate_only{
+SOURCES += \
+    qml/*.qml \
+    qml/music/*.qml \
+    qml/keyboard/*.qml
+}
 

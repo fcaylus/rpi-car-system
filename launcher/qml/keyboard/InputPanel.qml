@@ -162,7 +162,7 @@ Item {
                 KeyButton {
                     width: 1.25*pimpl.buttonWidth
                     height: pimpl.rowHeight
-                    text: qsTr("Entrer")
+                    text: qsTr("Enter")
                     onClicked: root.enterPressed()
                 }
             }
