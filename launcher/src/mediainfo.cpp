@@ -26,10 +26,6 @@
 #include <QFileInfo>
 #include <QXmlStreamWriter>
 
-#ifdef LAUNCHER_APP
-#include <QQmlApplicationEngine>
-#endif
-
 MediaInfo::MediaInfo()
 {
 
@@ -58,10 +54,6 @@ MediaInfo::MediaInfo(VlcMedia *media, QString path)
         _album = defaultAlbumName();
     if(_coverFile.isEmpty())
         _coverFile = defaultCoverPath();
-
-#ifdef LAUNCHER_APP
-    QQmlApplicationEngine::setObjectOwnership(this, QQmlApplicationEngine::CppOwnership);
-#endif
 }
 
 // Statics
@@ -208,5 +200,17 @@ QString MediaInfo::musicIndexFilePath()
     return Common::configDir() + QStringLiteral("/music-index.txt");
 }
 
-
+QStringList MediaInfo::musicFilesFormats()
+{
+    // From: https://en.wikipedia.org/wiki/Audio_file_format
+    return QStringList({QStringLiteral("*.mp3"), QStringLiteral("*.m4a"), QStringLiteral("*.m4p"), QStringLiteral("*.ogg"),
+                        QStringLiteral("*.wav"), QStringLiteral("*.wma"), QStringLiteral("*.dct"), QStringLiteral("*.dss"),
+                        QStringLiteral("*.act"), QStringLiteral("*.ivs"), QStringLiteral("*.gsm"), QStringLiteral("*.dvf"),
+                        QStringLiteral("*.amr"), QStringLiteral("*.mmf"), QStringLiteral("*.3gp"), QStringLiteral("*.mpc"),
+                        QStringLiteral("*.msv"), QStringLiteral("*.aac"), QStringLiteral("*.oga"), QStringLiteral("*.raw"),
+                        QStringLiteral("*.sln"), QStringLiteral("*.tta"), QStringLiteral("*.vox"), QStringLiteral("*.ape"),
+                        QStringLiteral("*.awb"), QStringLiteral("*.aiff"), QStringLiteral("*.flac"), QStringLiteral("*.opus"),
+                        QStringLiteral("*.webm"), QStringLiteral("*.au"), QStringLiteral("*.ra"), QStringLiteral("*.rm"),
+                        QStringLiteral("*.wv")});
+}
 

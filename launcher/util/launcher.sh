@@ -10,4 +10,13 @@ dirname=$PWD/$dirname
 fi
 LD_LIBRARY_PATH=$dirname
 export LD_LIBRARY_PATH
-$dirname/$appname "$@"
+
+# Check reboot code
+REBOOT_CODE=8956
+result=REBOOT_CODE
+while [ $result -eq $REBOOT_CODE ]; do
+	$dirname/$appname "$@"
+	result=$?
+done
+
+

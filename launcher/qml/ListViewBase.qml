@@ -22,6 +22,7 @@ import ".."
 import "."
 
 ListView {
+    id: view
     spacing: 10
     width: 500
 
@@ -46,7 +47,7 @@ ListView {
 
             Rectangle {
                 height: 2
-                width: 500
+                width: view.width
                 color: Style.separatorColor
             }
         }

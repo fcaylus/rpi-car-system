@@ -49,6 +49,8 @@ Rectangle {
     property int availableToolBarWidth: toolbar.width - toolbar.height
     property int toolbarHeight: toolbar.height
 
+    property bool subActivity: false
+
     Item {
         id: largestControlItem
         x: 0
@@ -75,5 +77,6 @@ Rectangle {
 
     ActivityToolbar {
         id: toolbar
+        subActivity: parent.subActivity
     }
 }

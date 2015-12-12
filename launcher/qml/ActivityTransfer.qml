@@ -18,48 +18,221 @@
 
 import QtQuick 2.3
 import QtQuick.Controls 1.2
+import QtGraphicalEffects 1.0
 import "."
 
 Activity {
     id: activityTransfer
+
+    //
+    // Add toolbars buttons
+
+    DarkButton {
+        id: refreshButton
+        inToolbar: true
+        anchors.bottom: parent.bottom
+        height: Style.toolbar.height
+
+        text: qsTr("Refresh")
+        bold: true
+
+        x: availableToolBarWidth / 2 - width / 2 + toolbarHeight
+        onClicked: {
+            devicesManager.refreshDevicesList()
+        }
+    }
+
+    DarkButton {
+        id: deleteButton
+        inToolbar: true
+        anchors.bottom: parent.bottom
+        height: Style.toolbar.height
+
+        iconSource: "qrc:/images/delete"
+        iconScale: 0.6
+
+        x: Style.windowWidth - toolbarHeight * iconScale - 20
+        onClicked: {
+            confirmDelete.visible = true
+        }
+    }
 
     control: Rectangle {
         width: controlBounds.width
         height: controlBounds.height
         color: "transparent"
 
-        ListView {
+        property string headerText: qsTr("USB sticks list :")
+
+        StyledText {
+            id: noDevices
+
+            anchors.centerIn: parent
+            width: parent.width
+            font.pixelSize: 33
+            font.bold: true
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: qsTr("Please insert a USB stick !");
+
+            visible: false
+        }
+
+        ListViewBase {
+            id: listView
+
             x: 30
             y: 15
             width: parent.width - 60
             height: parent.height - 30
             spacing: 10
 
-            clip: true
+            //clip: true
 
-            header: Item {
-                id: header
-                width: parent.width
-                height: headerRow.implicitHeight + 10
-                //clip: true
+            model: ListModel {
+                id: model
+            }
 
-                Column {
-                    id: headerRow
-                    spacing: 5
+            delegate: Item {
+                width: row.implicitWidth
+                height: row.implicitHeight
+
+                Row {
+                    id: row
+                    spacing: 20
+                    Image {
+                        asynchronous: true
+                        width: 65
+                        height: width
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        source: "qrc:/images/usb"
+                    }
 
                     StyledText {
-                        text: qsTr("USB sticks list :")
-                        font.pixelSize: 22
+                        text: title
+                        font.pixelSize: 24
                         font.bold: true
-                        font.italic: true
-                    }
-
-                    Rectangle {
-                        height: 2
-                        width: header.width
-                        color: Style.separatorColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.verticalCenter: parent.verticalCenter
                     }
                 }
+
+                MouseArea {
+                    anchors.fill: row
+                    onClicked: {
+                        confirmTransfer.visible = true
+                        confirmTransfer.userData = path
+                    }
+                }
+            }
+
+            function fillData() {
+                model.clear()
+                var pathsList = devicesManager.availableDevicesPath()
+                var namesList = devicesManager.availableDevicesName()
+
+                if (pathsList.length === 0) {
+                    noDevices.visible = true
+                } else {
+                    noDevices.visible = false
+                }
+
+                for (var i=0; i < pathsList.length; i++) {
+                    model.append({"title": namesList[i], "path": pathsList[i]})
+                }
+            }
+
+            Connections {
+                target: devicesManager
+                onDevicesListRefreshed: listView.fillData()
+            }
+
+            Component.onCompleted: fillData()
+        }
+
+        ConfirmationPopup {
+            id: confirmTransfer
+            title: qsTr("Are you sure to transfer all music files from this device ?")
+            visible: false
+
+            onExitSuccess: {
+                devicesManager.copyDeviceFiles(userData)
+            }
+        }
+
+        WaitPopup {
+            id: waitTransfer
+            title: qsTr("Copy all files from device ...");
+            fontSize: 35
+            visible: false
+        }
+
+        Connections {
+            target: devicesManager
+            onNewTaskStarted: {
+                if(taskName === "copy") {
+                    waitTransfer.setupProgressBar(taskLength);
+                    waitTransfer.visible = true
+                    confirmTransfer.visible = false
+                }
+            }
+
+            onTaskUpdate: {
+                if(taskName === "copy") {
+                    waitTransfer.updateProgressBar(value);
+                }
+            }
+
+            onTaskFinished: {
+                if(taskName === "copy") {
+                    waitTransfer.visible = false
+                }
+            }
+        }
+    }
+
+    ConfirmationPopup {
+        id: confirmDelete
+        title: qsTr("Are you sure to delete all media stored in the radio ?")
+        visible: false
+
+        highlightNoButton: true
+        highlightYesButton: false
+
+        onExitSuccess: {
+            devicesManager.deleteLocalFiles();
+        }
+    }
+
+    WaitPopup {
+        id: waitDelete
+        title: qsTr("Deleting local media files ...");
+        fontSize: 35
+        visible: false
+    }
+
+    Connections {
+        target: devicesManager
+        onNewTaskStarted: {
+            if(taskName === "delete") {
+                waitDelete.setupProgressBar(taskLength);
+                waitDelete.visible = true
+                confirmDelete.visible = false
+            }
+        }
+
+        onTaskUpdate: {
+            if(taskName === "delete") {
+                waitDelete.updateProgressBar(value);
+            }
+        }
+
+        onTaskFinished: {
+            if(taskName === "delete") {
+                waitDelete.visible = false
             }
         }
     }

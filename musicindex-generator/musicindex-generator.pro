@@ -37,7 +37,7 @@ include(../common.pri)
 # Thirdparty stuff
 #
 
-# LibVLC
+# VlcQt
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lVLCQtCore
 

@@ -18,7 +18,7 @@
         <file>qml/music/ListViewTrack.qml</file>
         <file>qml/music/ListViewAlbum.qml</file>
         <file>qml/music/ListViewArtist.qml</file>
-        <file>qml/music/ListViewBase.qml</file>
+        <file>qml/ListViewBase.qml</file>
         <file>qml/music/MusicQueuePopup.qml</file>
         <file>qml/keyboard/InputPanel.qml</file>
         <file>qml/keyboard/KeyButton.qml</file>
@@ -27,6 +27,14 @@
         <file>qml/DarkCheckBox.qml</file>
         <file>qml/PasswordPrompt.qml</file>
         <file>qml/ActivityTransfer.qml</file>
+        <file>qml/settings/SettingsLanguage.qml</file>
+        <file>qml/settings/SettingsAbout.qml</file>
+        <file>LICENSE.html</file>
+        <file>ThirdpartyLicenses.xml</file>
+        <file>qml/ConfirmationPopup.qml</file>
+        <file>qml/PopupButton.qml</file>
+        <file>qml/WaitPopup.qml</file>
+        <file>qml/settings/SettingsUpdate.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
@@ -74,5 +82,10 @@
         <file alias="world">imgs/icons/world.png</file>
         <file alias="folder">imgs/icons/folder.png</file>
         <file alias="update">imgs/icons/update.png</file>
+        <file alias="delete">imgs/icons/delete.png</file>
+    </qresource>
+    <qresource prefix="/flags">
+        <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>
+        <file alias="uk">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_United Kingdom.png</file>
     </qresource>
 </RCC>

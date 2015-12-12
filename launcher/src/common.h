@@ -21,8 +21,30 @@
 
 #include <QString>
 #include <QCoreApplication>
+#include <QProcess>
+#include <QDebug>
 
 namespace Common {
+
+    static inline QString startProcessAndReadOutput(const QString& name, QStringList args = QStringList())
+    {
+        QProcess process;
+        process.setProcessChannelMode(QProcess::MergedChannels);
+        process.start(name, args);
+        if(!process.waitForStarted())
+            return QString();
+
+        QByteArray data;
+        while(process.waitForReadyRead())
+            data.append(process.readAll());
+
+        if(data.endsWith("\n"))
+            data.remove(data.length() - 1, 1);
+
+        return data;
+    }
+
+
     static inline QString configDir()
     {
 #ifdef READY_FOR_CARSYSTEM
@@ -37,8 +59,8 @@ namespace Common {
 #ifdef READY_FOR_CARSYSTEM
         return QStringLiteral("/home/pi/music");
 #else
-        //return QStringLiteral("/media/fabien/Disque Multimedia/Music/Ma musique");
-        return QStringLiteral("/home/fabien/Musique");
+        const QString path = startProcessAndReadOutput("xdg-user-dir", QStringList({"MUSIC"}));
+        return path.isEmpty() ? QString("/home/" + qgetenv("USER") + "/Music") : path;
 #endif
     }
 }

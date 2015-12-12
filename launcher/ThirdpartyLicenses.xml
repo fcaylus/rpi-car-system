@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Contains all thirdparties licenses. This file is used by the launcher in the 'about' section. -->
+<deps>
+    <dep>
+        <name>Qt 5</name>
+        <license><![CDATA[
+            Qt is available under three different licensing options designed to accommodate the needs of our various users.<br/><br/>
+
+            Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of the GNU LGPL version 3 or GNU LGPL version 2.1.<br/><br/>
+
+            Qt licensed under the GNU LGPL version 3 is appropriate for the development of Qt applications provided you can comply with the terms and conditions of the GNU LGPL version 3.<br/><br/>
+
+            Qt licensed under the GNU LGPL version 2.1 is appropriate for the development of Qt applications provided you can comply with the terms and conditions of the GNU LGPL version 2.1.<br/><br/>
+
+            Please see qt.io/licensing for an overview of Qt licensing.<br/>
+            Copyright (C) 2015 The Qt Company Ltd and other contributors.<br/>
+            Qt and the Qt logo are trademarks of The Qt Company Ltd.<br/>
+            Qt is The Qt Company Ltd product developed as an open source project. See qt.io for more information.
+        ]]></license>
+    </dep>
+
+    <dep>
+        <name>PugiXml</name>
+        <license><![CDATA[
+            This library is distributed under the MIT License:<br/><br/>
+
+            Copyright (c) 2006-2015 Arseny Kapoulkine<br/><br/>
+
+            Permission is hereby granted, free of charge, to any person<br/>
+            obtaining a copy of this software and associated documentation<br/>
+            files (the "Software"), to deal in the Software without<br/>
+            restriction, including without limitation the rights to use,<br/>
+            copy, modify, merge, publish, distribute, sublicense, and/or sell<br/>
+            copies of the Software, and to permit persons to whom the<br/>
+            Software is furnished to do so, subject to the following<br/>
+            conditions:<br/><br/>
+
+            The above copyright notice and this permission notice shall be<br/>
+            included in all copies or substantial portions of the Software.<br/><br/>
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,<br/>
+            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES<br/>
+            OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND<br/>
+            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT<br/>
+            HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,<br/>
+            WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING<br/>
+            FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR<br/>
+            OTHER DEALINGS IN THE SOFTWARE.
+        ]]></license>
+    </dep>
+
+    <dep>
+        <name>Vlc-Qt</name>
+        <license><![CDATA[
+            Copyright (C) 2010-2015 Tadej Novak<br/><br/>
+
+            VLC-Qt is free (libre) software. This means that the library<br/>
+            source code is available to public, anyone is welcome to research<br/>
+            how the application works, participate in its development, freely<br/>
+            distribute the application and spread the word!<br/><br/>
+
+            This project may be used under the terms of the<br/>
+            GNU Lesser General Public License version 3.0 as published by the<br/>
+            Free Software Foundation.
+        ]]></license>
+    </dep>
+
+    <!-- Not yet used, but maybe in a future release -->
+    <!--
+    <dep>
+        <name>libusb</name>
+        <license><![CDATA[
+            Copyright (C) 2007-2009 Daniel Drake dsd@gentoo.org<br/>
+            Copyright (c) 2001 Johannes Erdfelt johannes@erdfelt.com<br/>
+            Copyright (C) 2008-2012 Nathan Hjelm hjelmn@users.sourceforge.net<br/>
+            Copyright (C) 2009-2012 Pete Batard pete@akeo.ie<br/>
+            Copyright (C) 2010 Michael Plante michael.plante@gmail.com<br/>
+            Copyright (C) 2010-2012 Peter Stuge peter@stuge.se<br/>
+            Copyright (C) 2011-2012 Hans de Goede hdegoede@redhat.com<br/>
+            Copyright (C) 2012 Martin Pieuchot mpi@openbsd.org<br/><br/>
+
+            Licensed under the LGPL-2.1
+        ]]></license>
+    </dep>
+    -->
+
+    <dep>
+        <name>MiniFlatFlags</name>
+        <license><![CDATA[
+            The icons are free and available under the CC0 license.<br/>
+            For more information, please see http://creativecommons.org/publicdomain/zero/1.0/
+        ]]></license>
+    </dep>
+
+    <dep>
+        <name>Material Icons</name>
+        <license><![CDATA[
+            Licensed under CC-BY 4.0 license.<br/>
+            For more information, please see https://www.google.com/design/icons/
+        ]]></license>
+    </dep>
+
+    <dep>
+        <name>OpenSans font</name>
+        <license><![CDATA[
+            Copyright (C) 2010-2011, Google Corporation<br/><br/>
+
+            Licensed under the Apache License, Version 2.0 (the "License");<br/>
+            you may not use this file except in compliance with the License.<br/>
+            You may obtain a copy of the License at<br/><br/>
+
+            http://www.apache.org/licenses/LICENSE-2.0<br/><br/>
+
+            Unless required by applicable law or agreed to in writing, software<br/>
+            distributed under the License is distributed on an "AS IS" BASIS,<br/>
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br/>
+            See the License for the specific language governing permissions and<br/>
+            limitations under the License.
+        ]]></license>
+    </dep>
+
+    <dep>
+        <name>Font Awesome</name>
+        <license><![CDATA[
+        Font Awesome by Dave Gandy - http://fontawesome.io<br/>
+        The Font Awesome font is licensed under the SIL OFL 1.1: http://scripts.sil.org/OFL
+        ]]></license>
+    </dep>
+</deps>

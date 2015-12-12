@@ -69,7 +69,7 @@ Rectangle {
         FlatButton {
             id: closeIcon
             iconSource: "qrc:/images/close"
-            width: 80
+            width: 75
             height: width
             anchors.right: parent.right
             anchors.top: parent.top

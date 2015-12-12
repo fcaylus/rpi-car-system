@@ -33,17 +33,6 @@ class MediaInfo: public QObject
 {
         Q_OBJECT
 
-        Q_PROPERTY(QString title READ title WRITE setTitle)
-        Q_PROPERTY(QString artist READ artist WRITE setArtist)
-        Q_PROPERTY(QString album READ album WRITE setAlbum)
-        Q_PROPERTY(QString coverFile READ coverFile WRITE setCoverFile)
-        Q_PROPERTY(int trackNumber READ trackNumber WRITE setTrackNumber)
-
-        Q_PROPERTY(QString filePath READ filePath WRITE setFilePath)
-        Q_PROPERTY(long fileSize READ fileSize WRITE setFileSize)
-
-        Q_PROPERTY(QUrl coverFileUrl READ coverFileUrl)
-
     public:
         MediaInfo();
         MediaInfo(VlcMedia *media, QString path = QString());
@@ -76,6 +65,8 @@ class MediaInfo: public QObject
         static QString albumMapFilePath();
         static QString trackListFilePath();
         static QString musicIndexFilePath();
+
+        static QStringList musicFilesFormats();
 
     public slots:
         // Setters

@@ -22,6 +22,9 @@ import QtQuick.Controls.Styles 1.2
 import "."
 
 Rectangle {
+
+    property bool subActivity: false
+
     anchors.bottom: parent.bottom
     anchors.left: parent.left
     anchors.right: parent.right
@@ -64,7 +67,7 @@ Rectangle {
         height: parent.height
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        iconSource: "qrc:/images/home"
+        iconSource: subActivity ? "qrc:/images/back" : "qrc:/images/home"
         onClicked: stackView.pop()
     }
 }

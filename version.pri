@@ -1,0 +1,4 @@
+APPLICATION_VERSION=0.0.1-prealpha
+
+# Add defines to compiler
+DEFINES += "APPLICATION_VERSION=\\\"$${APPLICATION_VERSION}\\\""

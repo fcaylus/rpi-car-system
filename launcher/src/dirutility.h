@@ -25,6 +25,7 @@
 #include <QString>
 #include <QUrl>
 #include <QFile>
+#include <QDirIterator>
 
 namespace DirUtility
 {
@@ -43,6 +44,34 @@ namespace DirUtility
         if(file.exists())
             return file.remove();
         return true;
+    }
+
+    static inline uint countFilesRecursively(QDirIterator *it)
+    {
+        uint count = 0;
+        while(it->hasNext())
+        {
+            it->next();
+            count += 1;
+        }
+        return count;
+    }
+
+    static inline uint countFilesRecursively(const QString& dirPath, const QStringList& filters)
+    {
+        QDirIterator it(dirPath,
+                        filters,
+                        QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Hidden,
+                        QDirIterator::Subdirectories);
+        return countFilesRecursively(&it);
+    }
+
+    static inline uint countFilesRecursively(const QString& dirPath)
+    {
+        QDirIterator it(dirPath,
+                        QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Hidden,
+                        QDirIterator::Subdirectories);
+        return countFilesRecursively(&it);
     }
 
     // Get a unique filename

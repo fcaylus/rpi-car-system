@@ -41,6 +41,10 @@ include(../common.pri)
 # PugiXml
 include(../thirdparty/pugixml.pri)
 
+# TODO: will be used by update system
+# Quazip
+#LIBS += -lquazip
+
 # VLCQt
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lVLCQtCore
@@ -52,14 +56,18 @@ LIBS += -L/usr/local/lib -lVLCQtCore
 SOURCES += \
     src/main.cpp \
     src/soundmanager.cpp \
-    src/mediainfo.cpp
+    src/mediainfo.cpp \
+    src/devicesmanager.cpp
 
 HEADERS += \
     src/dirutility.h \
     src/soundmanager.h \
     src/mediainfo.h \
     src/passwordmanager.h \
-    src/common.h
+    src/common.h \
+    src/languagemanager.h \
+    src/filereader.h \
+    src/devicesmanager.h
 
 RESOURCES += \
     res.qrc
@@ -76,6 +84,7 @@ lupdate_only{
 SOURCES += \
     qml/*.qml \
     qml/music/*.qml \
-    qml/keyboard/*.qml
+    qml/keyboard/*.qml \
+    qml/settings/*.qml
 }
 

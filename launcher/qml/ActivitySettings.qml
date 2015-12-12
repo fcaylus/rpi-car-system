@@ -19,6 +19,7 @@
 import QtQuick 2.3
 import QtQuick.Controls 1.2
 import "."
+import "./settings"
 
 Activity {
     id: activitySettings
@@ -35,7 +36,14 @@ Activity {
         anchors.leftMargin: Style.mainMenu.marginH
         anchors.topMargin: Style.mainMenu.marginV
 
+        property Component settingsLanguage: SettingsLanguage {}
+        property Component settingsAbout: SettingsAbout {}
+        property Component settingsUpdate: SettingsUpdate {}
+
         property var settingsMap: {
+            3: settingsUpdate,
+            4: settingsLanguage,
+            6: settingsAbout
         }
 
         model: ListModel {
@@ -53,13 +61,13 @@ Activity {
             }
             ListElement {
                 index: 3
-                isEnabled: false
+                isEnabled: true
                 title: qsTr("Update")
                 icon: "qrc:/images/update"
             }
             ListElement {
                 index: 4
-                isEnabled: false
+                isEnabled: true
                 title: qsTr("Languages")
                 icon: "qrc:/images/world"
             }
@@ -71,7 +79,7 @@ Activity {
             }
             ListElement {
                 index: 6
-                isEnabled: false
+                isEnabled: true
                 title: qsTr("About")
                 icon: "qrc:/images/info"
             }
@@ -86,7 +94,7 @@ Activity {
             iconSource: icon
 
             onClicked: {
-                if(isEnabled && stackView.depth == 1) {
+                if(isEnabled && stackView.depth == 2) {
                     stackView.push({item: settingsMap[index]});
                     stackView.currentItem.forceActiveFocus();
                 }

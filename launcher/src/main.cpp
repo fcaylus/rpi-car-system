@@ -24,6 +24,9 @@
 
 #include "soundmanager.h"
 #include "passwordmanager.h"
+#include "languagemanager.h"
+#include "filereader.h"
+#include "devicesmanager.h"
 
 #include <VLCQtCore/Common.h>
 
@@ -43,6 +46,10 @@ void loadTranslations(const QString& path, const QString &locale, QCoreApplicati
 
 int main(int argc, char *argv[])
 {
+    int resultCode = 0;
+
+    qDebug() << Common::musicDir();
+
     QGuiApplication app(argc, argv);
     QCoreApplication::setApplicationName(APPLICATION_NAME);
     QCoreApplication::setOrganizationName(APPLICATION_NAME);
@@ -52,6 +59,7 @@ int main(int argc, char *argv[])
 
     // Get locale (system locale by default)
     const QString locale = settings->value(settingsLocaleStr, QLocale::system().name().section('_', 0, 0)).toString();
+    settings->setValue(settingsLocaleStr, locale);
 
     // Load default Qt translations
     QTranslator qtTranslator;
@@ -65,27 +73,36 @@ int main(int argc, char *argv[])
     // QML Stuff
     //
 
-    qmlRegisterType<MediaInfo>();
-
     VlcCommon::setPluginPath(app.applicationDirPath() + QStringLiteral("/plugins"));
 
     SoundManager *soundMgr = new SoundManager(settings);
     PasswordManager *passMgr = new PasswordManager();
+    LanguageManager *langMgr = new LanguageManager(&app, settings, locale);
+    FileReader *fileReader = new FileReader();
+    DevicesManager *devicesMgr = new DevicesManager();
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("soundManager"), soundMgr);
     engine.rootContext()->setContextProperty(QStringLiteral("passwordManager"), passMgr);
+    engine.rootContext()->setContextProperty(QStringLiteral("languageManager"), langMgr);
+    engine.rootContext()->setContextProperty(QStringLiteral("devicesManager"), devicesMgr);
+    engine.rootContext()->setContextProperty(QStringLiteral("fileReader"), fileReader);
     engine.rootContext()->setContextProperty(QStringLiteral("isPassFileCreated"), QVariant(PasswordManager::isPassFileExists()));
+    engine.rootContext()->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
-    const int result = app.exec();
+    resultCode = app.exec();
 
     // Save settings
-    settings->setValue(settingsLocaleStr, locale);// TODO: update media list strings if changed
     soundMgr->saveSettings();
 
     soundMgr->deleteLater();
+    passMgr->deleteLater();
+    langMgr->deleteLater();
+    fileReader->deleteLater();
+
     settings->sync();
     settings->deleteLater();
-    return result;
+
+    return resultCode;
 }

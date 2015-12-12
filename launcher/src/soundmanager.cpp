@@ -84,13 +84,12 @@ SoundManager::SoundManager(QSettings *settings)
         emit mediaListReadyChanged();
     }
 
-    // Start the process for searching new devices
+    // Start the process for searching new media
     QProcess *musicSearchProcess = new QProcess(this);
     connect(musicSearchProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [this](int exitCode, QProcess::ExitStatus exitStatus) {
         if(exitCode == 0 && exitStatus == QProcess::NormalExit)
         {
-            qDebug() << "test";
             _mediaListReady = true;
             emit mediaListReadyChanged();
         }
