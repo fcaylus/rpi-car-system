@@ -19,7 +19,7 @@ if [ ! -f download.done ]; then
 fi
 
 if [ ! -d buildroot-${BUILDROOT_VER} ]; then
-    tar xvzf buildroot-${BUILDROOT_VER}.tar.gz
+    tar xzf buildroot-${BUILDROOT_VER}.tar.gz
 fi
 
 if [ ! -f toolchain.done ]; then
@@ -41,10 +41,10 @@ if [ ! -f toolchain.done ]; then
 	# Create rpi-car-system sources tarball
 	OLD_PWD=$PWD
 	cd "$SCRIPT_DIR/.."
-	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="musicindex-generator/Makefile" --exclude="launcher/Makefile" -zcvf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
+	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="musicindex-generator/Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
 	cd "$OLD_PWD"
 
-    make
+    make 2> ../stderr.log | tee ../stdout.log | grep -i -e "^.*:" | grep -v "gcc" | grep -v "g++"
 
     # This file is used to check if the system has been built
     > $SCRIPT_DIR/build/toolchain.done
@@ -137,7 +137,7 @@ echo \"All scripts installed !\"
 cd ${SYSTEM_ROOT}
 
 # When uncompressing the tarball, make sure to pass tar the "-p" switch to ensure permissions are preserved.
-tar -jcvf ../../../rpi-car-system.tar.bz2 *
+tar -jcf ../../../rpi-car-system.tar.bz2 *
 
 set +v
 echo "----------------------------------"
