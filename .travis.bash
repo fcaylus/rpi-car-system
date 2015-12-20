@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ev
 
+cd "${TRAVIS_BUILD_DIR}"
+
 if [ $NO_CROSS_COMPILE_DEBUG -eq 1 ]; then
 	. /opt/qt55/bin/qt55-env.sh
 	qmake rpi-car-system.pro -r -spec linux-g++ CONFIG+=debug CONFIG+=declarative_debug CONFIG+=qml_debug
