@@ -44,7 +44,7 @@ if [ ! -f toolchain.done ]; then
 	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="musicindex-generator/Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
 	cd "$OLD_PWD"
 
-    make 2> ../stderr.log | tee ../stdout.log | grep -i -e "^.*:" | grep -v "gcc" | grep -v "g++"
+    make
 
     # This file is used to check if the system has been built
     > $SCRIPT_DIR/build/toolchain.done
