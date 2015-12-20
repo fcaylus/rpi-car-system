@@ -23,7 +23,8 @@ include(version.pri)
 CONFIG += c++11
 
 # Add defines to compiler
-DEFINES += "APPLICATION_TARGET=\\\"$${APPLICATION_TARGET}\\\"" \
+DEFINES += \
+    "APPLICATION_TARGET=\\\"$${APPLICATION_TARGET}\\\"" \
     "APPLICATION_NAME=\\\"$${APPLICATION_NAME}\\\""
 
 
