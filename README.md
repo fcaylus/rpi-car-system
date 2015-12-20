@@ -1,4 +1,4 @@
-RPI Car System
+RPI Car System [![Build Status](https://travis-ci.org/Toutjuste/rpi-car-system.svg)](https://travis-ci.org/Toutjuste/rpi-car-system)
 ==============
 
 Full-featured headunit system. This project is in an early development stage and not ready for production.
