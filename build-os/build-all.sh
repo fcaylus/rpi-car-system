@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ev
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -8,59 +8,51 @@ mkdir -pv build
 cd build
 
 #
-# Use Build root to compile the system
+# Use Buildroot to compile the system
 #
 
-wget -nc http://buildroot.uclibc.org/downloads/buildroot-2015.11-rc3.tar.gz
+BUILDROOT_VER="2015.11.1"
 
-if [ ! -d buildroot-2015.11-rc3 ]; then
-    tar xvzf buildroot-2015.11-rc3.tar.gz
+if [ ! -f download.done ]; then
+	wget -nc http://buildroot.uclibc.org/downloads/buildroot-${BUILDROOT_VER}.tar.gz
+	> $SCRIPT_DIR/build/download.done
 fi
 
-if [ ! -f toolchain.alreadydo ]; then
+if [ ! -d buildroot-${BUILDROOT_VER} ]; then
+    tar xvzf buildroot-${BUILDROOT_VER}.tar.gz
+fi
 
-	cd buildroot-2015.11-rc3
+if [ ! -f toolchain.done ]; then
+
+	cd buildroot-${BUILDROOT_VER}
     
-    # copy config files
+    # Copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
-	cp "$SCRIPT_DIR/buildroot-patches/Config.in" package/Config.in
+	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" package/busybox/busybox.config
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
+	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
+	cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
+	
+	set +e
+	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"
+	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/qt5.patch"
+	set -e
+
+	# Create rpi-car-system sources tarball
+	OLD_PWD=$PWD
+	cd "$SCRIPT_DIR/.."
+	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="musicindex-generator/Makefile" --exclude="launcher/Makefile" -zcvf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
+	cd "$OLD_PWD"
 
     make
 
     # This file is used to check if the system has been built
-    > $SCRIPT_DIR/build/toolchain.alreadydo
+    > $SCRIPT_DIR/build/toolchain.done
 else
     echo "System already built !!!"
 fi
 
-SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-2015.08.1/output/target"
-
-#
-# Build the launcher
-#
-
-OLD_PATH=$PATH
-TOOLCHAIN_DIR="${SCRIPT_DIR}/build/host/usr/bin"
-export PATH="$TOOLCHAIN_DIR:$PATH"
-
-cd "$SCRIPT_DIR/build"
-
-mkdir -pv launcher-build
-cd launcher-build
-
-SYSROOT="${TOOLCHAIN_DIR}/../arm-buildroot-linux-gnueabihf/sysroot"
-
-cmake -DCMAKE_TOOLCHAIN_FILE="../../scripts/arm-linux.cmake" -DILIXI_INCLUDE_PATH="${SCRIPT_DIR}/scripts/include/ilixi-1.0.0" -DILIXI_LIB_PATH="${SYSTEM_ROOT}/usr/lib" -DDIRECTFB_INCLUDE_PATH="${SYSROOT}/usr/include/directfb" -DSIGCPP_INCLUDE_PATH="${SYSROOT}/usr/include/sigc++-2.0" -DSIGCPP_CONFIG_PATH="${SYSROOT}/usr/lib/sigc++-2.0/include" -DSIGCPP_LIB_PATH="${SYSTEM_ROOT}/usr/lib" -DCMAKE_FIND_ROOT_PATH="${SYSROOT}" -DREADY_FOR_CARSYSTEM=yes -DCMAKE_BUILD_TYPE=Release ../../../launcher/.
-
-make -j6
-
-# Now, copy all files to the system
-cd bin/Release
-mkdir -pv ${SYSTEM_ROOT}/opt/launcher
-cp -r * ${SYSTEM_ROOT}/opt/launcher
-
-export PATH=$OLD_PATH
+SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-${BUILDROOT_VER}/output/target"
 
 #
 # Copy the official bootloader
@@ -115,18 +107,13 @@ install -m 644 boot/cmdline.txt "${SYSTEM_ROOT}/boot/"
 install -m 644 etc/mdev.conf "${SYSTEM_ROOT}/etc/"
 
 #
-# profile file
+# profile files
 rm ${SYSTEM_ROOT}/etc/profile 
 install -m 754 etc/profile "${SYSTEM_ROOT}/etc/"
 install -m 644 etc/nanorc "${SYSTEM_ROOT}/etc/"
 
 rm ${SYSTEM_ROOT}/etc/group
 install -m 644 etc/group "${SYSTEM_ROOT}/etc/"
-
-#
-# GUI
-install -m 644 etc/directfbrc "${SYSTEM_ROOT}/root"
-mv "${SYSTEM_ROOT}/root/directfbrc" "${SYSTEM_ROOT}/root/.directfbrc"
 
 #
 # i18n
@@ -152,6 +139,7 @@ cd ${SYSTEM_ROOT}
 # When uncompressing the tarball, make sure to pass tar the "-p" switch to ensure permissions are preserved.
 tar -jcvf ../../../rpi-car-system.tar.bz2 *
 
+set +v
 echo "----------------------------------"
 echo "Build Finish !!!!"
 echo "----------------------------------"

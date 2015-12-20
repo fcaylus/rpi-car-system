@@ -1,15 +1,35 @@
-RPI-CAR-SYSTEM
+RPI Car System
 ==============
 
-This project aims to create a full-featured headunit.
+Full-featured headunit system. This project is in an early development stage and not ready for production.
 
 Project components:
 -------------------
 
-
-- build-os : Scripts to build to complete os
-	- build-os/build-all.sh : Bash script that downloads all needed packages and create a system tarball
-	- build-os/flash-all.sh : Bash script that flash the tarballs into a SD-Card (for the rpi boot system)
+- build-os : Scripts to build to complete OS
+	- build-os/build-all.sh : Downloads all packages and create a system tarball (using buildroot)
+	- build-os/flash-all.sh : Flash the tarball into a SD-Card
 - launcher: Main GUI app. This app will be launched on startup.
-- musicindex-generator: simple app that will create the media index. This task cannot be executed in the launcher app since VlcInstance is not thread safe.
-- updatemanager: manage updates. If this app or passwordmanager need to be updated, a physical intervention is required
+- musicindex-generator: Creates and updates the media index.
+
+Third-parties
+-------------
+
+RPI Car system uses some third-party libraries to work correctly:
+
+* [Qt] - used for all GUIs
+* [PugiXml] - reading xml files using XPath
+* [Vlc-Qt] - all medias stuff
+* [MiniFlatFlags] - used for icons in the "languages" menu
+* [Material Icons] - all icons in the launcher
+
+License
+-------
+
+Licensed under the [GNU GPL] license v3. See LICENSE file for more information.
+
+[Qt]:http://www.qt.io/developers/
+[PugiXml]:https://github.com/zeux/pugixml
+[Vlc-Qt]:https://github.com/vlc-qt/vlc-qt
+[MiniFlatFlags]:https://github.com/pixelstrolch/MiniFlatFlags
+[Material Icons]:https://www.google.com/design/icons/

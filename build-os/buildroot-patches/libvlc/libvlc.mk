@@ -4,12 +4,14 @@
 #
 ################################################################################
 
-LIBVLC_SITE = git://git.videolan.org/vlc.git
-LIBVLC_SITE_METHOD = git
+LIBVLC_VERSION = 2.2.1
+LIBVLC_SITE = http://get.videolan.org/vlc/$(LIBVLC_VERSION)
+LIBVLC_SOURCE = vlc-$(LIBVLC_VERSION).tar.xz
 LIBVLC_LICENSE = GPLv2+ LGPLv2.1+
 LIBVLC_LICENSE_FILES = COPYING COPYING.LIB
 LIBVLC_DEPENDENCIES = host-pkgconf
 LIBVLC_AUTORECONF = YES
+LIBVLC_INSTALL_STAGING = YES
 
 # VLC defines two autoconf functions which are also defined by our own pkg.m4
 # from pkgconf. Unfortunately, they are defined in a different way: VLC adds

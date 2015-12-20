@@ -27,6 +27,5 @@ CONFIG += ordered
 
 SUBDIRS += \
     launcher \
-    musicindex-generator #\
-    #updatemanager
+    musicindex-generator
 

@@ -1,5 +1,80 @@
+
+# Generic files #
+#################
+*~
+*.bak
+*.swp
+*.lock
+*.autosave
+
+# LOC files #
+#############
+*.cloc
+cloc.xml
+cloc2sloccount.xlt
+sloccount.sc
+
+# Build files #
+###############
+build/
+callgrind.out.*
 *.pro.user*
 Makefile
-build/
-*~
+*.Debug
+*.Release
 
+# Output files #
+################
+bin/
+output/
+dist/
+docgen/
+
+# Compiled dynamic libraries
+*.so*
+*.dll
+*.dylib
+
+# Compiled object files
+*.o
+*.slo
+*.lo
+*.obj
+
+# Compiled static libraries
+*.a
+*.lai
+*.la
+*.lib
+
+# Executables
+*.out
+*.exe
+*.app
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Qt transalation files (compiled)
+*.qm
+
+
+# OS generated files #
+######################
+.DS_Store?
+*.DS_Store
+.AppleDouble
+.LSOverride
+ehthumbs.db
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/

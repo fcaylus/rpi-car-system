@@ -1,0 +1,3 @@
+config BR2_PACKAGE_RPI_CAR_SYSTEM
+	bool "rpi-car-system"
+	depends on BR2_PACKAGE_QT5

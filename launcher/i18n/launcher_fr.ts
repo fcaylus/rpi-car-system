@@ -4,32 +4,32 @@
 <context>
     <name>ActivitySettings</name>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="51"/>
+        <location filename="../qml/ActivitySettings.qml" line="53"/>
         <source>Equalizer</source>
         <translation>Égaliseur</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="57"/>
+        <location filename="../qml/ActivitySettings.qml" line="59"/>
         <source>Remove files</source>
         <translation>Supprimer des fichiers</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="63"/>
+        <location filename="../qml/ActivitySettings.qml" line="65"/>
         <source>Update</source>
         <translation>Mise à jour</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="69"/>
+        <location filename="../qml/ActivitySettings.qml" line="71"/>
         <source>Languages</source>
         <translation>Langues</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="75"/>
+        <location filename="../qml/ActivitySettings.qml" line="77"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="81"/>
+        <location filename="../qml/ActivitySettings.qml" line="83"/>
         <source>About</source>
         <translation>À propos</translation>
     </message>
@@ -233,6 +233,14 @@
         <location filename="../qml/settings/SettingsLanguage.qml" line="53"/>
         <source>Languages list:</source>
         <translation>Langues disponibles:</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsUpdate</name>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="40"/>
+        <source>Automatic update is not yet available !</source>
+        <translation>La mise à jour automatique n&apos;est pas encore disponible !</translation>
     </message>
 </context>
 <context>

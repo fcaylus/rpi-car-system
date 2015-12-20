@@ -112,7 +112,7 @@ echo "----------------------------------"
 echo "Flash Finish !!!!"
 echo "----------------------------------"
 
-echo "You need to unmount the partions, please run:"
+echo "You need to unmount the partitions, please run:"
 echo "  $ sudo umount /dev/${SD_CARD_DEVICE}1"
 echo "  $ sudo umount /dev/${SD_CARD_DEVICE}2"
 

@@ -26,8 +26,13 @@ CONFIG += c++11
 DEFINES += "APPLICATION_TARGET=\\\"$${APPLICATION_TARGET}\\\"" \
     "APPLICATION_NAME=\\\"$${APPLICATION_NAME}\\\""
 
+
+RPI_INSTALL_PATH = /opt/rpi-car-system
 CONFIG(READY_FOR_CARSYSTEM) {
+    message("Build for the RPI")
     DEFINES += READY_FOR_CARSYSTEM
+    target.path = $${RPI_INSTALL_PATH}
+    INSTALLS += target
 }
 
 TARGET = $$quote($${APPLICATION_TARGET})

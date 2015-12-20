@@ -46,8 +46,7 @@ include(../thirdparty/pugixml.pri)
 #LIBS += -lquazip
 
 # VLCQt
-INCLUDEPATH += /usr/local/include
-LIBS += -L/usr/local/lib -lVLCQtCore
+include(../thirdparty/vlc-qt.pri)
 
 #
 # Project sources
@@ -88,3 +87,17 @@ SOURCES += \
     qml/settings/*.qml
 }
 
+#
+# Install stuff
+#
+
+CONFIG(READY_FOR_CARSYSTEM) {
+    # Generate translations
+    system($${HOST_BIN_DIR}/lrelease -nounfinished -removeidentical i18n/$${APPLICATION_TARGET}_fr.ts)
+
+    install_utils.path = $${RPI_INSTALL_PATH}
+    install_utils.files = util/*
+    install_qm.path = $${RPI_INSTALL_PATH}/translations
+    install_qm.files = i18n/$${APPLICATION_TARGET}_fr.qm
+    INSTALLS += install_utils install_qm
+}

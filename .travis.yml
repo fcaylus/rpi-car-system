@@ -1,0 +1,16 @@
+sudo: required
+dist: trusty
+language: cpp
+compiler: gcc
+env:
+    - NO_CROSS_COMPILE_DEBUG=1
+    - NO_CROSS_COMPILE=1
+    - CROSS_COMPILE=1
+before_install:
+    - sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty
+    - sudo apt-get update -q
+    - sudo apt-get install -yq build-essential libncurses5-dev rsync cpio python unzip bc wget qt55-meta qt55base qt55declarative qt55graphicaleffects qt55quickcontrols qt55tools qt55translations qt55xmlpatterns qt55svg
+
+script:
+    - ./.travis.bash
+

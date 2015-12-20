@@ -1,0 +1,59 @@
+diff -uNr vlc-qt.orig/src/CMakeLists.txt vlc-qt/src/CMakeLists.txt 
+--- vlc-qt.orig/src/CMakeLists.txt	2015-11-10 16:37:49.280830023 +0100
++++ vlc-qt/src/CMakeLists.txt	2015-12-12 17:03:24.729892232 +0100
+@@ -27,7 +27,6 @@
+ # Modules #
+ ###########
+ ADD_SUBDIRECTORY(core)
+-ADD_SUBDIRECTORY(widgets)
+ 
+ IF(QT_VERSION MATCHES 5)
+     ADD_SUBDIRECTORY(qml)
+diff -uNr vlc-qt.orig/config/Dependencies.cmake vlc-qt/config/Dependencies.cmake
+--- vlc-qt.orig/config/Dependencies.cmake	2015-11-10 16:37:49.248830594 +0100
++++ vlc-qt/config/Dependencies.cmake	2015-12-12 17:12:44.873882826 +0100
+@@ -27,7 +27,6 @@
+ ELSE()
+     FIND_PACKAGE(Qt5Core 5.2.0 REQUIRED)
+     FIND_PACKAGE(Qt5Quick 5.2.0 REQUIRED)
+-    FIND_PACKAGE(Qt5Widgets 5.2.0 REQUIRED)
+ 
+     MESSAGE("VLC-Qt: Build with Qt5")
+ ENDIF()
+diff -uNr vlc-qt.orig/config/Package.cmake vlc-qt/config/Package.cmake
+--- vlc-qt.orig/config/Package.cmake	2015-11-10 16:37:49.248830594 +0100
++++ vlc-qt/config/Package.cmake	2015-12-12 17:23:45.476324587 +0100
+@@ -60,32 +60,6 @@
+     COMPONENT Devel
+ )
+ 
+-WRITE_BASIC_PACKAGE_VERSION_FILE(
+-    "${CMAKE_BINARY_DIR}/package/VLCQtWidgets/VLCQtWidgetsConfigVersion.cmake"
+-    VERSION ${VLCQT_VERSION}
+-    COMPATIBILITY AnyNewerVersion
+-)
+-EXPORT(EXPORT VLCQtWidgetsTargets
+-       FILE "${CMAKE_BINARY_DIR}/package/VLCQtWidgets/VLCQtWidgetsTargets.cmake"
+-       NAMESPACE VLCQt::
+-)
+-CONFIGURE_FILE(config/package/VLCQtWidgetsConfig.cmake
+-    "${CMAKE_BINARY_DIR}/package/VLCQtWidgets/VLCQtWidgetsConfig.cmake"
+-)
+-SET(VlcQtWidgetsConfigPackageLocation lib/cmake/VLCQtWidgets)
+-INSTALL(EXPORT VLCQtWidgetsTargets
+-        FILE VLCQtWidgetsTargets.cmake
+-        NAMESPACE VLCQt::
+-        DESTINATION ${VlcQtWidgetsConfigPackageLocation}
+-)
+-INSTALL(
+-    FILES
+-        config/package/VLCQtWidgetsConfig.cmake
+-        "${CMAKE_BINARY_DIR}/package/VLCQtWidgets/VLCQtWidgetsConfigVersion.cmake"
+-    DESTINATION ${VlcQtWidgetsConfigPackageLocation}
+-    COMPONENT Devel
+-)
+-
+ IF(QT_VERSION MATCHES 5)
+     WRITE_BASIC_PACKAGE_VERSION_FILE(
+         "${CMAKE_BINARY_DIR}/package/VLCQtQml/VLCQtQmlConfigVersion.cmake"
+

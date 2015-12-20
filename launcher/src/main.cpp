@@ -48,8 +48,6 @@ int main(int argc, char *argv[])
 {
     int resultCode = 0;
 
-    qDebug() << Common::musicDir();
-
     QGuiApplication app(argc, argv);
     QCoreApplication::setApplicationName(APPLICATION_NAME);
     QCoreApplication::setOrganizationName(APPLICATION_NAME);

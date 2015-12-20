@@ -48,7 +48,7 @@ namespace Common {
     static inline QString configDir()
     {
 #ifdef READY_FOR_CARSYSTEM
-        return QStringLiteral("/home/pi/config")
+        return QStringLiteral("/root/config");
 #else
         return QCoreApplication::applicationDirPath();
 #endif
@@ -57,8 +57,9 @@ namespace Common {
     static inline QString musicDir()
     {
 #ifdef READY_FOR_CARSYSTEM
-        return QStringLiteral("/home/pi/music");
+        return QStringLiteral("/root/music");
 #else
+        // Get standard music path
         const QString path = startProcessAndReadOutput("xdg-user-dir", QStringList({"MUSIC"}));
         return path.isEmpty() ? QString("/home/" + qgetenv("USER") + "/Music") : path;
 #endif

@@ -38,8 +38,7 @@ include(../common.pri)
 #
 
 # VlcQt
-INCLUDEPATH += /usr/local/include
-LIBS += -L/usr/local/lib -lVLCQtCore
+include(../thirdparty/vlc-qt.pri)
 
 #
 # Project sources
