@@ -1,6 +1,6 @@
 /*
  * This file is part of RPI Car System.
- * Copyright (c) 2015 Fabien Caylus <toutjuste13@gmail.com>
+ * Copyright (c) 2016 Fabien Caylus <toutjuste13@gmail.com>
  *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ Activity {
                 font.pixelSize: 20
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text: "Copyright (c) 2015 Fabien CAYLUS"
+                text: "Copyright (c) 2016 Fabien CAYLUS"
             }
 
             StyledText {
