@@ -201,5 +201,10 @@ Item {
             }
         }
     }
+
+    PlaylistPopup {
+        id: playlistPopup
+        visible: false
+    }
 }
 

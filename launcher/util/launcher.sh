@@ -13,7 +13,7 @@ export LD_LIBRARY_PATH
 
 # Check reboot code
 REBOOT_CODE=8956
-result=REBOOT_CODE
+result=$REBOOT_CODE
 while [ $result -eq $REBOOT_CODE ]; do
 	$dirname/$appname "$@"
 	result=$?

@@ -17,17 +17,11 @@
  */
 
 import QtQuick 2.3
-import QtGraphicalEffects 1.0
 import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.2
-import QtQuick.Dialogs 1.2
-import QtQuick.Extras 1.4
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.0
 import "."
 import "./keyboard"
 
-Window {
+Rectangle {
     id: rootWindow
     objectName: "LauncherWindow"
     visible: true
@@ -54,152 +48,145 @@ Window {
         8: activitySettings
     }
 
-    Rectangle {
-        anchors.fill: parent
-        anchors.left: parent.left
+    gradient: Gradient {
+        GradientStop {
+            color: Style.backgroundColorEnd
+            position: 0
+        }
+        GradientStop {
+            color: Style.backgroundColorStart
+            position: .5
+        }
+        GradientStop {
+            color: Style.backgroundColorEnd
+            position: 1
+        }
+    }
+
+    StackView {
+        id: stackView
         width: rootWindow.width
         height: rootWindow.height
+        anchors.fill: parent
+        anchors.left: parent.left
 
-        gradient: Gradient {
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 0
-            }
-            GradientStop {
-                color: Style.backgroundColorStart
-                position: .5
-            }
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 1
-            }
-        }
+        visible: isPassFileCreated
 
-        StackView {
-            id: stackView
-            width: rootWindow.width
-            height: rootWindow.height
-            anchors.fill: parent
+        initialItem: GridView {
+            width: rootWindow.width - Style.mainMenu.marginH
+            height: rootWindow.height - Style.mainMenu.marginV
+            cellWidth: Style.mainMenu.buttonWidth + Style.mainMenu.marginH
+            cellHeight: Style.mainMenu.buttonHeight + Style.mainMenu.marginV
+
             anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.leftMargin: Style.mainMenu.marginH
+            anchors.topMargin: Style.mainMenu.marginV
 
-            visible: isPassFileCreated
-
-            initialItem: GridView {
-                width: rootWindow.width - Style.mainMenu.marginH
-                height: rootWindow.height - Style.mainMenu.marginV
-                cellWidth: Style.mainMenu.buttonWidth + Style.mainMenu.marginH
-                cellHeight: Style.mainMenu.buttonHeight + Style.mainMenu.marginV
-
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.leftMargin: Style.mainMenu.marginH
-                anchors.topMargin: Style.mainMenu.marginV
-
-                model: ListModel {
-                    ListElement {
-                        index: 1
-                        isEnabled: true
-                        title: qsTr("My Music")
-                        icon: "qrc:/images/music"
-                    }
-                    ListElement {
-                        index: 2
-                        isEnabled: false
-                        title: qsTr("Radio")
-                        icon: "qrc:/images/radio"
-                    }
-                    ListElement {
-                        index: 3
-                        isEnabled: false
-                        title: qsTr("My Videos")
-                        icon: "qrc:/images/video"
-                    }
-                    ListElement {
-                        index: 4
-                        isEnabled: false
-                        title: qsTr("Informations")
-                        icon: "qrc:/images/car"
-                    }
-                    ListElement {
-                        index: 5
-                        isEnabled: false
-                        title: qsTr("GPS")
-                        icon: "qrc:/images/map"
-                    }
-                    ListElement {
-                        index: 6
-                        isEnabled: false
-                        title: qsTr("Call")
-                        icon: "qrc:/images/phone"
-                    }
-                    ListElement {
-                        index: 7
-                        isEnabled: true
-                        title: qsTr("Transfer")
-                        icon: "qrc:/images/upload"
-                    }
-                    ListElement {
-                        index: 8
-                        isEnabled: true
-                        title: qsTr("Settings")
-                        icon: "qrc:/images/settings"
-                    }
+            model: ListModel {
+                ListElement {
+                    index: 1
+                    isEnabled: true
+                    title: qsTr("My Music")
+                    icon: "qrc:/images/music"
                 }
+                ListElement {
+                    index: 2
+                    isEnabled: false
+                    title: qsTr("Radio")
+                    icon: "qrc:/images/radio"
+                }
+                ListElement {
+                    index: 3
+                    isEnabled: false
+                    title: qsTr("My Videos")
+                    icon: "qrc:/images/video"
+                }
+                ListElement {
+                    index: 4
+                    isEnabled: false
+                    title: qsTr("Informations")
+                    icon: "qrc:/images/car"
+                }
+                ListElement {
+                    index: 5
+                    isEnabled: false
+                    title: qsTr("GPS")
+                    icon: "qrc:/images/map"
+                }
+                ListElement {
+                    index: 6
+                    isEnabled: false
+                    title: qsTr("Call")
+                    icon: "qrc:/images/phone"
+                }
+                ListElement {
+                    index: 7
+                    isEnabled: true
+                    title: qsTr("Transfer")
+                    icon: "qrc:/images/upload"
+                }
+                ListElement {
+                    index: 8
+                    isEnabled: true
+                    title: qsTr("Settings")
+                    icon: "qrc:/images/settings"
+                }
+            }
 
-                delegate: MainMenuButton {
-                    width: Style.mainMenu.buttonWidth
-                    height: Style.mainMenu.buttonHeight
+            delegate: MainMenuButton {
+                width: Style.mainMenu.buttonWidth
+                height: Style.mainMenu.buttonHeight
 
-                    enabled: isEnabled
-                    text: title
-                    iconSource: icon
+                enabled: isEnabled
+                text: title
+                iconSource: icon
 
-                    onClicked: {
-                        if(isEnabled && stackView.depth == 1) {
-                            stackView.push({item: activityMap[index]});
-                            stackView.currentItem.forceActiveFocus();
-                        }
+                onClicked: {
+                    if(isEnabled && stackView.depth == 1) {
+                        stackView.push({item: activityMap[index]});
+                        stackView.currentItem.forceActiveFocus();
                     }
                 }
             }
         }
+    }
 
-        // This rectangle is only shown when password file is not created
-        PasswordPrompt {
-            id: askPassword
-            visible: !isPassFileCreated
-            titleText: qsTr("It's your first radio boot !\nPlease enter a new password :")
-            onPromptFinish: {
-                if(text.length >= 1) {
-                    visible = false
-                    askPasswordConfirm.previousPass = text
-                    askPasswordConfirm.visible = true
-                }
-            }
-        }
-
-        // Confirmation prompt
-        PasswordPrompt {
-            id: askPasswordConfirm
-            visible: false
-            titleText: qsTr("Please confirm :")
-            showBackButton: true
-
-            property string previousPass
-
-            onPromptFinish: {
-                if(text === previousPass) {
-                    if(passwordManager.createPasswordFile(text)) {
-                        visible = false
-                        stackView.visible = true
-                    }
-                }
-            }
-
-            onBackClicked: {
+    // This rectangle is only shown when password file is not created
+    PasswordPrompt {
+        id: askPassword
+        visible: !isPassFileCreated
+        titleText: qsTr("It's your first radio boot !\nPlease enter a new password :")
+        onPromptFinish: {
+            if(text.length >= 1) {
                 visible = false
-                askPassword.visible = true
+                askPasswordConfirm.previousPass = text
+                askPasswordConfirm.visible = true
             }
+        }
+    }
+
+    // Confirmation prompt
+    PasswordPrompt {
+        id: askPasswordConfirm
+        visible: false
+        titleText: qsTr("Please confirm :")
+        showBackButton: true
+
+        property string previousPass
+
+        onPromptFinish: {
+            if(text === previousPass) {
+                if(passwordManager.createPasswordFile(text)) {
+                    visible = false
+                    stackView.visible = true
+                }
+            }
+        }
+
+        onBackClicked: {
+            visible = false
+            askPassword.visible = true
         }
     }
 }

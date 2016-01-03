@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ev
+set -e
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -29,6 +29,7 @@ if [ ! -f toolchain.done ]; then
     # Copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
 	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" package/busybox/busybox.config
+	#cp "$SCRIPT_DIR/buildroot-patches/kernel.config" .
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
@@ -91,11 +92,12 @@ install -m 754 etc/rc.d/init.d/syslog    "${SYSTEM_ROOT}/etc/rc.d/init.d/"
 ln -sf ../init.d/syslog "${SYSTEM_ROOT}/etc/rc.d/start/S05syslog"
 ln -sf ../init.d/syslog "${SYSTEM_ROOT}/etc/rc.d/stop/K99syslog"
 
-rm ${SYSTEM_ROOT}/etc/inittab
-rm ${SYSTEM_ROOT}/etc/fstab
+rm "${SYSTEM_ROOT}/etc/inittab"
+rm "${SYSTEM_ROOT}/etc/fstab"
 
 install -m 754 etc/inittab "${SYSTEM_ROOT}/etc/"
 install -m 644 etc/fstab "${SYSTEM_ROOT}/etc/"
+install -m 754 etc/autologin.sh "${SYSTEM_ROOT}/etc/"
 
 #
 # Boot files
@@ -120,26 +122,39 @@ install -m 644 etc/group "${SYSTEM_ROOT}/etc/"
 install -d -m 755 "${SYSTEM_ROOT}/etc/i18n"
 install -m 644 fr-latin9.bmap "${SYSTEM_ROOT}/etc/i18n"
 
+#
+# Copy qt platform plugin
+install -d -m 755 "${SYSTEM_ROOT}/opt/rpi-car-system/plaforms"
+cp "${SYSTEM_ROOT}/usr/lib/qt/plugins/platforms/libqeglfs.so" "${SYSTEM_ROOT}/opt/rpi-car-system/plaforms"
+
 set +e
 
-rm ${SYSTEM_ROOT}/etc/issue
-rm ${SYSTEM_ROOT}/etc/os-release
-rm ${SYSTEM_ROOT}/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM
+# Remove useless stuff
+rm "${SYSTEM_ROOT}/etc/issue"
+rm "${SYSTEM_ROOT}/etc/os-release"
+rm "${SYSTEM_ROOT}/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM"
+
+rm -r "${SYSTEM_ROOT}/usr/share/applications"
+rm -r "${SYSTEM_ROOT}/usr/share/icons"
+rm -r "${SYSTEM_ROOT}/usr/share/kde4"
+rm -r "${SYSTEM_ROOT}/usr/share/imlib2"
+rm -r "${SYSTEM_ROOT}/usr/share/pixmaps"
 
 set -e
 
-echo \"All scripts installed !\"
+echo "All scripts installed !"
 
 #
 # Create the final tarball
 #
 
-cd ${SYSTEM_ROOT}
+cd "${SYSTEM_ROOT}"
+
+echo "..."
 
 # When uncompressing the tarball, make sure to pass tar the "-p" switch to ensure permissions are preserved.
 tar -jcf ../../../rpi-car-system.tar.bz2 *
 
-set +v
 echo "----------------------------------"
 echo "Build Finish !!!!"
 echo "----------------------------------"

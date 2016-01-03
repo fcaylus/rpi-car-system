@@ -226,6 +226,16 @@
         <source>Full featured headunit system !</source>
         <translation>Système d&apos;autoradio complet !</translation>
     </message>
+    <message>
+        <location filename="../qml/settings/SettingsAbout.qml" line="126"/>
+        <source>Version:</source>
+        <translation>Version:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsAbout.qml" line="127"/>
+        <source>Hardware version:</source>
+        <translation>Version matèrielle:</translation>
+    </message>
 </context>
 <context>
     <name>SettingsLanguage</name>

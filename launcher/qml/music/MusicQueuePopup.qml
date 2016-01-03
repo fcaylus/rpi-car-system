@@ -21,144 +21,104 @@ import QtQuick.Controls 1.2
 import ".."
 import "."
 
-Rectangle {
+Popup {
     id: musicQueuePopup
 
-    x: 0
-    y: 0
-    width: Style.windowWidth
-    height: Style.windowHeight - Style.toolbar.height
+    Component {
+        id: popupContent
 
-    color: Style.popupBackground
+        Rectangle {
+            color: "transparent"
 
-    function centerView() {
-        queueListView.positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
-    }
+            ListViewBase {
+                id: queueListView
 
-    // This mouseArea disable backgound input
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {}
-    }
+                width: popupContentWidth
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: 15
+                anchors.topMargin: 15
+                anchors.bottomMargin: 15
 
-    Rectangle {
+                property string headerText: qsTr("Music queue ...")
 
-        width: parent.width * .85
-        height: parent.height * .9
+                model: ListModel {
+                    id: model
+                }
 
-        anchors.centerIn: parent
+                delegate: Item {
+                    width: queueListView.width
+                    height: queueRow.implicitHeight
 
-        border.color: Style.button.topBorderColor
-        border.width: 1
+                    Row {
+                        id: queueRow
+                        spacing: 20
 
-        gradient: Gradient {
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 0
-            }
-            GradientStop {
-                color: Style.backgroundColorStart
-                position: .5
-            }
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 1
-            }
-        }
+                        Image {
+                            asynchronous: true
+                            width: 65
+                            height: width
+                            source: cover
+                        }
 
-        FlatButton {
-            id: closeIcon
-            iconSource: "qrc:/images/close"
-            width: 75
-            height: width
-            anchors.right: parent.right
-            anchors.top: parent.top
-
-            onClicked: {
-                musicQueuePopup.visible = false
-            }
-        }
-
-        ListViewBase {
-            id: queueListView
-
-            width: parent.width - closeIcon.width - 15
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.leftMargin: 15
-            anchors.topMargin: 15
-            anchors.bottomMargin: 15
-
-            property string headerText: qsTr("Music queue ...")
-
-            model: ListModel {
-                id: model
-            }
-
-            delegate: Item {
-                width: queueListView.width
-                height: queueRow.implicitHeight
-
-                Row {
-                    id: queueRow
-                    spacing: 20
-
-                    Image {
-                        asynchronous: true
-                        width: 65
-                        height: width
-                        source: cover
+                        StyledText {
+                            text: name
+                            font.pixelSize: 22
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
 
-                    StyledText {
-                        text: name
-                        font.pixelSize: 22
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.verticalCenter: parent.verticalCenter
+                    MouseArea {
+                        anchors.fill: queueRow
+                        onClicked: {
+                            soundManager.playFromIndex(index)
+                            musicQueuePopup.visible = false
+                        }
                     }
                 }
 
-                MouseArea {
-                    anchors.fill: queueRow
-                    onClicked: {
-                        soundManager.playFromIndex(index)
-                        musicQueuePopup.visible = false
+                highlight: Rectangle {
+                    color: "transparent"
+
+                    radius: 3
+                    border.width: 2
+                    border.color: Style.button.clickedOverlayColor
+                }
+
+                function fillData() {
+                    model.clear()
+                    var titlesList = soundManager.currentMediaQueueTitles
+                    var coversList = soundManager.currentMediaQueueCovers
+                    for (var i=0; i < titlesList.length; i++) {
+                        model.append({"name": titlesList[i],
+                                         "cover": coversList[i],
+                                         "index": i})
+                    }
+                    queueListView.positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
+                    queueListView.currentIndex = soundManager.currentIndex();
+                }
+
+                Connections {
+                    target: soundManager
+                    onCurrentMediaQueueChanged: queueListView.fillData()
+                    onMediaTitleChanged: queueListView.currentIndex = soundManager.currentIndex()
+                }
+
+                Component.onCompleted: fillData()
+
+                // Center list on update
+                onVisibleChanged: {
+                    if(visible) {
+                        positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
                     }
                 }
             }
-
-            highlight: Rectangle {
-                color: "transparent"
-
-                radius: 3
-                border.width: 2
-                border.color: Style.button.clickedOverlayColor
-            }
-
-            function fillData() {
-                model.clear()
-                var titlesList = soundManager.currentMediaQueueTitles
-                var coversList = soundManager.currentMediaQueueCovers
-                for (var i=0; i < titlesList.length; i++) {
-                    model.append({"name": titlesList[i],
-                                     "cover": coversList[i],
-                                     "index": i})
-                }
-                queueListView.positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
-                queueListView.currentIndex = soundManager.currentIndex();
-            }
-
-            Connections {
-                target: soundManager
-                onCurrentMediaQueueChanged: queueListView.fillData()
-                onMediaTitleChanged: queueListView.currentIndex = soundManager.currentIndex()
-            }
-
-            Component.onCompleted: fillData()
         }
-
     }
+
+    Component.onCompleted: setContent(popupContent)
 }
 

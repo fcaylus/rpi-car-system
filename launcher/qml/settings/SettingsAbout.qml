@@ -87,9 +87,9 @@ Activity {
         Column {
             width: parent.width
             height: parent.height - 30
-            y:50
+            y:25
 
-            spacing: 25
+            spacing: 21
 
             StyledText {
                 width: parent.width
@@ -118,11 +118,24 @@ Activity {
 
             StyledText {
                 width: parent.width
-                font.pixelSize: 20
+                font.pixelSize: 22
                 font.italic: true
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text: "Version:" + "  " + programVersion
+                wrapMode: Text.WordWrap
+                text: "<b>" +  qsTr("Version:") + "</b>   " + programVersion
+                      + "<br><b>" + qsTr("Hardware version:") + "</b>   " + hardwareVersion
+            }
+
+            StyledText {
+                width: parent.width
+                font.pixelSize: 15
+                font.italic: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + vlcVersion
+                      + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + vlcqtVersion
             }
         }
     }

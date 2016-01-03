@@ -69,6 +69,11 @@ ListViewBase {
                 soundManager.playFromFile(path, loader.sourceFile, loader.sourceQuery);
                 chooseButton.clicked()
             }
+
+            onPressAndHold: {
+                // TODO: finish playlist implementation
+                //playlistPopup.visible = true
+            }
         }
     }
 }

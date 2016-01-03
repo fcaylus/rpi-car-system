@@ -35,6 +35,8 @@
         <file>qml/PopupButton.qml</file>
         <file>qml/WaitPopup.qml</file>
         <file>qml/settings/SettingsUpdate.qml</file>
+        <file>qml/music/PlaylistPopup.qml</file>
+        <file>qml/Popup.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

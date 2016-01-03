@@ -158,11 +158,7 @@ Rectangle {
                         height: width
                         iconSource: "qrc:/images/playlist"
                         anchors.verticalCenter: parent.verticalCenter
-                        onClicked: {
-                            musicQueuePopup.visible = true
-                            musicQueuePopup.centerView()
-                        }
-
+                        onClicked: musicQueuePopup.visible = true
                     }
 
                     FlatButton {

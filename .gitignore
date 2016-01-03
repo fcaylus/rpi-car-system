@@ -6,6 +6,7 @@
 *.swp
 *.lock
 *.autosave
+*.old
 
 # LOC files #
 #############

@@ -21,15 +21,10 @@ import QtQuick.Controls 1.2
 import ".."
 import "."
 
-Rectangle {
-    id: popup
+Popup {
+    id: confirmPopup
 
-    x: 0
-    y: 0
-    width: Style.windowWidth
-    height: Style.windowHeight - Style.toolbar.height
-
-    color: Style.popupBackground
+    closeIcon: false
 
     property int fontSize: 28
     property string title
@@ -42,91 +37,67 @@ Rectangle {
 
     signal exitSuccess()
 
-    // This mouseArea disable backgound input
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {}
-    }
+    Component {
+        id: popupContent
+        Rectangle {
+            color: "transparent"
 
-    Rectangle {
-        id: popupRect
+            StyledText {
+                id: titleText
 
-        width: parent.width * .85
-        height: parent.height * .9
+                anchors.left: parent.left
+                anchors.top: parent.top
+                width: parent.width - 60
 
-        anchors.centerIn: parent
+                anchors.leftMargin: 30
+                anchors.topMargin: 30
 
-        border.color: Style.button.topBorderColor
-        border.width: 1
+                font.pixelSize: fontSize
+                font.bold: bold
 
-        gradient: Gradient {
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 0
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                textFormat: Text.RichText
+                wrapMode: Text.Wrap
+
+                text: title
             }
-            GradientStop {
-                color: Style.backgroundColorStart
-                position: .5
+
+            // Yes and no buttons
+
+            PopupButton {
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 50
+                anchors.left: parent.left
+                anchors.leftMargin: 120
+                height: 80
+                width: 150
+                text: qsTr("Yes")
+                yes: highlightYesButton
+
+                onClicked: {
+                    exitSuccess()
+                    popup.visible = false
+                }
             }
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 1
-            }
-        }
 
-        StyledText {
-            id: titleText
+            PopupButton {
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 50
+                anchors.right: parent.right
+                anchors.rightMargin: 120
+                height: 80
+                width: 150
+                text: qsTr("No")
+                yes: highlightNoButton
 
-            anchors.left: parent.left
-            anchors.top: parent.top
-            width: parent.width - 60
-
-            anchors.leftMargin: 30
-            anchors.topMargin: 30
-
-            font.pixelSize: fontSize
-            font.bold: bold
-
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            textFormat: Text.RichText
-            wrapMode: Text.Wrap
-
-            text: title
-        }
-
-        // Yes and no buttons
-
-        PopupButton {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.left: parent.left
-            anchors.leftMargin: 120
-            height: 80
-            width: 150
-            text: qsTr("Yes")
-            yes: highlightYesButton
-
-            onClicked: {
-                exitSuccess()
-                popup.visible = false
-            }
-        }
-
-        PopupButton {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.right: parent.right
-            anchors.rightMargin: 120
-            height: 80
-            width: 150
-            text: qsTr("No")
-            yes: highlightNoButton
-
-            onClicked: {
-                popup.visible = false
+                onClicked: {
+                    popup.visible = false
+                }
             }
         }
     }
+
+    Component.onCompleted: setContent(popupContent)
 }
 

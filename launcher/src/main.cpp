@@ -17,8 +17,11 @@
  */
 
 #include <QGuiApplication>
-#include <QtQml>
-#include <QDirIterator>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <QLibraryInfo>
+#include <QUrl>
+#include <QQuickView>
 #include <QTranslator>
 #include <QSettings>
 
@@ -32,27 +35,22 @@
 
 static const QString settingsLocaleStr = "locale";
 
-void loadTranslations(const QString& path, const QString &locale, QCoreApplication *app)
-{
-    QDirIterator iterator(path, QStringList() << "*_" + locale + ".qm", QDir::Files, QDirIterator::Subdirectories);
-    while(iterator.hasNext())
-    {
-        iterator.next();
-        QTranslator *translator = new QTranslator(app);
-        translator->load(iterator.fileName(), iterator.fileInfo().canonicalPath());
-        app->installTranslator(translator);
-    }
-}
-
 int main(int argc, char *argv[])
 {
     int resultCode = 0;
+#ifdef READY_FOR_CARSYSTEM
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+#endif
 
     QGuiApplication app(argc, argv);
-    QCoreApplication::setApplicationName(APPLICATION_NAME);
-    QCoreApplication::setOrganizationName(APPLICATION_NAME);
+    QGuiApplication::setApplicationName(APPLICATION_NAME);
+    QGuiApplication::setOrganizationName(APPLICATION_NAME);
 
-    QSettings *settings = new QSettings(QCoreApplication::applicationDirPath() + QStringLiteral("/settings.ini"), QSettings::IniFormat);
+#ifdef READY_FOR_CARSYSTEM
+    qApp->addLibraryPath(QStringLiteral("/usr/lib/qt/plugins"));
+#endif
+
+    QSettings *settings = new QSettings(QGuiApplication::applicationDirPath() + QStringLiteral("/settings.ini"), QSettings::IniFormat);
     settings->setFallbacksEnabled(false);
 
     // Get locale (system locale by default)
@@ -64,8 +62,10 @@ int main(int argc, char *argv[])
     qtTranslator.load(QStringLiteral("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
-    // Load translations in the "translations" dir
-    loadTranslations(QCoreApplication::applicationDirPath() + QStringLiteral("/translations"), locale, &app);
+    // Load app translations
+    QTranslator appTranslator;
+    appTranslator.load(QString(APPLICATION_TARGET "_") + locale + QStringLiteral(".qm"), QGuiApplication::applicationDirPath());
+    app.installTranslator(&appTranslator);
 
     //
     // QML Stuff
@@ -79,16 +79,30 @@ int main(int argc, char *argv[])
     FileReader *fileReader = new FileReader();
     DevicesManager *devicesMgr = new DevicesManager();
 
-    QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty(QStringLiteral("soundManager"), soundMgr);
-    engine.rootContext()->setContextProperty(QStringLiteral("passwordManager"), passMgr);
-    engine.rootContext()->setContextProperty(QStringLiteral("languageManager"), langMgr);
-    engine.rootContext()->setContextProperty(QStringLiteral("devicesManager"), devicesMgr);
-    engine.rootContext()->setContextProperty(QStringLiteral("fileReader"), fileReader);
-    engine.rootContext()->setContextProperty(QStringLiteral("isPassFileCreated"), QVariant(PasswordManager::isPassFileExists()));
-    engine.rootContext()->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
-    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    QQuickView view;
+    view.connect(view.engine(), &QQmlEngine::quit, &app, &QGuiApplication::quit);
+    view.setResizeMode(QQuickView::SizeViewToRootObject);
 
+    QQmlContext *context = view.rootContext();
+    context->setContextProperty(QStringLiteral("soundManager"), soundMgr);
+    context->setContextProperty(QStringLiteral("passwordManager"), passMgr);
+    context->setContextProperty(QStringLiteral("languageManager"), langMgr);
+    context->setContextProperty(QStringLiteral("devicesManager"), devicesMgr);
+    context->setContextProperty(QStringLiteral("fileReader"), fileReader);
+    context->setContextProperty(QStringLiteral("isPassFileCreated"), QVariant(PasswordManager::isPassFileExists()));
+    context->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
+    context->setContextProperty(QStringLiteral("hardwareVersion"), QVariant(HARDWARE_VERSION));
+    context->setContextProperty(QStringLiteral("vlcVersion"), QVariant(VlcInstance::version()));
+    context->setContextProperty(QStringLiteral("vlcqtVersion"), QVariant(VlcInstance::libVersion()));
+
+    view.setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+
+    if(QGuiApplication::platformName() == QLatin1String("eglfs"))
+        view.showFullScreen();
+    else
+        view.show();
+
+    // Launch app
     resultCode = app.exec();
 
     // Save settings
