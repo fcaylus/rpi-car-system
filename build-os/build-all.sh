@@ -28,7 +28,7 @@ if [ ! -f toolchain.done ]; then
     
     # Copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
-	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" package/busybox/busybox.config
+	#cp "$SCRIPT_DIR/buildroot-patches/busybox.config" package/busybox/busybox.config
 	#cp "$SCRIPT_DIR/buildroot-patches/kernel.config" .
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
@@ -124,8 +124,8 @@ install -m 644 fr-latin9.bmap "${SYSTEM_ROOT}/etc/i18n"
 
 #
 # Copy qt platform plugin
-install -d -m 755 "${SYSTEM_ROOT}/opt/rpi-car-system/plaforms"
-cp "${SYSTEM_ROOT}/usr/lib/qt/plugins/platforms/libqeglfs.so" "${SYSTEM_ROOT}/opt/rpi-car-system/plaforms"
+#install -d -m 755 "${SYSTEM_ROOT}/opt/rpi-car-system/platforms"
+#cp "${SYSTEM_ROOT}/usr/lib/qt/plugins/platforms/libqeglfs.so" "${SYSTEM_ROOT}/opt/rpi-car-system/platforms"
 
 set +e
 
@@ -139,6 +139,7 @@ rm -r "${SYSTEM_ROOT}/usr/share/icons"
 rm -r "${SYSTEM_ROOT}/usr/share/kde4"
 rm -r "${SYSTEM_ROOT}/usr/share/imlib2"
 rm -r "${SYSTEM_ROOT}/usr/share/pixmaps"
+rm -r "${SYSTEM_ROOT}/usr/share/vlc"
 
 set -e
 

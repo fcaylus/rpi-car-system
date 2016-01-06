@@ -39,16 +39,14 @@ int main(int argc, char *argv[])
 {
     int resultCode = 0;
 #ifdef READY_FOR_CARSYSTEM
-    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    //QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+    QCoreApplication::addLibraryPath(QStringLiteral("/usr/lib/qt/plugins"));
+    qDebug() << "Car system version";
 #endif
 
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName(APPLICATION_NAME);
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
-
-#ifdef READY_FOR_CARSYSTEM
-    qApp->addLibraryPath(QStringLiteral("/usr/lib/qt/plugins"));
-#endif
 
     QSettings *settings = new QSettings(QGuiApplication::applicationDirPath() + QStringLiteral("/settings.ini"), QSettings::IniFormat);
     settings->setFallbacksEnabled(false);
