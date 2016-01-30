@@ -118,7 +118,17 @@ namespace DirUtility
                     if(info.name().isEmpty())
                         nameList->append(QCoreApplication::tr("%1 device").arg(Common::bytesSizeToString(info.bytesTotal())));
                     else
-                        nameList->append(info.name() + " (" + Common::bytesSizeToString(info.bytesTotal()) + ")");
+                    {
+                        QString name = info.name();
+                        // This code handle \xHH characters (for example \x20 for a space)
+                        while(name.contains("\\x"))
+                        {
+                            int index = name.indexOf("\\x");
+                            char ch = name.mid(index + 2, 2).toInt(nullptr, 16);
+                            name.replace(name.indexOf("\\x"), 4, QChar(ch));
+                        }
+                        nameList->append(name + " (" + Common::bytesSizeToString(info.bytesTotal()) + ")");
+                    }
                 }
             }
         }
