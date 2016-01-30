@@ -22,10 +22,13 @@ include(version.pri)
 
 CONFIG += c++11
 
+BUILD_DATE = $$system(date -R)
+
 # Add defines to compiler
 DEFINES += \
     "APPLICATION_TARGET=\\\"$${APPLICATION_TARGET}\\\"" \
-    "APPLICATION_NAME=\\\"$${APPLICATION_NAME}\\\""
+    "APPLICATION_NAME=\\\"$${APPLICATION_NAME}\\\"" \
+    "BUILD_DATE=\"\\\"$${BUILD_DATE}\\\"\"" \
 
 
 RPI_INSTALL_PATH = /opt/rpi-car-system
@@ -53,7 +56,7 @@ CONFIG(debug, debug|release) {
 else {
     # Release
     BUILD_STR = release
-    DEFINES += CORE_RELEASE
+    DEFINES += CORE_RELEASE QT_NO_DEBUG_OUTPUT
 }
 
 OBJECTS_DIR = $${BUILD_PATH}/$${BUILD_STR}/obj

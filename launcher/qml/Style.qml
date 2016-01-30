@@ -71,4 +71,11 @@ QtObject {
         readonly property int buttonWidth: (windowWidth - marginH * 4) / 3
         readonly property int buttonHeight: (windowHeight - marginV * 4) / 3
     }
+
+    property QtObject diskSpace: QtObject {
+        readonly property color border: "#525252"
+        readonly property color free: "#ADADAD"
+        readonly property color systemUsed: "#F20732"
+        readonly property color musicUsed: "#F0A016"
+    }
 }

@@ -45,27 +45,51 @@ QStringList DevicesManager::availableDevicesPath()
     return _devicesPath;
 }
 
+// Disk sizes
+
+qint64 DevicesManager::rootStorageSize()
+{
+    return QStorageInfo::root().bytesTotal();
+}
+
+qint64 DevicesManager::rootStorageAvailableSize()
+{
+    return QStorageInfo::root().bytesAvailable();
+}
+
+qint64 DevicesManager::musicDirSize()
+{
+    return DirUtility::dirSize(Common::musicDir());
+}
+
+QString DevicesManager::rootStorageSizeStr()
+{
+    return Common::bytesSizeToString(rootStorageSize());
+}
+
+QString DevicesManager::rootStorageAvailableSizeStr()
+{
+    return Common::bytesSizeToString(rootStorageAvailableSize());
+}
+
+QString DevicesManager::musicDirSizeStr()
+{
+    return Common::bytesSizeToString(musicDirSize());
+}
+
+// Used by QML part
+QString DevicesManager::sizeStringFromBytes(qint64 bytes)
+{
+    return Common::bytesSizeToString(bytes);
+}
+
 //
 // Public slots
 //
 
 void DevicesManager::refreshDevicesList()
 {
-    _devicesName.clear();
-    _devicesPath.clear();
-
-    for(QStorageInfo info: QStorageInfo::mountedVolumes())
-    {
-        if(info.isReady() && info.isValid() && !info.isRoot() && info.rootPath().startsWith("/media"))
-        {
-            _devicesPath.append(info.rootPath());
-            if(info.name().isEmpty())
-                _devicesName.append(tr("%1 device").arg(bytesSizeToString(info.bytesTotal())));
-            else
-                _devicesName.append(info.name() + " (" + bytesSizeToString(info.bytesTotal()) + ")");
-        }
-    }
-
+    DirUtility::listUSBDevices(&_devicesPath, &_devicesName);
     emit devicesListRefreshed();
 }
 
@@ -99,22 +123,6 @@ void DevicesManager::startWorker(DeviceWorker *worker)
 //
 // Static
 //
-
-QString DevicesManager::bytesSizeToString(qint64 bytes)
-{
-    if(bytes < 0)
-        return QString();
-
-    if(bytes < Q_INT64_C(1000000))
-        return QString::number(bytes/1000., 'g', 2) + QString(" ") + tr("kB");
-    if(bytes < Q_INT64_C(1000000000))
-        return QString::number(bytes/1000000., 'g', 2) + QString(" ") + tr("MB");
-    if(bytes < Q_INT64_C(1000000000000))
-        return QString::number(bytes/1000000000., 'g', 2) + QString(" ") + tr("GB");
-    else
-        return QString::number(bytes/1000000000000., 'g', 2) + QString(" ") + tr("TB");
-}
-
 
 //--------------------------------------------
 //--- DeleteLocalFilesWorker -----------------

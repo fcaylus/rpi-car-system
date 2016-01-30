@@ -36,13 +36,15 @@ Activity {
         anchors.leftMargin: Style.mainMenu.marginH
         anchors.topMargin: Style.mainMenu.marginV
 
-        property Component settingsLanguage: SettingsLanguage {}
-        property Component settingsAbout: SettingsAbout {}
         property Component settingsUpdate: SettingsUpdate {}
+        property Component settingsLanguage: SettingsLanguage {}
+        property Component settingsSystem: SettingsSystem {}
+        property Component settingsAbout: SettingsAbout {}
 
         property var settingsMap: {
             3: settingsUpdate,
             4: settingsLanguage,
+            5: settingsSystem,
             6: settingsAbout
         }
 
@@ -73,7 +75,7 @@ Activity {
             }
             ListElement {
                 index: 5
-                isEnabled: false
+                isEnabled: true
                 title: qsTr("System")
                 icon: "qrc:/images/build"
             }

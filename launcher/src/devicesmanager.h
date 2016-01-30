@@ -42,7 +42,15 @@ class DevicesManager : public QObject
         Q_INVOKABLE QStringList availableDevicesPath();
         Q_INVOKABLE QStringList availableDevicesName();
 
-        static QString bytesSizeToString(qint64 bytes);
+        // Root storage sizes
+        Q_INVOKABLE qint64 rootStorageSize();
+        Q_INVOKABLE qint64 rootStorageAvailableSize();
+        Q_INVOKABLE qint64 musicDirSize();
+        Q_INVOKABLE QString rootStorageSizeStr();
+        Q_INVOKABLE QString rootStorageAvailableSizeStr();
+        Q_INVOKABLE QString musicDirSizeStr();
+
+        Q_INVOKABLE QString sizeStringFromBytes(qint64 bytes);
 
     public slots:
 

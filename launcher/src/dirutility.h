@@ -26,9 +26,19 @@
 #include <QUrl>
 #include <QFile>
 #include <QDirIterator>
+#include <QFileInfo>
+#include <QStorageInfo>
+
+#include "common.h"
 
 namespace DirUtility
 {
+    static inline QString fileNameFromPath(QString path)
+    {
+        QFileInfo info(path);
+        return info.fileName();
+    }
+
     // Return the file path for the specified URI
     static inline QString filePathForURI(QString uri)
     {
@@ -74,10 +84,49 @@ namespace DirUtility
         return countFilesRecursively(&it);
     }
 
+    static inline qint64 dirSize(const QString& dirPath)
+    {
+        qint64 size = 0;
+        QDirIterator it(dirPath,
+                        QDir::Dirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable | QDir::Hidden,
+                        QDirIterator::Subdirectories);
+        while(it.hasNext())
+        {
+            it.next();
+            size += it.fileInfo().size();
+        }
+
+        return size;
+    }
+
+    static inline void listUSBDevices(QStringList *pathList, QStringList *nameList = nullptr)
+    {
+        if(pathList == nullptr)
+            return;
+
+        pathList->clear();
+        if(nameList)
+            nameList->clear();
+
+        for(QStorageInfo info: QStorageInfo::mountedVolumes())
+        {
+            if(info.isReady() && info.isValid() && !info.isRoot() && info.rootPath().startsWith("/media"))
+            {
+                pathList->append(info.rootPath());
+                if(nameList)
+                {
+                    if(info.name().isEmpty())
+                        nameList->append(QCoreApplication::tr("%1 device").arg(Common::bytesSizeToString(info.bytesTotal())));
+                    else
+                        nameList->append(info.name() + " (" + Common::bytesSizeToString(info.bytesTotal()) + ")");
+                }
+            }
+        }
+    }
+
     // Get a unique filename
     // Use the date-time and a random number
-    // It's not guaranted to be unique, but there is a lot of chance
-    // (if all temp files are generated with this method)
+    // (NOTE: it's not guaranted to be unique)
     static inline QString uniqueFileName()
     {
         // Generate datetime

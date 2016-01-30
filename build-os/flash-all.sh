@@ -96,7 +96,7 @@ sudo mount /dev/${SD_CARD_DEVICE}2 /mnt/rpi-card-root
 cd /mnt/rpi-card-root
 
 # Flash the tar archive
-sudo tar -xjpvf "${TAR_DIR_NAME}/${TAR_NAME}.tar.bz2"
+sudo tar -xJpvf "${TAR_DIR_NAME}/${TAR_NAME}.tar.xz"
 
 # Set correct permissions
 sudo chown -R root:root .

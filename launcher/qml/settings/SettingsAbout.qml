@@ -86,8 +86,8 @@ Activity {
 
         Column {
             width: parent.width
-            height: parent.height - 30
-            y:25
+            height: parent.height - 25
+            y: 25
 
             spacing: 21
 

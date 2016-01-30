@@ -16,33 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILEREADER_H
-#define FILEREADER_H
+#ifndef SYSINFOMANAGER_H
+#define SYSINFOMANAGER_H
 
 #include <QObject>
-#include <QFile>
-#include <QTextStream>
+#include <QSysInfo>
 
-class FileReader : public QObject
+class SysInfoManager : public QObject
 {
-    Q_OBJECT
-
+        Q_OBJECT
     public:
+        SysInfoManager(): QObject(){}
 
-        static QString readFile(const QString &filename)
+        Q_INVOKABLE bool isLittleEndian()
         {
-            QFile file(filename);
-            if(!file.open(QFile::ReadOnly | QFile::Text))
-                return QString();
-            QTextStream in(&file);
-            return in.readAll();
+            return QSysInfo::ByteOrder == QSysInfo::LittleEndian;
         }
 
-        // For QML
-        Q_INVOKABLE QString read(const QString &filename)
+        Q_INVOKABLE int wordSize()
         {
-            return readFile(filename);
+            return QSysInfo::WordSize;
+        }
+
+        Q_INVOKABLE QString buildAbi()
+        {
+            return QSysInfo::buildAbi();
+        }
+
+        Q_INVOKABLE QString cpuArch()
+        {
+            return QSysInfo::buildCpuArchitecture();
+        }
+
+        Q_INVOKABLE QString kernelType()
+        {
+            return QSysInfo::kernelType();
+        }
+
+        Q_INVOKABLE QString kernelVersion()
+        {
+            return QSysInfo::kernelVersion();
         }
 };
 
-#endif // FILEREADER_H
+#endif // SYSINFOMANAGER_H

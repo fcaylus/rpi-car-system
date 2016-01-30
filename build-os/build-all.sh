@@ -22,13 +22,13 @@ if [ ! -d buildroot-${BUILDROOT_VER} ]; then
     tar xzf buildroot-${BUILDROOT_VER}.tar.gz
 fi
 
-if [ ! -f toolchain.done ]; then
+if [ ! -f system-build.done ]; then
 
 	cd buildroot-${BUILDROOT_VER}
     
     # Copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
-	#cp "$SCRIPT_DIR/buildroot-patches/busybox.config" package/busybox/busybox.config
+	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" busybox.config
 	#cp "$SCRIPT_DIR/buildroot-patches/kernel.config" .
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
@@ -47,8 +47,10 @@ if [ ! -f toolchain.done ]; then
 
     make
 
+	cp output/build/rpi-car-system-undefined/build/bin/release/VERSION output/target/opt/rpi-car-system/VERSION
+
     # This file is used to check if the system has been built
-    > $SCRIPT_DIR/build/toolchain.done
+    > $SCRIPT_DIR/build/system-build.done
 else
     echo "System already built !!!"
 fi
@@ -151,10 +153,10 @@ echo "All scripts installed !"
 
 cd "${SYSTEM_ROOT}"
 
-echo "..."
+echo "Creating tarball ..."
 
 # When uncompressing the tarball, make sure to pass tar the "-p" switch to ensure permissions are preserved.
-tar -jcf ../../../rpi-car-system.tar.bz2 *
+tar -Jcf ../../../rpi-car-system.tar.xz *
 
 echo "----------------------------------"
 echo "Build Finish !!!!"

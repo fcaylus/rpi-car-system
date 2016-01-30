@@ -18,15 +18,36 @@
 ##
 #############################################################################
 
-!unix|macx {
-    error(You are not in a linux system !)
-}
+########################################
+# Project definition for updater #
+########################################
 
-TEMPLATE = subdirs
-CONFIG += ordered
+TEMPLATE = app
 
-SUBDIRS += \
-    launcher \
-    musicindex-generator \
-    updater
+QT += core
+QT -= gui
 
+# Default defines
+APPLICATION_TARGET = updater
+APPLICATION_NAME = Updater
+
+include(../common.pri)
+
+#
+# Thirdparty stuff
+#
+
+LIBS += -lncurses -larchive
+
+#
+# Project sources
+#
+
+INCLUDEPATH += ../launcher/src/
+
+SOURCES += \
+    src/main.cpp
+
+HEADERS += \
+    src/decompressutil.h \
+    src/updatercodes.h

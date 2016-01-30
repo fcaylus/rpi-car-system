@@ -37,6 +37,7 @@
         <file>qml/settings/SettingsUpdate.qml</file>
         <file>qml/music/PlaylistPopup.qml</file>
         <file>qml/Popup.qml</file>
+        <file>qml/settings/SettingsSystem.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

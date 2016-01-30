@@ -30,6 +30,7 @@
 #include "languagemanager.h"
 #include "filereader.h"
 #include "devicesmanager.h"
+#include "sysinfomanager.h"
 
 #include <VLCQtCore/Common.h>
 
@@ -39,7 +40,6 @@ int main(int argc, char *argv[])
 {
     int resultCode = 0;
 #ifdef READY_FOR_CARSYSTEM
-    //QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QCoreApplication::addLibraryPath(QStringLiteral("/usr/lib/qt/plugins"));
     qDebug() << "Car system version";
 #endif
@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     LanguageManager *langMgr = new LanguageManager(&app, settings, locale);
     FileReader *fileReader = new FileReader();
     DevicesManager *devicesMgr = new DevicesManager();
+    SysInfoManager *sysinfoMgr = new SysInfoManager();
 
     QQuickView view;
     view.connect(view.engine(), &QQmlEngine::quit, &app, &QGuiApplication::quit);
@@ -87,11 +88,13 @@ int main(int argc, char *argv[])
     context->setContextProperty(QStringLiteral("languageManager"), langMgr);
     context->setContextProperty(QStringLiteral("devicesManager"), devicesMgr);
     context->setContextProperty(QStringLiteral("fileReader"), fileReader);
+    context->setContextProperty(QStringLiteral("sysinfoManager"), sysinfoMgr);
     context->setContextProperty(QStringLiteral("isPassFileCreated"), QVariant(PasswordManager::isPassFileExists()));
     context->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
     context->setContextProperty(QStringLiteral("hardwareVersion"), QVariant(HARDWARE_VERSION));
     context->setContextProperty(QStringLiteral("vlcVersion"), QVariant(VlcInstance::version()));
     context->setContextProperty(QStringLiteral("vlcqtVersion"), QVariant(VlcInstance::libVersion()));
+    context->setContextProperty(QStringLiteral("buildDate"), QVariant(QString(BUILD_DATE)));
 
     view.setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
@@ -110,6 +113,8 @@ int main(int argc, char *argv[])
     passMgr->deleteLater();
     langMgr->deleteLater();
     fileReader->deleteLater();
+    devicesMgr->deleteLater();
+    sysinfoMgr->deleteLater();
 
     settings->sync();
     settings->deleteLater();

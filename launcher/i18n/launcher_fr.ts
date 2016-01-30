@@ -4,32 +4,32 @@
 <context>
     <name>ActivitySettings</name>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="53"/>
+        <location filename="../qml/ActivitySettings.qml" line="55"/>
         <source>Equalizer</source>
         <translation>Égaliseur</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="59"/>
+        <location filename="../qml/ActivitySettings.qml" line="61"/>
         <source>Remove files</source>
         <translation>Supprimer des fichiers</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="65"/>
+        <location filename="../qml/ActivitySettings.qml" line="67"/>
         <source>Update</source>
         <translation>Mise à jour</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="71"/>
+        <location filename="../qml/ActivitySettings.qml" line="73"/>
         <source>Languages</source>
         <translation>Langues</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="77"/>
+        <location filename="../qml/ActivitySettings.qml" line="79"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="83"/>
+        <location filename="../qml/ActivitySettings.qml" line="85"/>
         <source>About</source>
         <translation>À propos</translation>
     </message>
@@ -75,42 +75,14 @@
 <context>
     <name>ConfirmationPopup</name>
     <message>
-        <location filename="../qml/ConfirmationPopup.qml" line="107"/>
+        <location filename="../qml/ConfirmationPopup.qml" line="75"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
-        <location filename="../qml/ConfirmationPopup.qml" line="123"/>
+        <location filename="../qml/ConfirmationPopup.qml" line="91"/>
         <source>No</source>
         <translation>Non</translation>
-    </message>
-</context>
-<context>
-    <name>DevicesManager</name>
-    <message>
-        <location filename="../src/devicesmanager.cpp" line="63"/>
-        <source>%1 device</source>
-        <translation>Volume de %1</translation>
-    </message>
-    <message>
-        <location filename="../src/devicesmanager.cpp" line="109"/>
-        <source>kB</source>
-        <translation>ko</translation>
-    </message>
-    <message>
-        <location filename="../src/devicesmanager.cpp" line="111"/>
-        <source>MB</source>
-        <translation>Mo</translation>
-    </message>
-    <message>
-        <location filename="../src/devicesmanager.cpp" line="113"/>
-        <source>GB</source>
-        <translation>Go</translation>
-    </message>
-    <message>
-        <location filename="../src/devicesmanager.cpp" line="115"/>
-        <source>TB</source>
-        <translation>To</translation>
     </message>
 </context>
 <context>
@@ -191,7 +163,7 @@
 <context>
     <name>MusicQueuePopup</name>
     <message>
-        <location filename="../qml/music/MusicQueuePopup.qml" line="93"/>
+        <location filename="../qml/music/MusicQueuePopup.qml" line="44"/>
         <source>Music queue ...</source>
         <translation>Liste de lecture ...</translation>
     </message>
@@ -202,6 +174,34 @@
         <location filename="../qml/PasswordPrompt.qml" line="93"/>
         <source>Show password</source>
         <translation>Afficher le mot de passe</translation>
+    </message>
+</context>
+<context>
+    <name>QCoreApplication</name>
+    <message>
+        <location filename="../src/common.h" line="53"/>
+        <source>kB</source>
+        <translation>ko</translation>
+    </message>
+    <message>
+        <location filename="../src/common.h" line="55"/>
+        <source>MB</source>
+        <translation>Mo</translation>
+    </message>
+    <message>
+        <location filename="../src/common.h" line="57"/>
+        <source>GB</source>
+        <translation>Go</translation>
+    </message>
+    <message>
+        <location filename="../src/common.h" line="59"/>
+        <source>TB</source>
+        <translation>To</translation>
+    </message>
+    <message>
+        <location filename="../src/dirutility.h" line="119"/>
+        <source>%1 device</source>
+        <translation>Volume de %1</translation>
     </message>
 </context>
 <context>
@@ -236,6 +236,16 @@
         <source>Hardware version:</source>
         <translation>Version matèrielle:</translation>
     </message>
+    <message>
+        <location filename="../qml/settings/SettingsAbout.qml" line="137"/>
+        <source>LibVLC version:</source>
+        <translation>Version de LibVLC:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsAbout.qml" line="138"/>
+        <source>VLC-Qt version:</source>
+        <translation>Version de VLC-Qt:</translation>
+    </message>
 </context>
 <context>
     <name>SettingsLanguage</name>
@@ -243,6 +253,44 @@
         <location filename="../qml/settings/SettingsLanguage.qml" line="53"/>
         <source>Languages list:</source>
         <translation>Langues disponibles:</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsSystem</name>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="43"/>
+        <source>Kernel:</source>
+        <translation>Noyau:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="50"/>
+        <source>Kernel version:</source>
+        <translation>Version du noyau:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="57"/>
+        <source>CPU architecture:</source>
+        <translation>Architecture du processeur:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="64"/>
+        <source>Word size:</source>
+        <translation>Taille des mots:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="71"/>
+        <source>Build ABI:</source>
+        <translation>ABI:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="78"/>
+        <source>Build date:</source>
+        <translation>Date de compilation:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="136"/>
+        <source>Free space:</source>
+        <translation>Espace libre:</translation>
     </message>
 </context>
 <context>
@@ -256,53 +304,53 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../qml/main.qml" line="102"/>
+        <location filename="../qml/main.qml" line="90"/>
         <source>My Music</source>
         <translation>Ma Musique</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="108"/>
+        <location filename="../qml/main.qml" line="96"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="114"/>
+        <location filename="../qml/main.qml" line="102"/>
         <source>My Videos</source>
         <translation>Mes Vidéos</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="120"/>
+        <location filename="../qml/main.qml" line="108"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="126"/>
+        <location filename="../qml/main.qml" line="114"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="132"/>
+        <location filename="../qml/main.qml" line="120"/>
         <source>Call</source>
         <translation>Appeller</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="138"/>
+        <location filename="../qml/main.qml" line="126"/>
         <source>Transfer</source>
         <translation>Transférer</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="144"/>
+        <location filename="../qml/main.qml" line="132"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="171"/>
+        <location filename="../qml/main.qml" line="159"/>
         <source>It&apos;s your first radio boot !
 Please enter a new password :</source>
         <translation>C&apos;est la première fois que vous allumez votre autoradio !\nVeuillez entrez un nouveau mot de passe :</translation>
     </message>
     <message>
-        <location filename="../qml/main.qml" line="185"/>
+        <location filename="../qml/main.qml" line="173"/>
         <source>Please confirm :</source>
         <translation>Veuillez confirmer:</translation>
     </message>

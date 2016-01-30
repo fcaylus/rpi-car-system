@@ -49,6 +49,7 @@ Rectangle {
     property int availableToolBarWidth: toolbar.width - toolbar.height
     property int toolbarHeight: toolbar.height
 
+    // Change "home" icon to "back" icon
     property bool subActivity: false
 
     Item {

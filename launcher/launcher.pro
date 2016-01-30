@@ -34,6 +34,9 @@ DEFINES += LAUNCHER_APP
 
 include(../common.pri)
 
+# Create version file in build dir
+QMAKE_POST_LINK = echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION";
+
 #
 # Thirdparty stuff
 #
@@ -66,7 +69,8 @@ HEADERS += \
     src/common.h \
     src/languagemanager.h \
     src/filereader.h \
-    src/devicesmanager.h
+    src/devicesmanager.h \
+    src/sysinfomanager.h
 
 RESOURCES += \
     res.qrc
@@ -79,7 +83,7 @@ TRANSLATIONS += \
     i18n/$${APPLICATION_TARGET}_fr.ts
 
 # For translations
-lupdate_only{
+lupdate_only {
 SOURCES += \
     qml/*.qml \
     qml/music/*.qml \

@@ -16,33 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILEREADER_H
-#define FILEREADER_H
+#ifndef UPDATERCODES_H
+#define UPDATERCODES_H
 
-#include <QObject>
-#include <QFile>
-#include <QTextStream>
+// Common
+#define UPDATER_CODE_NO_OPTION 10
+#define UPDATER_CODE_COMMON_ERROR 1
+#define UPDATER_CODE_SUCCESS 0
 
-class FileReader : public QObject
-{
-    Q_OBJECT
+// Check version
+#define UPDATER_CODE_CHECKVER_OK 0
+#define UPDATER_CODE_CHECKVER_BADHARDWARE 100
+#define UPDATER_CODE_CHECKVER_OLDER 200
+#define UPDATER_CODE_CHECKVER_NOFILE 300
 
-    public:
+#endif // UPDATERCODES_H
 
-        static QString readFile(const QString &filename)
-        {
-            QFile file(filename);
-            if(!file.open(QFile::ReadOnly | QFile::Text))
-                return QString();
-            QTextStream in(&file);
-            return in.readAll();
-        }
-
-        // For QML
-        Q_INVOKABLE QString read(const QString &filename)
-        {
-            return readFile(filename);
-        }
-};
-
-#endif // FILEREADER_H

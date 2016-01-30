@@ -44,6 +44,20 @@ namespace Common {
         return data;
     }
 
+    static inline QString bytesSizeToString(qint64 bytes)
+    {
+        if(bytes < 0)
+            return QString();
+
+        if(bytes < Q_INT64_C(1000000))
+            return QString::number(bytes/1000., 'f', 2) + QString(" ") + QCoreApplication::tr("kB");
+        if(bytes < Q_INT64_C(1000000000))
+            return QString::number(bytes/1000000., 'f', 2) + QString(" ") + QCoreApplication::tr("MB");
+        if(bytes < Q_INT64_C(1000000000000))
+            return QString::number(bytes/1000000000., 'f', 2) + QString(" ") + QCoreApplication::tr("GB");
+        else
+            return QString::number(bytes/1000000000000., 'f', 2) + QString(" ") + QCoreApplication::tr("TB");
+    }
 
     static inline QString configDir()
     {
