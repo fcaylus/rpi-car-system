@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<artists>
+    <artist name="Artist 1">
+        <album name="Album 1" cover="file:///path/to/artwork/file">
+        	<track>
+            	<title>Track 1</title>
+            	<path>/path/to/music/file</path>
+            	<cover>file:///file:///path/to/artwork/file</cover>
+            	<nb>1</nb>
+        	</track>
+        	<track>
+            	<title>Track 2</title>
+            	<path>/path/to/music/file</path>
+            	<cover>file:///file:///path/to/artwork/file</cover>
+            	<nb>2</nb>
+        	</track>
+    	</album>
+        <album name="Album 2" cover="file:///path/to/artwork/file">
+        	<track>
+            	<title>Track 1</title>
+            	<path>/path/to/music/file</path>
+            	<cover>file:///file:///path/to/artwork/file</cover>
+            	<nb>1</nb>
+        	</track>
+        	<track>
+            	<title>Track 2</title>
+            	<path>/path/to/music/file</path>
+            	<cover>file:///file:///path/to/artwork/file</cover>
+            	<nb>2</nb>
+        	</track>
+    	</album>
+    </artist>
+    <!-- for raw files (without tags) -->
+    <artist name="Unknown Artist">
+        <album name="Unknown Album" cover="qrc:/images/default_artwork">
+            <track>
+            	<title>[filename]</title>
+            	<path>/path/to/music/file</path>
+            	<cover>qrc:/images/default_artwork</cover>
+            	<nb>0</nb>
+        	</track>
+        </album>
+    </artist>
+</artists>

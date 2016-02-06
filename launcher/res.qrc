@@ -38,6 +38,8 @@
         <file>qml/music/PlaylistPopup.qml</file>
         <file>qml/Popup.qml</file>
         <file>qml/settings/SettingsSystem.qml</file>
+        <file>qml/BorderlessButton.qml</file>
+        <file>qml/music/ListViewPlaylist.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
@@ -86,6 +88,8 @@
         <file alias="folder">imgs/icons/folder.png</file>
         <file alias="update">imgs/icons/update.png</file>
         <file alias="delete">imgs/icons/delete.png</file>
+        <file alias="playlist_add">imgs/icons/playlist_add.png</file>
+        <file alias="play_arrow">imgs/icons/play_arrow.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>

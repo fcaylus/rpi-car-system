@@ -21,6 +21,7 @@
 #include "common.h"
 
 #include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -44,6 +45,8 @@ int recreateMusicIndex(VlcInstance *instance, MediaList &mediaList);
 int updateMediaList(MediaList& mediaList);
 // Create the xml files (with albums and artists maps)
 int createMediaMapsFromList(MediaList& mediaList);
+// Remove useless entries for playlists
+void removeUselessPlaylistEntries();
 
 static QString _indexFilePath;
 static QString _albumMapFilePath;
@@ -67,6 +70,10 @@ int main(int argc, char** argv)
 
     VlcInstance *instance = new VlcInstance(VlcCommon::args(), nullptr);
     const int result = checkForNewMusicFiles(instance);
+
+    // Also try to remove useless entries in playlist files
+    removeUselessPlaylistEntries();
+
     instance->deleteLater();
     return result;
 }
@@ -575,3 +582,104 @@ int createMediaMapsFromList(MediaList &mediaList)
 
     return EXIT_CODE_SUCCESS;
 }
+
+void removeUselessPlaylistEntries()
+{
+    QDir dir = QDir(MediaInfo::playlistsDirectory());
+    if(dir.exists())
+    {
+        QStringList filesPath = dir.entryList(QStringList("*.xml"),
+                                              QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Readable);
+        for(QString fileName: filesPath)
+        {
+            QString path = dir.filePath(fileName);
+            QFile file(path);
+            if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                qCritical() << file.errorString();
+                continue;
+            }
+
+            QFile newFile(path + QStringLiteral(".new"));
+            if(!newFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                qCritical() << newFile.errorString();
+                file.close();
+                continue;
+            }
+
+            QXmlStreamReader reader(&file);
+            QXmlStreamWriter writer(&newFile);
+#ifdef QT_DEBUG
+            writer.setAutoFormatting(true);
+#endif
+            writer.writeStartDocument();
+            writer.writeStartElement("playlist");
+
+            QString title;
+            QString cover;
+            QString musicPath;
+            bool uselessFiles = false;
+
+            while(!reader.atEnd())
+            {
+                reader.readNext();
+
+                if(reader.isStartElement() && reader.name() == "playlist")
+                {
+                    writer.writeAttribute("name", reader.attributes().value("name").toString());
+                }
+                // On the end of each track
+                else if(reader.isEndElement() && reader.name() == "track")
+                {
+                    if(QFile::exists(musicPath))
+                    {
+                        writer.writeStartElement("track");
+                        writer.writeTextElement("title", title);
+                        writer.writeTextElement("path", musicPath);
+                        writer.writeTextElement("cover", cover);
+                        writer.writeEndElement();
+                    }
+                    else
+                    {
+                        uselessFiles = true;
+                    }
+
+                    title = "";
+                    cover = "";
+                    musicPath = "";
+                }
+                else if(reader.name() == "title")
+                {
+                    title = reader.readElementText();
+                }
+                else if(reader.name() == "cover")
+                {
+                    cover = reader.readElementText();
+                }
+                else if(reader.name() == "path")
+                {
+                    musicPath = reader.readElementText();
+                }
+            }
+
+            writer.writeEndElement();
+            writer.writeEndDocument();
+
+            file.close();
+            newFile.close();
+
+            // Only overwrite on changes
+            if(uselessFiles)
+            {
+                DirUtility::removeIfExists(path);
+                QFile::rename(path + ".new", path);
+            }
+            else
+                QFile::remove(path + ".new");
+        }
+    }
+}
+
+
+

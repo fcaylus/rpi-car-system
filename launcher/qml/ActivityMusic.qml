@@ -169,6 +169,7 @@ Activity {
                 playerVisible = false
             }
         }
+
         onClicked: {
             if(playerVisible) {
                 currentState = 1
@@ -179,6 +180,35 @@ Activity {
                 checked = false
                 playerVisible = true
             }
+        }
+
+        Connections {
+            target: soundManager
+            onNewMediaPlayedFromFile: {
+                if(soundManager.started) {
+                    chooseButton.clicked()
+                }
+            }
+        }
+    }
+
+    // Used to add playlists
+    PasswordPrompt {
+        id: addPlaylistPrompt
+        visible: false
+        standardInput: true
+        titleText: qsTr("New playlist's name:")
+        showBackButton: true
+
+        onPromptFinish: {
+            visible = false
+        }
+        onBackClicked: {
+            visible = false
+        }
+
+        onVisibleChanged: {
+            resetText()
         }
     }
 

@@ -65,9 +65,13 @@ class SoundManager: public QObject
 
         // Tell the QML interface if at least one music has been played
         Q_PROPERTY(bool started READ started NOTIFY startedChanged)
+        Q_PROPERTY(MainViewType lastMainViewType READ lastMainViewType)
 
         Q_PROPERTY(QStringList currentMediaQueueTitles READ currentMediaQueueTitles NOTIFY currentMediaQueueChanged)
         Q_PROPERTY(QStringList currentMediaQueueCovers READ currentMediaQueueCovers NOTIFY currentMediaQueueChanged)
+
+        Q_PROPERTY(QStringList playlistNames READ playlistNames)
+        Q_PROPERTY(QStringList playlistFiles READ playlistFiles)
 
     public:
         SoundManager(QSettings *settings); // ctor
@@ -79,14 +83,23 @@ class SoundManager: public QObject
         };
         Q_ENUM(RepeatMode)
 
+        enum MainViewType {
+            Artists = 0,
+            Albums = 1,
+            Tracks = 2,
+            Playlists = 3
+        };
+        Q_ENUM(MainViewType)
+
     public slots:
 
-        // xmlSourceFile and xmlSourceQuery are optional and used to fill the current media queue
-        // ie: fill the media queue with the current album
-        void playFromFile(const QString& path, QString xmlSourceFile = "", const QString& xmlSourceQuery = "");
+        // xmlSourceFile and xmlSourceQuery are used to fill the current media queue
+        // if path is empty, play the first music in the sourceQuery
+        void playFromFile(QString path, QString xmlSourceFile = "", const QString& xmlSourceQuery = "");
         void playNextIndex();
         void playPreviousIndex();
         void playFromIndex(const int& idx);
+        void playFromPlaylist(const QString& playlistFile);
 
         void setVolume(int volume);
 
@@ -102,12 +115,16 @@ class SoundManager: public QObject
         void setRepeatMode(RepeatMode mode);
         void setRandom(bool random);
 
-        void setPlayerVisibility(bool visible);
+        // Playlist stuff
+        void addSongToPlaylist(QString playlistFileName, QString musicTitle, QString musicPath, QString musicCover);
+        void removePlaylistFile(const QString& fileName);
+        void removeFromPlaylist(const QString& playlistFilePath, const QString& musicFile);
 
-        // History related
+        // History stuff
         void addHistoryEntry(QUrl source, QString sourceFile, QString sourceQuery, QString headerText);
         void removeLastHistoryEntry();
 
+        void setPlayerVisibility(bool visible);
         void saveSettings();
 
     signals:
@@ -129,10 +146,10 @@ class SoundManager: public QObject
         void mediaListReadyChanged();
 
         void hasHistoryEntryChanged();
-
         void startedChanged();
 
         void currentMediaQueueChanged();
+        void newMediaPlayedFromFile();
 
     public:
 
@@ -159,8 +176,10 @@ class SoundManager: public QObject
 
         bool started() const;
         Q_INVOKABLE bool isPlayerVisible();
+        MainViewType lastMainViewType() const;
 
-        // List History related
+        //
+        // History stuff
         bool hasHistoryEntry();
         Q_INVOKABLE QUrl lastHistoryEntrySource();
         Q_INVOKABLE QString lastHistoryEntrySourceFile();
@@ -170,6 +189,14 @@ class SoundManager: public QObject
         QStringList currentMediaQueueTitles();
         QStringList currentMediaQueueCovers();
         Q_INVOKABLE int currentIndex();
+
+        //
+        // Playlist stuff
+        QStringList playlistNames();
+        QStringList playlistFiles();
+        Q_INVOKABLE QUrl playlistUrl(QString file);
+        // Return the created file name
+        Q_INVOKABLE QString createNewPlaylist(QString name);
 
         // Convert time in ms to "hh:mm:ss"
         static QString timeToString(unsigned int time);
@@ -196,14 +223,18 @@ class SoundManager: public QObject
 
         // List view history
         QStack<ListViewHistoryEntry> _listViewHistory;
+        MainViewType _lastMainViewType = MainViewType::Artists;
+
+        QStringList _playlistNames;
+        QStringList _playlistFiles;
 
         QSettings *_settings;
-
 
         // Emits all signals for the qml part
         void emitNewMediaSignals();
 
         void randomizeQueue();
+        void updatePlaylistsData();
 
         Q_DISABLE_COPY(SoundManager)
 };

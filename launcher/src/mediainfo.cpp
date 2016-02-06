@@ -200,6 +200,11 @@ QString MediaInfo::musicIndexFilePath()
     return Common::configDir() + QStringLiteral("/music-index.txt");
 }
 
+QString MediaInfo::playlistsDirectory()
+{
+    return Common::configDir() + QStringLiteral("/playlists");
+}
+
 QStringList MediaInfo::musicFilesFormats()
 {
     // From: https://en.wikipedia.org/wiki/Audio_file_format

@@ -23,16 +23,13 @@ import QtGraphicalEffects 1.0
 import "."
 
 ButtonStyle {
-
     background: Rectangle {
-        property bool pressed: control.pressed
-
         radius: inMainMenu ? 20 : 0
 
         gradient: Gradient {
             GradientStop {
-                color: inToolbar ? (pressed ? Style.toolbar.gradientStartPressed : Style.toolbar.gradientStart)
-                                 : (pressed ? Style.button.gradientStartPressed : Style.button.gradientStart)
+                color: inToolbar ? (control.pressed ? Style.toolbar.gradientStartPressed : Style.toolbar.gradientStart)
+                                 : (control.pressed ? Style.button.gradientStartPressed : Style.button.gradientStart)
                 position: 0
             }
             GradientStop {
@@ -46,7 +43,7 @@ ButtonStyle {
             width: parent.width
             anchors.top: parent.top
             color: inToolbar ? Style.toolbar.topBorderColor : Style.button.topBorderColor
-            visible: inMainMenu ? false : !pressed
+            visible: inMainMenu ? false : !control.pressed
         }
 
         Rectangle {
@@ -78,24 +75,36 @@ ButtonStyle {
                 height: control.height * iconScale
                 width: Math.min(sourceSize.width, height)
                 fillMode: Image.PreserveAspectFit
+
+                ColorOverlay {
+                    anchors.fill: parent
+                    source: parent
+                    color: control.pressed ? Style.button.clickedOverlayColor
+                                                : Style.button.checkedOverlayColor
+                    visible: control.pressed || control.checked
+                }
             }
 
             StyledText {
                 id: hText
                 text: control.text
-                font.pixelSize: control.height * .35
+                font.pixelSize: control.height * fontRatio
                 horizontalAlignment: alignCenter ? Text.AlignHCenter : Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.bold: bold
+
+                // Handle clicked and checked states
+                Connections {
+                    target: control
+                    onPressedChanged: {
+                        hText.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
+                    }
+                    onCheckedChanged: {
+                        hText.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
+                    }
+                }
             }
-        }
-        ColorOverlay {
-            anchors.fill: col
-            source: col
-            color: control.pressed ? Style.button.clickedOverlayColor
-                                   : Style.button.checkedOverlayColor
-            visible: control.pressed || control.checked
         }
     }
 }

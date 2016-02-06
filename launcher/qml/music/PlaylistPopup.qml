@@ -24,13 +24,38 @@ import "."
 Popup {
     id: playlistPopup
 
+    property string newTitle
+    property string newMusicFile
+    property string newCover
+
     Component {
         id: popupContent
 
         Rectangle {
             color: "transparent"
 
+            ListViewPlaylist {
+                id: listView
+                width: popupContentWidth
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: 15
+                anchors.topMargin: 15
+                anchors.bottomMargin: 15
+                addMode: true
+
+                property string headerText: qsTr("Add %1 to ...").arg(newTitle)
+            }
         }
+    }
+
+    function requestMusicAddition(musicFile, title, cover)
+    {
+        newMusicFile = musicFile
+        newTitle = title
+        newCover = cover
+        visible = true
     }
 
     Component.onCompleted: setContent(popupContent)

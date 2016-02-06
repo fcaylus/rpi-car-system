@@ -66,6 +66,8 @@ class MediaInfo: public QObject
         static QString trackListFilePath();
         static QString musicIndexFilePath();
 
+        static QString playlistsDirectory();
+
         static QStringList musicFilesFormats();
 
     public slots:

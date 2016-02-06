@@ -35,7 +35,23 @@ Item {
         if(soundManager.mediaListReady) {
             waitText.visible = false
             mainRow.visible = true
-            artistButton.clicked()
+
+            var lastMainView = soundManager.lastMainViewType
+            switch(lastMainView) {
+                case 0:
+                    artistButton.clicked()
+                    break;
+                case 1:
+                    albumButton.clicked()
+                    break;
+                case 2:
+                    trackButton.clicked()
+                    break;
+                case 3:
+                    playlistButton.clicked()
+                    break;
+            }
+
             started = true
         }
 
@@ -58,6 +74,7 @@ Item {
                     started = true
                 } else {
                     // ListView is already visible
+                    // Reload current view
                     var src = loader.source
                     loader.source = ""
                     loader.source = src
@@ -82,6 +99,8 @@ Item {
         id: mainRow
         visible: false
         anchors.fill: parent
+        anchors.leftMargin: 5
+        anchors.rightMargin: 5
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
 
@@ -89,17 +108,24 @@ Item {
 
         // Used to choose correct mode
         Column {
+            y: 5
             width: 200
+            spacing: 5
 
-            DarkButton {
+            BorderlessButton {
                 id: artistButton
                 width: parent.width
-                height: 80
+                height: 60
                 alignCenter: true
                 bold: true
                 text: qsTr("Artists")
 
                 onClicked: {
+                    // Do nothing if "artists tab" is already selected
+                    if(loader.sourceQuery === "/artists/artist") {
+                        return
+                    }
+
                     // Small trick to avoid addition of the first entry
                     // Started is set to true only after the first add
                     if(started) {
@@ -113,16 +139,22 @@ Item {
                 }
             }
 
-            DarkButton {
+            BorderlessButton {
                 id: albumButton
                 width: parent.width
-                height: 80
+                height: 60
                 alignCenter: true
                 bold: true
                 text: qsTr("Albums")
 
                 onClicked: {
-                    loader.appendLastEntry()
+                    if(loader.sourceQuery === "/albums/album") {
+                        return
+                    }
+                    if(started) {
+                        loader.appendLastEntry()
+                    }
+
                     loader.headerText = qsTr("Albums list ...")
                     loader.sourceFile = soundManager.albumMapFilePath
                     loader.sourceQuery = "/albums/album"
@@ -130,16 +162,22 @@ Item {
                 }
             }
 
-            DarkButton {
+            BorderlessButton {
                 id: trackButton
                 width: parent.width
-                height: 80
+                height: 60
                 alignCenter: true
                 bold: true
                 text: qsTr("Tracks")
 
                 onClicked: {
-                    loader.appendLastEntry()
+                    if(loader.sourceQuery === "/tracks/track") {
+                        return
+                    }
+                    if(started) {
+                        loader.appendLastEntry()
+                    }
+
                     loader.headerText = qsTr("Tracks list ...")
                     loader.sourceFile = soundManager.trackListFilePath
                     loader.sourceQuery = "/tracks/track"
@@ -147,8 +185,30 @@ Item {
                 }
             }
 
+            BorderlessButton {
+                id: playlistButton
+                width: parent.width
+                height: 60
+                alignCenter: true
+                bold: true
+                text: qsTr("Playlists")
+
+                onClicked: {
+                    if(loader.sourceQuery === "/playlist") {
+                        return
+                    }
+                    if(started) {
+                        loader.appendLastEntry()
+                    }
+
+                    loader.headerText = qsTr("Playlists ...")
+                    loader.sourceQuery = "/playlist"
+                    loader.source = "qrc:/qml/music/ListViewPlaylist.qml"
+                }
+            }
+
             FlatButton {
-                width: 120
+                width: 80
                 height: width
                 anchors.horizontalCenter: parent.horizontalCenter
                 iconSource: "qrc:/images/back"
@@ -179,7 +239,7 @@ Item {
             id: loader
             focus: true
 
-            height: parent.height - 10
+            height: parent.height - 2
 
             property string headerText
             property string sourceFile
@@ -205,6 +265,44 @@ Item {
     PlaylistPopup {
         id: playlistPopup
         visible: false
+    }
+
+    // userData  --> playlist name
+    // userData2 --> playlist file
+    ConfirmationPopup {
+        id: removePlaylistPopup
+        visible: false
+
+        highlightNoButton: true
+        highlightYesButton: false
+
+        title: qsTr("Are you sure to remove \"%1\" playlist ?").arg(userData)
+
+        onExitSuccess: {
+            soundManager.removePlaylistFile(userData2);
+        }
+    }
+
+    // userData --> playlist file
+    // userData2 --> music file
+    // userData3 --> music title
+    ConfirmationPopup {
+        id: removeFromPlaylistPopup
+        visible: false
+
+        highlightNoButton: true
+        highlightYesButton: false
+
+        title: qsTr("Are you sure to remove \"%1\" from the playlist ?").arg(userData3)
+
+        onExitSuccess: {
+            soundManager.removeFromPlaylist(userData, userData2)
+
+            // Reload current view
+            var src = loader.source
+            loader.source = ""
+            loader.source = src
+        }
     }
 }
 

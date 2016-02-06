@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_FR">
 <context>
+    <name>ActivityMusic</name>
+    <message>
+        <location filename="../qml/ActivityMusic.qml" line="200"/>
+        <source>New playlist&apos;s name:</source>
+        <translation>Nom de la nouvelle playlist:</translation>
+    </message>
+</context>
+<context>
     <name>ActivitySettings</name>
     <message>
         <location filename="../qml/ActivitySettings.qml" line="55"/>
@@ -75,12 +83,12 @@
 <context>
     <name>ConfirmationPopup</name>
     <message>
-        <location filename="../qml/ConfirmationPopup.qml" line="75"/>
+        <location filename="../qml/ConfirmationPopup.qml" line="77"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
-        <location filename="../qml/ConfirmationPopup.qml" line="91"/>
+        <location filename="../qml/ConfirmationPopup.qml" line="93"/>
         <source>No</source>
         <translation>Non</translation>
     </message>
@@ -96,7 +104,7 @@
 <context>
     <name>ListViewAlbum</name>
     <message>
-        <location filename="../qml/music/ListViewAlbum.qml" line="71"/>
+        <location filename="../qml/music/ListViewAlbum.qml" line="68"/>
         <source>Album: </source>
         <translation>Album: </translation>
     </message>
@@ -104,9 +112,22 @@
 <context>
     <name>ListViewArtist</name>
     <message>
-        <location filename="../qml/music/ListViewArtist.qml" line="69"/>
+        <location filename="../qml/music/ListViewArtist.qml" line="66"/>
         <source>Artist: </source>
         <translation>Artiste: </translation>
+    </message>
+</context>
+<context>
+    <name>ListViewPlaylist</name>
+    <message>
+        <location filename="../qml/music/ListViewPlaylist.qml" line="75"/>
+        <source>Playlist: </source>
+        <translation>Playlist:</translation>
+    </message>
+    <message>
+        <location filename="../qml/music/ListViewPlaylist.qml" line="127"/>
+        <source>New playlist</source>
+        <translation>Nouvelle playlist</translation>
     </message>
 </context>
 <context>
@@ -125,39 +146,59 @@
 <context>
     <name>MusicListView</name>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="74"/>
+        <location filename="../qml/music/MusicListView.qml" line="91"/>
         <source>Search for music files ...</source>
         <translation>Recherche de fichiers musicaux en cours ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="100"/>
+        <location filename="../qml/music/MusicListView.qml" line="121"/>
         <source>Artists</source>
         <translation>Artistes</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="109"/>
+        <location filename="../qml/music/MusicListView.qml" line="135"/>
         <source>Artists list ...</source>
         <translation>Liste des artistes ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="122"/>
+        <location filename="../qml/music/MusicListView.qml" line="148"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="126"/>
+        <location filename="../qml/music/MusicListView.qml" line="158"/>
         <source>Albums list ...</source>
         <translation>Liste des albums ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="139"/>
+        <location filename="../qml/music/MusicListView.qml" line="171"/>
         <source>Tracks</source>
         <translation>Titres</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="143"/>
+        <location filename="../qml/music/MusicListView.qml" line="181"/>
         <source>Tracks list ...</source>
         <translation>Liste des titres ...</translation>
+    </message>
+    <message>
+        <location filename="../qml/music/MusicListView.qml" line="194"/>
+        <source>Playlists</source>
+        <translation>Playlists</translation>
+    </message>
+    <message>
+        <location filename="../qml/music/MusicListView.qml" line="204"/>
+        <source>Playlists ...</source>
+        <translation>Playlists ...</translation>
+    </message>
+    <message>
+        <location filename="../qml/music/MusicListView.qml" line="279"/>
+        <source>Are you sure to remove &quot;%1&quot; playlist ?</source>
+        <translation>Voulez-vous vraiment supprimer la playlist &quot;%1&quot; ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/music/MusicListView.qml" line="296"/>
+        <source>Are you sure to remove &quot;%1&quot; from the playlist ?</source>
+        <translation>Voulez-vous vraiment supprimer &quot;%1&quot; de la playlist ?</translation>
     </message>
 </context>
 <context>
@@ -171,30 +212,38 @@
 <context>
     <name>PasswordPrompt</name>
     <message>
-        <location filename="../qml/PasswordPrompt.qml" line="93"/>
+        <location filename="../qml/PasswordPrompt.qml" line="98"/>
         <source>Show password</source>
         <translation>Afficher le mot de passe</translation>
     </message>
 </context>
 <context>
+    <name>PlaylistPopup</name>
+    <message>
+        <location filename="../qml/music/PlaylistPopup.qml" line="48"/>
+        <source>Add %1 to ...</source>
+        <translation>Ajouter %1 à ...</translation>
+    </message>
+</context>
+<context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/common.h" line="53"/>
+        <location filename="../src/common.h" line="60"/>
         <source>kB</source>
         <translation>ko</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="55"/>
+        <location filename="../src/common.h" line="62"/>
         <source>MB</source>
         <translation>Mo</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="57"/>
+        <location filename="../src/common.h" line="64"/>
         <source>GB</source>
         <translation>Go</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="59"/>
+        <location filename="../src/common.h" line="66"/>
         <source>TB</source>
         <translation>To</translation>
     </message>

@@ -28,6 +28,7 @@ Rectangle {
 
     property string titleText
     property bool showBackButton: false
+    property bool standardInput: false
 
     signal promptFinish(string text)
     signal backClicked()
@@ -77,7 +78,7 @@ Rectangle {
             width: parent.width
             height: 50
             readOnly: true
-            echoMode: TextInput.PasswordEchoOnEdit
+            echoMode: standardInput ? TextInput.Normal : TextInput.PasswordEchoOnEdit
 
             function appendText(newText) {
                 text = text + newText
@@ -87,14 +88,17 @@ Rectangle {
                     text = text.substring(0, text.length - 1)
                 }
             }
+            function clear() {
+                text = ""
+            }
         }
 
         DarkCheckBox {
+            visible: !standardInput
             text: qsTr("Show password")
             onClicked: passwordInput.echoMode = checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit
         }
     }
-
 
     InputPanel {
         id: keyboard
@@ -104,5 +108,9 @@ Rectangle {
         onKeyPressed: passwordInput.appendText(text)
         onBackPressed: passwordInput.doBack()
         onEnterPressed: promptFinish(passwordInput.text)
+    }
+
+    function resetText() {
+        passwordInput.clear()
     }
 }

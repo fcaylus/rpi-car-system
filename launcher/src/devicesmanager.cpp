@@ -187,7 +187,6 @@ CopyFilesWorker::CopyFilesWorker(const QString &devPath): DeviceWorker()
     _devPath = devPath;
 }
 
-// TODO: finish
 void CopyFilesWorker::start()
 {
 #ifdef READY_FOR_CARSYSTEM

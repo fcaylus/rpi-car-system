@@ -23,8 +23,6 @@ import ".."
 import "."
 
 ListViewBase {
-    id: listViewTrack
-
     model: XmlListModel {
         id: model
 
@@ -37,7 +35,6 @@ ListViewBase {
     delegate: Item {
         width: artistRow.implicitWidth
         height: artistRow.implicitHeight
-        //clip: true
 
         Row {
             id: artistRow

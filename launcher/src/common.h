@@ -24,6 +24,13 @@
 #include <QProcess>
 #include <QDebug>
 
+// Pugi save format
+#ifdef QT_DEBUG
+#define PUGI_SAVE_FORMAT pugi::format_default
+#else
+#define PUGI_SAVE_FORMAT pugi::format_raw
+#endif
+
 namespace Common {
 
     static inline QString startProcessAndReadOutput(const QString& name, QStringList args = QStringList())

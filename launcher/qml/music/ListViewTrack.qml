@@ -23,7 +23,8 @@ import ".."
 import "."
 
 ListViewBase {
-    id: listViewTrack
+    id: trackListView
+    property bool inPlaylist: false
 
     model: XmlListModel {
         id: model
@@ -37,9 +38,8 @@ ListViewBase {
     }
 
     delegate: Item {
-        width: trackRow.implicitWidth
+        width: trackListView.width
         height: trackRow.implicitHeight
-        //clip: true
 
         Row {
             id: trackRow
@@ -67,13 +67,26 @@ ListViewBase {
             anchors.fill: trackRow
             onClicked: {
                 soundManager.playFromFile(path, loader.sourceFile, loader.sourceQuery);
-                chooseButton.clicked()
             }
 
             onPressAndHold: {
-                // TODO: finish playlist implementation
-                //playlistPopup.visible = true
+                if(inPlaylist) {
+                    removeFromPlaylistPopup.userData = sourceFile
+                    removeFromPlaylistPopup.userData2 = path
+                    removeFromPlaylistPopup.userData3 = title
+                    removeFromPlaylistPopup.visible = true
+                } else {
+                    playlistPopup.requestMusicAddition(path, title, cover)
+                }
             }
+        }
+    }
+
+    Component.onCompleted: {
+        if(sourceQuery.indexOf("playlist") > -1) {
+            inPlaylist = true
+        } else {
+            inPlaylist = false
         }
     }
 }

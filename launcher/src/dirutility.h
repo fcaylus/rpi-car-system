@@ -136,7 +136,7 @@ namespace DirUtility
 
     // Get a unique filename
     // Use the date-time and a random number
-    // (NOTE: it's not guaranted to be unique)
+    // NOTE: it's not guaranted to be unique
     static inline QString uniqueFileName()
     {
         // Generate datetime

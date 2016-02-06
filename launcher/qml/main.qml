@@ -152,7 +152,7 @@ Rectangle {
         }
     }
 
-    // This rectangle is only shown when password file is not created
+    // This rectangle is only shown when password file is not found
     PasswordPrompt {
         id: askPassword
         visible: !isPassFileCreated

@@ -31,6 +31,8 @@ Popup {
     property bool bold: false
 
     property string userData
+    property string userData2
+    property string userData3
 
     property bool highlightYesButton: true
     property bool highlightNoButton: false
@@ -77,7 +79,7 @@ Popup {
 
                 onClicked: {
                     exitSuccess()
-                    popup.visible = false
+                    confirmPopup.visible = false
                 }
             }
 
@@ -92,7 +94,7 @@ Popup {
                 yes: highlightNoButton
 
                 onClicked: {
-                    popup.visible = false
+                    confirmPopup.visible = false
                 }
             }
         }
