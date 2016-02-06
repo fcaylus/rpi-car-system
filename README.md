@@ -33,3 +33,4 @@ Licensed under the [GNU GPL] license v3. See LICENSE file for more information.
 [Vlc-Qt]:https://github.com/vlc-qt/vlc-qt
 [MiniFlatFlags]:https://github.com/pixelstrolch/MiniFlatFlags
 [Material Icons]:https://www.google.com/design/icons/
+[GNU GPL]:http://www.gnu.org/licenses/gpl-3.0.en.html
