@@ -31,6 +31,7 @@
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Audio.h>
+#include <VLCQtCore/Error.h>
 
 #include <algorithm>
 
@@ -49,7 +50,7 @@ SoundManager::SoundManager(QSettings *settings)
     _settings = settings;
 
 #ifdef QT_DEBUG
-    QStringList args = VlcCommon::args() << "--verbose=2";
+    QStringList args = VlcCommon::args() << "--verbose=1";
 #else
     QStringList args = VlcCommon::args() << "--verbose=0";
 #endif
@@ -68,19 +69,11 @@ SoundManager::SoundManager(QSettings *settings)
     connect(_vlcMediaPlayer, &VlcMediaPlayer::stopped, this, &SoundManager::isPlayingChanged);
 
     // On end handler
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::end, [this](){
-        emit isPlayingChanged();
-        emit endReached();
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::end, this, &SoundManager::onEndReachedHandler, Qt::QueuedConnection);
 
-        if(_repeatMode == RepeatOne)
-        {
-            _vlcMediaPlayer->open(_currentMedia);
-            _vlcMediaPlayer->play();
-        }
-        else if(_repeatMode == RepeatAll)
-        {
-            playFromIndex((_currentMediaIndex + 1) % _currentMediaList.size());
-        }
+    // On error handler
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::error, [this](){
+        qWarning() << VlcError::errmsg();
     });
 
     updatePlaylistsData();
@@ -120,6 +113,21 @@ SoundManager::SoundManager(QSettings *settings)
         }
     });
     musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
+}
+
+//
+// Private slot
+//
+
+void SoundManager::onEndReachedHandler()
+{
+    emit isPlayingChanged();
+    emit endReached();
+
+    if(_repeatMode == RepeatOne)
+        playFromIndex(_currentMediaIndex);
+    else if(_repeatMode == RepeatAll)
+        playFromIndex((_currentMediaIndex + 1) % _currentMediaList.size());
 }
 
 //

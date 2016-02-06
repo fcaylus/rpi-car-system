@@ -127,6 +127,9 @@ class SoundManager: public QObject
         void setPlayerVisibility(bool visible);
         void saveSettings();
 
+    private slots:
+        void onEndReachedHandler();
+
     signals:
 
         void mediaTitleChanged();

@@ -97,39 +97,6 @@ Rectangle {
 
             text: title
         }
-/*
-        // Yes and no buttons
-
-        PopupButton {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.left: parent.left
-            anchors.leftMargin: 120
-            height: 80
-            width: 150
-            text: qsTr("Yes")
-            yes: highlightYesButton
-
-            onClicked: {
-                exitSuccess()
-                popup.visible = false
-            }
-        }
-
-        PopupButton {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 50
-            anchors.right: parent.right
-            anchors.rightMargin: 120
-            height: 80
-            width: 150
-            text: qsTr("No")
-            yes: highlightNoButton
-
-            onClicked: {
-                popup.visible = false
-            }
-        }*/
 
         DarkProgressBar {
             id: progress
