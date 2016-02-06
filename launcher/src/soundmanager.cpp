@@ -43,6 +43,7 @@ static const QString settingsGroupStr = "music";
 static const QString settingsRandomStr = "random";
 static const QString settingsRepeatModeStr = "repeat";
 static const QString settingsLastMainViewType = "lastviewtype";
+static const QString settingsVolumeStr = "volume";
 
 // Public constructor
 SoundManager::SoundManager(QSettings *settings)
@@ -86,6 +87,7 @@ SoundManager::SoundManager(QSettings *settings)
     setRandom(_settings->value(settingsRandomStr, false).toBool());
     setRepeatMode(static_cast<RepeatMode>(_settings->value(settingsRepeatModeStr, 0).toInt()));
     _lastMainViewType = static_cast<MainViewType>(_settings->value(settingsLastMainViewType, 0).toInt());
+    setVolume(_settings->value(settingsVolumeStr, -1).toInt());
     _settings->endGroup();
 
     //
@@ -749,6 +751,7 @@ void SoundManager::saveSettings()
     _settings->setValue(settingsRandomStr, random());
     _settings->setValue(settingsRepeatModeStr, static_cast<int>(repeatMode()));
     _settings->setValue(settingsLastMainViewType, static_cast<int>(lastMainViewType()));
+    _settings->setValue(settingsVolumeStr, volume());
     _settings->endGroup();
 }
 
