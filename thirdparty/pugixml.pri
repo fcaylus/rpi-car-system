@@ -1,9 +1,9 @@
 SOURCES += \
-    $$PWD/pugixml-1.7/src/pugixml.cpp
+    $$PWD/pugixml/pugixml.cpp
 
 HEADERS += \
-    $$PWD/pugixml-1.7/src/pugixml.hpp \
-    $$PWD/pugixml-1.7/src/pugiconfig.hpp
+    $$PWD/pugixml/pugixml.hpp \
+    $$PWD/pugixml/pugiconfig.hpp
 
 INCLUDEPATH += \
-    $$PWD/pugixml-1.7/src
+    $$PWD/pugixml

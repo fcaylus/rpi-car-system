@@ -1,6 +1,10 @@
-
+#
 # Hardware version always equals to the major version
-# Only changes on hardware modifications
+# Only changes when modify:
+# - Hardware
+# - Boot process
+# - Kernel version
+#
 HARDWARE_VERSION = 0
 MINOR_VERSION = 0
 PATCH_VERSION = 1
