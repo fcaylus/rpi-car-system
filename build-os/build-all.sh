@@ -30,6 +30,7 @@ if [ ! -f system-build.done ]; then
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
 	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" busybox.config
 	#cp "$SCRIPT_DIR/buildroot-patches/kernel.config" .
+	cp "$SCRIPT_DIR/buildroot-patches/kernel.patch" kernel.patch
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
