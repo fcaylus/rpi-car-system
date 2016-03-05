@@ -7,11 +7,21 @@ cd "$SCRIPT_DIR"
 mkdir -pv build
 cd build
 
+BUILDROOT_VER="2015.11.1"
+
+# Check if a clean is requested
+if [ "$1" = "--remove-rpi-car-system-pkg" ]; then
+	set +e
+	rm -f system-build.done
+	rm -f rpi-car-system-sources.tar.gz
+	rm -f buildroot-${BUILDROOT_VER}/dl/rpi-car-system-sources.tar.gz
+	rm -rf buildroot-${BUILDROOT_VER}/output/build/rpi-car-system-undefined
+	exit
+fi
+
 #
 # Use Buildroot to compile the system
 #
-
-BUILDROOT_VER="2015.11.1"
 
 if [ ! -f download.done ]; then
 	wget -nc http://buildroot.uclibc.org/downloads/buildroot-${BUILDROOT_VER}.tar.gz
@@ -29,7 +39,7 @@ if [ ! -f system-build.done ]; then
     # Copy config files
     cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
 	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" busybox.config
-	#cp "$SCRIPT_DIR/buildroot-patches/kernel.config" .
+	cp "$SCRIPT_DIR/buildroot-patches/kernel.config" kernel.config
 	cp "$SCRIPT_DIR/buildroot-patches/kernel.patch" kernel.patch
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/

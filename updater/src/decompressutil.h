@@ -96,7 +96,7 @@ namespace DecompressUtil
 
         while(archive_read_next_header(ar, &entry) == ARCHIVE_OK)
         {
-            if(std::strcmp(archive_entry_pathname(entry), "opt/rpi-car-system/VERSION") == 0)
+            if(std::strcmp(archive_entry_pathname(entry), "VERSION") == 0)
             {
                 archive_entry_set_pathname(entry, "/tmp/rpi-car-system-VERSION");
                 if(archive_write_header(out, entry) == ARCHIVE_OK)
@@ -135,26 +135,28 @@ namespace DecompressUtil
             // Check hardware
             if(nums.at(0).toInt() != HARDWARE_VERSION)
             {
-                *errorText = QStringLiteral("Hardware versions not match. Current:")
+                *errorText = QStringLiteral("Hardware versions not match. Current: ")
                         + QString::number(HARDWARE_VERSION)
-                        + QStringLiteral("Update:") + nums.at(0);
+                        + QStringLiteral(" Update: ") + nums.at(0);
+
+                // Check if older
+                if(nums.at(0).toInt() < HARDWARE_VERSION)
+                    return UPDATER_CODE_CHECKVER_OLDER;
                 return UPDATER_CODE_CHECKVER_BADHARDWARE;
             }
 
             // Check other numbers
-            if(nums.at(1).toInt() >= MINOR_VERSION)
+            if(nums.at(1).toInt() > MINOR_VERSION
+               || (nums.at(1).toInt() == MINOR_VERSION && nums.at(2).toInt() > PATCH_VERSION))
             {
-                if(nums.at(2).toInt() > PATCH_VERSION)
-                {
-                    *errorText = QStringLiteral("Newer version found:") + ver;
-                    return UPDATER_CODE_CHECKVER_OK;
-                }
+                *errorText = QStringLiteral("Newer version found: ") + ver;
+                return UPDATER_CODE_CHECKVER_OK;
             }
 
             // Here, version is older
-            *errorText = QStringLiteral("Older version. Current:")
+            *errorText = QStringLiteral("Older version. Current: ")
                     + QString(APPLICATION_VERSION)
-                    + QStringLiteral("Update:") + ver;
+                    + QStringLiteral(" Update: ") + ver;
             return UPDATER_CODE_CHECKVER_OLDER;
         }
 

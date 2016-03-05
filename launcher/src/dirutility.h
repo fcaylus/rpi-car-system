@@ -99,6 +99,63 @@ namespace DirUtility
         return size;
     }
 
+    static inline bool removeRecursively(const QString &dirName)
+    {
+        bool result = true;
+        QDir dir(dirName);
+
+        if(dir.exists(dirName))
+        {
+            QFileInfoList entriesList = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden | QDir::AllDirs | QDir::Files, QDir::DirsFirst);
+            for(QFileInfo info : entriesList)
+            {
+                if(info.isDir())
+                    result = removeRecursively(info.absoluteFilePath());
+                else
+                    result = QFile::remove(info.absoluteFilePath());
+
+                if(!result)
+                    return result;
+            }
+
+            result = dir.rmdir(dirName);
+        }
+
+        return result;
+    }
+
+    static inline bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath)
+    {
+        QFileInfo srcFileInfo(srcFilePath);
+
+        if(srcFileInfo.isDir())
+        {
+            QDir targetDir(tgtFilePath);
+            targetDir.cdUp();
+
+            if(!targetDir.mkdir(QFileInfo(tgtFilePath).fileName()))
+                return false;
+
+            QDir sourceDir(srcFilePath);
+            QStringList fileNames = sourceDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+
+            for(const QString &fileName : fileNames)
+            {
+                const QString newSrcFilePath = srcFilePath + QLatin1Char('/') + fileName;
+                const QString newTgtFilePath = tgtFilePath + QLatin1Char('/') + fileName;
+                if(!copyRecursively(newSrcFilePath, newTgtFilePath))
+                    return false;
+            }
+        }
+        else
+        {
+            if(!QFile::copy(srcFilePath, tgtFilePath))
+                return false;
+        }
+
+        return true;
+    }
+
     static inline void listUSBDevices(QStringList *pathList, QStringList *nameList = nullptr)
     {
         if(pathList == nullptr)
@@ -136,7 +193,7 @@ namespace DirUtility
 
     // Get a unique filename
     // Use the date-time and a random number
-    // NOTE: it's not guaranted to be unique
+    // /!\ It's not guaranted to be unique
     static inline QString uniqueFileName()
     {
         // Generate datetime

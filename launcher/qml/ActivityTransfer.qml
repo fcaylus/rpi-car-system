@@ -88,8 +88,6 @@ Activity {
             height: parent.height - 30
             spacing: 10
 
-            //clip: true
-
             model: ListModel {
                 id: model
             }

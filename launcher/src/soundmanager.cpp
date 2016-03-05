@@ -117,6 +117,14 @@ SoundManager::SoundManager(QSettings *settings)
     musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
 }
 
+SoundManager::~SoundManager()
+{
+    delete _vlcAudio;
+    delete _currentMedia;
+    delete _vlcMediaPlayer;
+    delete _vlcInstance;
+}
+
 //
 // Private slot
 //

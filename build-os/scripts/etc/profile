@@ -34,11 +34,6 @@ export PAGER='/bin/more '
 export EDITOR='/bin/nano'
 export TERMINFO='/share/terminfo'
 export INPUTRC=/etc/inputrc
-export DMALLOC_OPTIONS=debug=0x34f47d83,inter=100,log=logfile
-
-export HISTCONTROL=ignoreboth
-export HISTSIZE=1000
-export HISTFILESIZE=1000
 
 # Set console color
 PS1="$E_BGre[\u$E_BPur@$E_BGre\h] $E_Gre\$ \w $E_BGre>$E_RCol "
@@ -59,5 +54,5 @@ done
 
 #
 # Launch main app
-/etc/rpi-car-system/launcher.sh
+/opt/rpi-car-system/launcher.sh
 

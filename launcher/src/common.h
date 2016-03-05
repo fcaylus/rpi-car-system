@@ -31,9 +31,17 @@
 #define PUGI_SAVE_FORMAT pugi::format_raw
 #endif
 
+//
+// Some exit codes (don't forget to modify launcher.sh also)
+//
+
+#define REBOOT_CODE   10 // Launcher will immediately reboot
+#define UPDATE_CODE   20 // Updater will be launched
+#define SHUTDOWN_CODE 30 // System will be shutdown
+
 namespace Common {
 
-    static inline QString startProcessAndReadOutput(const QString& name, QStringList args = QStringList())
+    static inline QString startProcessAndReadOutput(const QString& name, QStringList args = QStringList(), int *returnCode = nullptr)
     {
         QProcess process;
         process.setProcessChannelMode(QProcess::MergedChannels);
@@ -47,6 +55,13 @@ namespace Common {
 
         if(data.endsWith("\n"))
             data.remove(data.length() - 1, 1);
+
+        if(returnCode != nullptr)
+        {
+            process.waitForFinished();
+            if(process.exitStatus() == QProcess::NormalExit)
+                *returnCode = process.exitCode();
+        }
 
         return data;
     }

@@ -60,22 +60,22 @@
         <translation>Veuillez insérer une clé USB !</translation>
     </message>
     <message>
-        <location filename="../qml/ActivityTransfer.qml" line="158"/>
+        <location filename="../qml/ActivityTransfer.qml" line="156"/>
         <source>Are you sure to transfer all music files from this device ?</source>
         <translation>Êtes-vous sûr de vouloir transférer tous les fichiers musicaux depuis ce périphérique ?</translation>
     </message>
     <message>
-        <location filename="../qml/ActivityTransfer.qml" line="168"/>
+        <location filename="../qml/ActivityTransfer.qml" line="166"/>
         <source>Copy all files from device ...</source>
         <translation>Copie de tous les fichiers du périphérique ...</translation>
     </message>
     <message>
-        <location filename="../qml/ActivityTransfer.qml" line="199"/>
+        <location filename="../qml/ActivityTransfer.qml" line="197"/>
         <source>Are you sure to delete all media stored in the radio ?</source>
         <translation>Êtes-vous sûr de vouloir supprimer tous les médias stockés localement ?</translation>
     </message>
     <message>
-        <location filename="../qml/ActivityTransfer.qml" line="212"/>
+        <location filename="../qml/ActivityTransfer.qml" line="210"/>
         <source>Deleting local media files ...</source>
         <translation>Suppression des médias locaux ...</translation>
     </message>
@@ -228,27 +228,27 @@
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/common.h" line="60"/>
+        <location filename="../src/common.h" line="75"/>
         <source>kB</source>
         <translation>ko</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="62"/>
+        <location filename="../src/common.h" line="77"/>
         <source>MB</source>
         <translation>Mo</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="64"/>
+        <location filename="../src/common.h" line="79"/>
         <source>GB</source>
         <translation>Go</translation>
     </message>
     <message>
-        <location filename="../src/common.h" line="66"/>
+        <location filename="../src/common.h" line="81"/>
         <source>TB</source>
         <translation>To</translation>
     </message>
     <message>
-        <location filename="../src/dirutility.h" line="119"/>
+        <location filename="../src/dirutility.h" line="176"/>
         <source>%1 device</source>
         <translation>Volume de %1</translation>
     </message>
@@ -345,9 +345,59 @@
 <context>
     <name>SettingsUpdate</name>
     <message>
-        <location filename="../qml/settings/SettingsUpdate.qml" line="40"/>
-        <source>Automatic update is not yet available !</source>
-        <translation>La mise à jour automatique n&apos;est pas encore disponible !</translation>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="32"/>
+        <source>Available update packages :</source>
+        <translation>Paquets de mise à jour disponibles:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="44"/>
+        <source>Searching ...</source>
+        <translation>Recherche en cours ...</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="59"/>
+        <source>No updates found !</source>
+        <translation>Aucune mise à jour trouvée !</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="104"/>
+        <source>Update to version: %1</source>
+        <translation>Mise à jour vers la version %1</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="105"/>
+        <source>Older package (version %1)</source>
+        <translation>Vieux paquet (version %1)</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="106"/>
+        <source>Different hardware package (manual update): %1</source>
+        <translation>Paquet de màj. système (procédure manuelle): %1</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="107"/>
+        <source>Malformed package !</source>
+        <translation>Paquet de màj mal-formé !</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="174"/>
+        <source>Are you sure to update your system to version %1 ?</source>
+        <translation>Êtes-vous sûr de vouloir faire la mise à jour vers la version %1 ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="189"/>
+        <source>The update can turn your system into a brick. Are you sure ?</source>
+        <translation>La mise à jour peut rendre votre système inutilisable. Êtes-vous sûr ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="204"/>
+        <source>Really ?</source>
+        <translation>Vraiment ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsUpdate.qml" line="217"/>
+        <source>Enter root password to continue:</source>
+        <translation>Entrer le mot de passe admin pour continuer:</translation>
     </message>
 </context>
 <context>

@@ -75,6 +75,7 @@ class SoundManager: public QObject
 
     public:
         SoundManager(QSettings *settings); // ctor
+        ~SoundManager();
 
         enum RepeatMode {
             NoRepeat = 0,

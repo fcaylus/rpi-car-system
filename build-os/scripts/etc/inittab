@@ -3,11 +3,7 @@
 ::sysinit:/etc/rc.d/startup
 
 tty1::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty1
-tty2::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty2
-tty3::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty3
-tty4::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty4
-tty5::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty5
-tty6::respawn:/sbin/getty -l /etc/autologin.sh -n 38400 tty6
+tty2::respawn:/sbin/getty -n 38400 tty2
 
 # Put a getty on the serial line (for a terminal)
 # uncomment this line if your using a serial console

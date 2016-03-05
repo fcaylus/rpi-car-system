@@ -64,6 +64,7 @@ QtObject {
     readonly property color popupBackground: "#BB101010"
 
     readonly property color dangerousColor: "#8B0000"
+    readonly property color safeColor: "#29991D"
 
     property QtObject mainMenu: QtObject {
         readonly property int marginH: 20

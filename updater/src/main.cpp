@@ -32,7 +32,31 @@
 #include <QStorageInfo>
 
 #include "decompressutil.h"
-#include "filereader.h"
+
+/**
+ * An update archive is a .tar.xz file with the following structure:
+ *
+ *  - VERSION
+ *  - sums.md5
+ *  - symlinks.list
+ *  - data/
+ *      - etc/
+ *      - lib/
+ *      - opt/
+ *      - sbin/
+ *      - usr/
+ *          - bin/
+ *          - lib/
+ *          - libexec/
+ *          - qml/
+ *          - sbin/
+ *          - share/
+ *
+ *  sums.md5 contains the md5 sum of each file in the data dir.
+ *  symlinks.list contains a list of all symlinks files (symlinks are not listed in the md5 list)
+ *  data dir is entirely copied in the system root.
+ *  If an update must modify any other directory, it must be specified as an hardware update.
+ */
 
 int applyUpdate(const QString& path);
 int checkVersion(const QString& path);
@@ -101,7 +125,6 @@ int searchUpdates()
 
     for(QString devicePath : devicesList)
     {
-        //qDebug() << devicePath;
         QDirIterator it(devicePath,
                         QStringList() << "*.tar.xz",
                         QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable,
@@ -111,13 +134,22 @@ int searchUpdates()
         {
             it.next();
 
-            // Check if it's an update package
+            // Check if it's an update package (search for VERSION and sums.md5 files)
             struct archive_entry *entry;
             struct archive *ar;
+            struct archive *out;
+
+            bool versionFound = false;
+            bool md5SumsFound = false;
+            bool symLinksFound = false;
+            QString version;
 
             ar = archive_read_new();
             archive_read_support_filter_xz(ar);
             archive_read_support_format_tar(ar);
+
+            out = archive_write_disk_new();
+            archive_write_disk_set_standard_lookup(out);
 
             int ret = archive_read_open_filename(ar, it.filePath().toStdString().c_str(), 10240);
 
@@ -126,18 +158,47 @@ int searchUpdates()
 
             while(archive_read_next_header(ar, &entry) == ARCHIVE_OK)
             {
-                if(std::strcmp(archive_entry_pathname(entry), "opt/rpi-car-system/VERSION") == 0)
+                if(std::strcmp(archive_entry_pathname(entry), "VERSION") == 0)
                 {
-                    // VERSION file found, so output the archive path
+                    // Extract VERSION file
+                    archive_entry_set_pathname(entry, "/tmp/rpi-car-system-VERSION");
+                    if(archive_write_header(out, entry) == ARCHIVE_OK)
+                    {
+                        if(DecompressUtilInternal::copyData(ar, out) < ARCHIVE_OK)
+                            break;
+
+                        if(archive_write_finish_entry(out) < ARCHIVE_OK)
+                            break;
+
+                        archive_write_close(out);
+                        archive_write_free(out);
+
+                        version = FileReader::readFile("/tmp/rpi-car-system-VERSION").trimmed();
+                        QFile::remove("/tmp/rpi-car-system-VERSION");
+                        versionFound = true;
+                    }
+                }
+                else if(std::strcmp(archive_entry_pathname(entry), "sums.md5") == 0)
+                    md5SumsFound = true;
+                else if(std::strcmp(archive_entry_pathname(entry), "symlinks.list") == 0)
+                    symLinksFound = true;
+                else
+                    archive_read_data_skip(ar);
+
+                // It's an update package, output the version and the archive path
+                if(versionFound && md5SumsFound && symLinksFound)
+                {
                     // Use qInfo() since qDebug() is disabled on release builds
-                    qInfo() << qPrintable(it.filePath());
+                    qInfo() << qPrintable(version + QLatin1Char(' ') + it.filePath());
                     found = true;
                     break;
                 }
-                else
-                {
-                    archive_read_data_skip(ar);
-                }
+            }
+
+            if(!versionFound)
+            {
+                archive_write_close(out);
+                archive_write_free(out);
             }
 
             archive_read_close(ar);
@@ -208,9 +269,49 @@ int applyUpdate(const QString &path)
     if(!DecompressUtil::decompress(path, outputDirPath, &errorText))
         return showErrorStatus("Decompression error !", errorText);
 
-    //TODO: finish the update system
+    QStringList dirsToUpdate = {
+        "/bin",
+        "/etc",
+        "/lib",
+        "/opt",
+        "/sbin",
+        "/usr/bin",
+        "/usr/lib",
+        "/usr/libexec",
+        "/usr/qml",
+        "/usr/sbin",
+        "/usr/share"
+    };
 
+    // Step 4 (the most critical)
+    // If an error occured, there is no way to recover the system
+    for(QString currentDir : dirsToUpdate)
+    {
+        showStatus(QString(QLatin1String("Removing local dir: ") + currentDir).toStdString().c_str());
+        // Only compile on car system since root dirs are modified
+#ifdef READY_FOR_CARSYSTEM
+        if(!DirUtility::removeRecursively(currentDir))
+            return showErrorStatus(QString(QStringLiteral("Can't remove local dir: ") + currentDir).toStdString().c_str(),
+                                   "Your system is surely bricked !");
+#endif
 
+        showStatus(QString(QLatin1String("Copying new dir: ") + currentDir).toStdString().c_str());
+#ifdef READY_FOR_CARSYSTEM
+        if(!DirUtility::copyRecursively(outputDirPath + QLatin1String("/data") + currentDir, currentDir))
+            return showErrorStatus(QString(QStringLiteral("Can't copy update dir: ") + currentDir).toStdString().c_str(),
+                                   "Your system is surely bricked !");
+#endif
+
+    }
+
+    // Step 5
+    showStatus("Remove unnecessary update files ...");
+    QDir(outputDirPath).removeRecursively();
+
+    showStatus("Update finished !");
+    sleep(2);
+    showStatus("Your system will be reboot soon ...");
+    sleep(2);
 
     endwin();
     return UPDATER_CODE_SUCCESS;

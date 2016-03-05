@@ -62,6 +62,9 @@ docgen/
 # Qt transalation files (compiled)
 *.qm
 
+# System tarballs
+*.tar.gz
+*.tar.xz
 
 # OS generated files #
 ######################

@@ -29,13 +29,23 @@ class FileReader : public QObject
 
     public:
 
-        static QString readFile(const QString &filename)
+        static QString readFile(const QString &fileName)
         {
-            QFile file(filename);
+            QFile file(fileName);
             if(!file.open(QFile::ReadOnly | QFile::Text))
                 return QString();
             QTextStream in(&file);
             return in.readAll();
+        }
+
+        static void writeFile(const QString& fileName, const QString& content)
+        {
+            QFile file(fileName);
+            if(file.open(QFile::WriteOnly | QFile::Text))
+            {
+                QTextStream out(&file);
+                out << content;
+            }
         }
 
         // For QML

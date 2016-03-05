@@ -90,6 +90,7 @@
         <file alias="delete">imgs/icons/delete.png</file>
         <file alias="playlist_add">imgs/icons/playlist_add.png</file>
         <file alias="play_arrow">imgs/icons/play_arrow.png</file>
+        <file alias="unarchive">imgs/icons/unarchive.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>

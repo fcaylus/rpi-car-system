@@ -70,7 +70,8 @@ HEADERS += \
     src/languagemanager.h \
     src/filereader.h \
     src/devicesmanager.h \
-    src/sysinfomanager.h
+    src/sysinfomanager.h \
+    src/updatemanager.h
 
 RESOURCES += \
     res.qrc

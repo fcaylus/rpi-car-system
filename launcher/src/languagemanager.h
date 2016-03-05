@@ -23,7 +23,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 
-#define REBOOT_CODE 8956
+#include "common.h"
 
 class LanguageManager: public QObject
 {
