@@ -22,7 +22,6 @@ import QtQuick.Controls.Styles 1.2
 import "."
 
 Rectangle {
-
     property bool subActivity: false
 
     anchors.bottom: parent.bottom

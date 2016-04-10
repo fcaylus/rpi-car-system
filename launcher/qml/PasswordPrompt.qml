@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.3
 import "."
 import "./keyboard"
 
@@ -32,6 +32,11 @@ Rectangle {
 
     signal promptFinish(string text)
     signal backClicked()
+
+    function setText(text) {
+        passwordInput.clear()
+        passwordInput.appendText(text)
+    }
 
     gradient: Gradient {
         GradientStop {

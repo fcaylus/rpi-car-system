@@ -24,24 +24,15 @@ import "./settings"
 Activity {
     id: activitySettings
 
-    control: GridView {
-        width: controlBounds.width
-        height: controlBounds.height
-
-        cellWidth: Style.mainMenu.buttonWidth + Style.mainMenu.marginH
-        cellHeight: Style.mainMenu.buttonHeight + Style.mainMenu.marginV
-
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.leftMargin: Style.mainMenu.marginH
-        anchors.topMargin: Style.mainMenu.marginV
+    control: GridMenu {
+        expectedDepth: 2
 
         property Component settingsUpdate: SettingsUpdate {}
         property Component settingsLanguage: SettingsLanguage {}
         property Component settingsSystem: SettingsSystem {}
         property Component settingsAbout: SettingsAbout {}
 
-        property var settingsMap: {
+        map: {
             3: settingsUpdate,
             4: settingsLanguage,
             5: settingsSystem,
@@ -84,22 +75,6 @@ Activity {
                 isEnabled: true
                 title: qsTr("About")
                 icon: "qrc:/images/info"
-            }
-        }
-
-        delegate: MainMenuButton {
-            width: Style.mainMenu.buttonWidth
-            height: Style.mainMenu.buttonHeight
-
-            enabled: isEnabled
-            text: title
-            iconSource: icon
-
-            onClicked: {
-                if(isEnabled && stackView.depth == 2) {
-                    stackView.push({item: settingsMap[index]});
-                    stackView.currentItem.forceActiveFocus();
-                }
             }
         }
     }

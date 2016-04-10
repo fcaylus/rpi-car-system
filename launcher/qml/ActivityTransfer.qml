@@ -36,7 +36,7 @@ Activity {
         text: qsTr("Refresh")
         bold: true
 
-        x: availableToolBarWidth / 2 - width / 2 + toolbarHeight
+        x: availableToolBarWidth / 2 - width / 2 + Style.toolbar.height
         onClicked: {
             devicesManager.refreshDevicesList()
         }
@@ -51,15 +51,13 @@ Activity {
         iconSource: "qrc:/images/delete"
         iconScale: 0.6
 
-        x: Style.windowWidth - toolbarHeight * iconScale - 20
+        x: Style.windowWidth - Style.toolbar.height * iconScale - 20
         onClicked: {
             confirmDelete.visible = true
         }
     }
 
     control: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
         color: "transparent"
 
         property string headerText: qsTr("USB sticks list :")

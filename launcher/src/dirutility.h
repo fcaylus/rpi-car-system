@@ -42,7 +42,7 @@ namespace DirUtility
     // Return the file path for the specified URI
     static inline QString filePathForURI(QString uri)
     {
-        if(uri.startsWith(QStringLiteral("file://")))
+        if(uri.startsWith(QLatin1String("file://")))
             uri.remove(0, 7);
 
         return QUrl::fromPercentEncoding(uri.toUtf8());

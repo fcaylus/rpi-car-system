@@ -60,13 +60,10 @@ static bool appRunning = true;
 
 void handleTouchScreenInput(QObject *eventReceiver)
 {
-    qDebug() << QString("0x0EEF").toInt(0, 16) << QString("0x0005").toInt(0, 16);
-
     QDir devDir("/dev");
     QStringList hidrawList = devDir.entryList(QStringList({"hidraw*"}), QDir::Files | QDir::System);
     for(QString hidrawPath : hidrawList)
     {
-        qDebug() << hidrawPath;
         int fd = open(QString("/dev/" + hidrawPath).toStdString().c_str(), O_RDWR);
 
         if(fd < 0)

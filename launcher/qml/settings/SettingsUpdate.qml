@@ -25,8 +25,6 @@ Activity {
     subActivity: true
 
     control: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
         color: "transparent"
 
         property string headerText: qsTr("Available update packages :")

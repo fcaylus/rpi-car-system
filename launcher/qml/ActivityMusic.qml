@@ -24,15 +24,8 @@ import "music"
 Activity {
     id: activityMusic
 
-    property Component player: MusicPlayer {
-        width: controlBounds.width
-        height: controlBounds.height
-    }
-
-    property Component lister: MusicListView {
-        width: controlBounds.width
-        height: controlBounds.height
-    }
+    property Component player: MusicPlayer {}
+    property Component lister: MusicListView {}
 
     property bool playerVisible: false
 
@@ -52,7 +45,7 @@ Activity {
         hasSecondIcon: true
         secondIcon: "qrc:/images/pause"
 
-        x: availableToolBarWidth / 2 + toolbarHeight + 30
+        x: availableToolBarWidth / 2 + Style.toolbar.height + 30
 
         disableAutoMgr: true
         onClicked: {

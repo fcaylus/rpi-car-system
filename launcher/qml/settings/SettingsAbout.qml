@@ -79,125 +79,105 @@ Activity {
         }
     }
 
-    property Component about: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
-        color: "transparent"
+    property Component about: Column {
+        anchors.fill: parent
+        anchors.topMargin: 25
 
-        Column {
+        spacing: 21
+
+        StyledText {
             width: parent.width
-            height: parent.height - 25
-            y: 25
+            font.pixelSize: 50
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.bold: true
+            text: "RPI Car System"
+        }
 
-            spacing: 21
+        StyledText {
+            width: parent.width
+            font.pixelSize: 20
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: "Copyright (c) 2016 Fabien CAYLUS"
+        }
 
-            StyledText {
-                width: parent.width
-                font.pixelSize: 50
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                font.bold: true
-                text: "RPI Car System"
-            }
+        StyledText {
+            width: parent.width
+            font.pixelSize: 30
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: qsTr("Full featured headunit system !");
+        }
 
-            StyledText {
-                width: parent.width
-                font.pixelSize: 20
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: "Copyright (c) 2016 Fabien CAYLUS"
-            }
+        StyledText {
+            width: parent.width
+            font.pixelSize: 22
+            font.italic: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            text: "<b>" +  qsTr("Version:") + "</b>   " + programVersion
+                  + "<br><b>" + qsTr("Hardware version:") + "</b>   " + hardwareVersion
+        }
 
-            StyledText {
-                width: parent.width
-                font.pixelSize: 30
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: qsTr("Full featured headunit system !");
-            }
-
-            StyledText {
-                width: parent.width
-                font.pixelSize: 22
-                font.italic: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                wrapMode: Text.WordWrap
-                text: "<b>" +  qsTr("Version:") + "</b>   " + programVersion
-                      + "<br><b>" + qsTr("Hardware version:") + "</b>   " + hardwareVersion
-            }
-
-            StyledText {
-                width: parent.width
-                font.pixelSize: 15
-                font.italic: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                wrapMode: Text.WordWrap
-                text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + vlcVersion
-                      + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + vlcqtVersion
-            }
+        StyledText {
+            width: parent.width
+            font.pixelSize: 15
+            font.italic: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap
+            text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + vlcVersion
+                  + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + vlcqtVersion
         }
     }
 
-    property Component license: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
-        color: "transparent"
+    property Component license: Flickable {
+        id: flick
+        anchors.fill: parent
+        anchors.topMargin: 25
+        contentHeight: text.height
 
-        Flickable {
-            id: flick
-            anchors.fill: parent
-            contentHeight: text.height
-
-            StyledText {
-                id: text
-                x: 20
-                width: parent.width - 40
-                textFormat: Text.RichText
-                wrapMode: Text.Wrap
-                verticalAlignment: Text.AlignVCenter
-                text: fileReader.read(":/LICENSE.html")
-            }
-        }
-    }
-
-    property Component license3rd: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
-        color: "transparent"
-
-        ListViewBase {
-            id: listView3rd
-
+        StyledText {
+            id: text
             x: 20
-            y: 20
             width: parent.width - 40
-            height: parent.height - 40
+            textFormat: Text.RichText
+            wrapMode: Text.Wrap
+            verticalAlignment: Text.AlignVCenter
+            text: fileReader.read(":/LICENSE.html")
+        }
+    }
 
-            spacing: 20
+    property Component license3rd: ListViewBase {
+        id: listView3rd
 
-            // Reset header
-            header: Item {
-            }
+        anchors.fill: parent
+        anchors.margins: 20
 
-            model: XmlListModel {
-                id: model
+        spacing: 20
 
-                source: "qrc:/ThirdpartyLicenses.xml"
-                query: "/deps/dep"
+        // Reset header
+        header: Item {
+        }
 
-                XmlRole { name: "name"; query: "name/string()" }
-                XmlRole { name: "license"; query: "license/string()" }
-            }
+        model: XmlListModel {
+            id: model
 
-            delegate: StyledText {
-                width: listView3rd.width
-                textFormat: Text.RichText
-                wrapMode: Text.Wrap
-                verticalAlignment: Text.AlignVCenter
-                text: "<h1><b>" + name + "</b></h1>\n" + license
-            }
+            source: "qrc:/ThirdpartyLicenses.xml"
+            query: "/deps/dep"
+
+            XmlRole { name: "name"; query: "name/string()" }
+            XmlRole { name: "license"; query: "license/string()" }
+        }
+
+        delegate: StyledText {
+            width: listView3rd.width
+            textFormat: Text.RichText
+            wrapMode: Text.Wrap
+            verticalAlignment: Text.AlignVCenter
+            text: "<h1><b>" + name + "</b></h1>\n" + license
         }
     }
 

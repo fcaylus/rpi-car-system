@@ -67,10 +67,9 @@ QtObject {
     readonly property color safeColor: "#29991D"
 
     property QtObject mainMenu: QtObject {
-        readonly property int marginH: 20
-        readonly property int marginV: 20
-        readonly property int buttonWidth: (windowWidth - marginH * 4) / 3
-        readonly property int buttonHeight: (windowHeight - marginV * 4) / 3
+        readonly property int margin: 20
+        readonly property int buttonWidth: (windowWidth - margin * 4) / 3
+        readonly property int buttonHeight: (windowHeight - margin * 4) / 3
     }
 
     property QtObject diskSpace: QtObject {

@@ -26,8 +26,6 @@ Activity {
     subActivity: true
 
     control: Rectangle {
-        width: controlBounds.width
-        height: controlBounds.height
         color: "transparent"
 
         Column {
