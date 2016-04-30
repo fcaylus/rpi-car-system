@@ -46,10 +46,13 @@ static const QString settingsLastMainViewType = "lastviewtype";
 static const QString settingsVolumeStr = "volume";
 
 // Public constructor
-SoundManager::SoundManager(QSettings *settings)
+SoundManager::SoundManager(QSettings *settings, QObject *parent): QObject(parent)
 {
     _settings = settings;
+}
 
+void SoundManager::init()
+{
 #ifdef QT_DEBUG
     QStringList args = VlcCommon::args() << "--verbose=1";
 #else
@@ -115,6 +118,11 @@ SoundManager::SoundManager(QSettings *settings)
         }
     });
     musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
+}
+
+bool SoundManager::initialized() const
+{
+    return _init;
 }
 
 SoundManager::~SoundManager()

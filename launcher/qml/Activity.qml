@@ -37,6 +37,9 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         height: Style.windowHeight - Style.toolbar.height
+
+        asynchronous: true
+        visible: status == Loader.Ready
     }
 
     ActivityToolbar {

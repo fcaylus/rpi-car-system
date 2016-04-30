@@ -67,6 +67,6 @@ Rectangle {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         iconSource: subActivity ? "qrc:/images/back" : "qrc:/images/home"
-        onClicked: stackView.pop()
+        onClicked: mainStackView.pop()
     }
 }

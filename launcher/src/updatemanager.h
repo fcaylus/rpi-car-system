@@ -132,7 +132,7 @@ class UpdateManager : public QObject
 
     public:
 
-        UpdateManager(QCoreApplication *app): QObject()
+        UpdateManager(QCoreApplication *app, QObject* parent = nullptr): QObject(parent)
         {
             _app = app;
         }

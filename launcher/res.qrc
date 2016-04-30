@@ -41,6 +41,7 @@
         <file>qml/BorderlessButton.qml</file>
         <file>qml/music/ListViewPlaylist.qml</file>
         <file>qml/GridMenu.qml</file>
+        <file>qml/MainStackView.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

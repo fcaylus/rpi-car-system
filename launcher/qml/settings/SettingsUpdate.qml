@@ -222,7 +222,7 @@ Activity {
         }
 
         onBackClicked: {
-            stackView.pop()
+            mainStackView.pop()
         }
     }
 }

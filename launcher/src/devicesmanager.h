@@ -35,7 +35,7 @@ class DevicesManager : public QObject
         Q_OBJECT
 
     public:
-        explicit DevicesManager(QObject *parent = 0);
+        explicit DevicesManager(QObject *parent = nullptr);
         ~DevicesManager();
 
         // Getters

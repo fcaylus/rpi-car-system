@@ -42,6 +42,8 @@ class SoundManager: public QObject
 {
         Q_OBJECT
 
+        Q_PROPERTY(bool initialized READ initialized())
+
         Q_PROPERTY(QString mediaTitle READ mediaTitle NOTIFY mediaTitleChanged)
         Q_PROPERTY(QString mediaArtist READ mediaArtist NOTIFY mediaArtistChanged)
         Q_PROPERTY(QString mediaAlbum READ mediaAlbum NOTIFY mediaAlbumChanged)
@@ -74,7 +76,7 @@ class SoundManager: public QObject
         Q_PROPERTY(QStringList playlistFiles READ playlistFiles)
 
     public:
-        SoundManager(QSettings *settings); // ctor
+        SoundManager(QSettings *settings, QObject *parent = nullptr); // ctor
         ~SoundManager();
 
         enum RepeatMode {
@@ -93,6 +95,10 @@ class SoundManager: public QObject
         Q_ENUM(MainViewType)
 
     public slots:
+
+        // Init the manager
+        // This is the first thing to do
+        void init();
 
         // xmlSourceFile and xmlSourceQuery are used to fill the current media queue
         // if path is empty, play the first music in the sourceQuery
@@ -157,6 +163,8 @@ class SoundManager: public QObject
 
     public:
 
+        bool initialized() const;
+
         // Getters
         QString mediaTitle() const;
         QString mediaArtist() const;
@@ -206,6 +214,7 @@ class SoundManager: public QObject
         static QString timeToString(unsigned int time);
 
     private:
+        bool _init = false;
 
         VlcInstance *_vlcInstance = nullptr;
         VlcMediaPlayer *_vlcMediaPlayer = nullptr;

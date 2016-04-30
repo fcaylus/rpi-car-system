@@ -123,6 +123,7 @@ Activity {
 
         disableAutoMgr: true
         onClicked: soundManager.setRepeatMode((currentState + 1) % 3)
+
         Connections {
             target: soundManager
             onRepeatModeChanged: {

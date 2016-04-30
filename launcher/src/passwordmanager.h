@@ -30,7 +30,7 @@ class PasswordManager: public QObject
 {
         Q_OBJECT
     public:
-        PasswordManager() {}
+        PasswordManager(QObject* parent = nullptr): QObject(parent) {}
 
         static QString passwordFileName()
         {
@@ -42,14 +42,14 @@ class PasswordManager: public QObject
             return Common::configDir() + QStringLiteral("/") + passwordFileName();
         }
 
-        static bool isPassFileExists()
+        static bool passFileExists()
         {
             return QFileInfo::exists(passwordFile());
         }
 
         Q_INVOKABLE bool createPasswordFile(const QString& password)
         {
-            if(isPassFileExists())
+            if(passFileExists())
                 return false;
 
             QFile file(passwordFile());
@@ -63,7 +63,7 @@ class PasswordManager: public QObject
 
         Q_INVOKABLE bool checkPassword(const QString& password)
         {
-            if(!isPassFileExists())
+            if(!passFileExists())
                 return false;
 
             QFile file(passwordFile());

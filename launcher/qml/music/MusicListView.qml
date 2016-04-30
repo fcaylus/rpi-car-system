@@ -241,6 +241,9 @@ Item {
 
             height: parent.height - 2
 
+            asynchronous: true
+            visible: status == Loader.Ready
+
             property string headerText
             property string sourceFile
             property string sourceQuery

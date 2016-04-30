@@ -90,6 +90,9 @@ Rectangle {
         Loader {
             id: popupLoader
             anchors.fill: parent
+
+            asynchronous: true
+            visible: status == Loader.Ready
         }
     }
 }

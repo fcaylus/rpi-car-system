@@ -42,7 +42,7 @@ class LanguageManager: public QObject
         }
 
     public:
-        LanguageManager(QCoreApplication *app, QSettings *settings, QString lang)
+        LanguageManager(QCoreApplication *app, QSettings *settings, QString lang, QObject* parent = nullptr): QObject(parent)
         {
             _app = app;
             _settings = settings;

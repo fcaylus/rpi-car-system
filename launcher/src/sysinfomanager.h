@@ -26,7 +26,7 @@ class SysInfoManager : public QObject
 {
         Q_OBJECT
     public:
-        SysInfoManager(): QObject(){}
+        SysInfoManager(QObject* parent = nullptr): QObject(parent) {}
 
         Q_INVOKABLE bool isLittleEndian()
         {

@@ -29,6 +29,8 @@ class FileReader : public QObject
 
     public:
 
+        FileReader(QObject *parent = nullptr): QObject(parent) {}
+
         static QString readFile(const QString &fileName)
         {
             QFile file(fileName);

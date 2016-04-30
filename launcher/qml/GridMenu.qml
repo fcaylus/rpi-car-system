@@ -52,9 +52,9 @@ GridView {
         iconSource: icon
 
         onClicked: {
-            if(isEnabled && stackView.depth === gridMenu.expectedDepth) {
-                stackView.push({item: map[index]});
-                stackView.currentItem.forceActiveFocus();
+            if(isEnabled && mainStackView.depth === gridMenu.expectedDepth) {
+                mainStackView.push({item: map[index]});
+                mainStackView.currentItem.forceActiveFocus();
             }
         }
     }

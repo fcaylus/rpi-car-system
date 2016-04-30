@@ -26,17 +26,15 @@
 #include <QSettings>
 #include <QDir>
 
+#include "devicesmanager.h"
+#include "filereader.h"
+#include "languagemanager.h"
 #include "soundmanager.h"
 #include "passwordmanager.h"
-#include "languagemanager.h"
-#include "filereader.h"
-#include "devicesmanager.h"
 #include "sysinfomanager.h"
 #include "updatemanager.h"
 
 #include <VLCQtCore/Common.h>
-
-static const QString settingsLocaleStr = "locale";
 
 #include <linux/types.h>
 #include <linux/input.h>
@@ -56,6 +54,7 @@ static const QString settingsLocaleStr = "locale";
 
 #include <thread>
 
+static const QString settingsLocaleStr = "locale";
 static bool appRunning = true;
 
 void handleTouchScreenInput(QObject *eventReceiver)
@@ -130,8 +129,6 @@ void handleTouchScreenInput(QObject *eventReceiver)
                 //y = bswap_16(y);
 //#endif
 
-                //qDebug() << "pressed:" << pressed << " x " << x << " y " << y;
-
                 if(pressed && !lastPressed)
                 {
                     qDebug() << "TS pressed at: " << QPoint(x,y);
@@ -180,31 +177,28 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName(APPLICATION_NAME);
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
 
-    // Try to remove previous update file
-    QFile::remove(QCoreApplication::applicationDirPath() + "/update-package-path");
+    const QString appDirPath = app->applicationDirPath();
 
-    QSettings *settings = new QSettings(QGuiApplication::applicationDirPath() + QStringLiteral("/settings.ini"), QSettings::IniFormat);
+    // Try to remove previous update file
+    QFile::remove(appDirPath + "/update-package-path");
+
+    QSettings *settings = new QSettings(appDirPath + QStringLiteral("/settings.ini"), QSettings::IniFormat);
     settings->setFallbacksEnabled(false);
 
     // Get locale (system locale by default)
     const QString locale = settings->value(settingsLocaleStr, QLocale::system().name().section('_', 0, 0)).toString();
     settings->setValue(settingsLocaleStr, locale);
 
-    // Load default Qt translations
-    QTranslator qtTranslator;
-    qtTranslator.load(QStringLiteral("qt_") + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app->installTranslator(&qtTranslator);
-
-    // Load app translations
+    // Load translations
     QTranslator appTranslator;
-    appTranslator.load(QString(APPLICATION_TARGET "_") + locale + QStringLiteral(".qm"), QGuiApplication::applicationDirPath());
+    appTranslator.load(QString(APPLICATION_TARGET "_") + locale + QStringLiteral(".qm"), appDirPath);
     app->installTranslator(&appTranslator);
 
     //
     // QML Stuff
     //
 
-    VlcCommon::setPluginPath(app->applicationDirPath() + QStringLiteral("/plugins"));
+    VlcCommon::setPluginPath(appDirPath + QStringLiteral("/plugins"));
 
     SoundManager *soundMgr = new SoundManager(settings);
     PasswordManager *passMgr = new PasswordManager();
@@ -226,7 +220,8 @@ int main(int argc, char *argv[])
     context->setContextProperty(QStringLiteral("fileReader"), fileReader);
     context->setContextProperty(QStringLiteral("sysinfoManager"), sysinfoMgr);
     context->setContextProperty(QStringLiteral("updateManager"), updateMgr);
-    context->setContextProperty(QStringLiteral("isPassFileCreated"), QVariant(PasswordManager::isPassFileExists()));
+
+    context->setContextProperty(QStringLiteral("passFileCreated"), QVariant(PasswordManager::passFileExists()));
     context->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
     context->setContextProperty(QStringLiteral("hardwareVersion"), QVariant(HARDWARE_VERSION));
     context->setContextProperty(QStringLiteral("vlcVersion"), QVariant(VlcInstance::version()));
@@ -235,11 +230,11 @@ int main(int argc, char *argv[])
 
     view->setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
-
-    if(QGuiApplication::platformName() == QLatin1String("eglfs"))
+#ifdef READY_FOR_CARSYSTEM
         view->showFullScreen();
-    else
+#else
         view->show();
+#endif
 
     // Launch Touch screen thread
     std::thread tsThread(handleTouchScreenInput, view);
@@ -247,6 +242,8 @@ int main(int argc, char *argv[])
     // Launch app
     const int resultCode = app->exec();
     appRunning = false;
+
+    qDebug() << "Cleaning up ...";
 
     delete view;
 
