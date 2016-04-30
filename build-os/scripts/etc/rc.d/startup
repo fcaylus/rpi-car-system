@@ -30,25 +30,6 @@ if [ -x /sbin/hwclock ] && [ -e /dev/rtc0 ]; then
 	check_status
 fi
 
-if [ -x /sbin/fsck ]; then
-	echo "Starting fsck for local filesystems."
-	fsck -A -C -R -T -t nonfs,nosmbfs
-	if [ "$?" -gt 2 ]; then
-		echo "WARNING: Errors found while checking filesystems."
-		echo "You can login as root now, the system will reboot after logout."
-		sulogin
-		reboot
-	elif [ "$?" = "2" ]; then
-		echo "NOTICE: System needs to be rebooted now."
-		sleep 1
-		reboot
-	else
-		echo -n "Checking local filesystems: "
-		check_status
-	fi
-fi
-
-
 if [ -x /sbin/swapon ]; then
 	echo -n "Enabling swap space: "
 	swapon -a
