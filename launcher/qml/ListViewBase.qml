@@ -1,6 +1,6 @@
 /*
  * This file is part of RPI Car System.
- * Copyright (c) 2016 Fabien Caylus <toutjuste13@gmail.com>
+ * Copyright (c) 2016 Fabien Caylus <tranqyll.dev@gmail.com>
  *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
