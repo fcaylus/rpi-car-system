@@ -26,7 +26,6 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QDir>
-#include <QThread>
 
 #include <VLCQtCore/Common.h>
 
@@ -262,7 +261,6 @@ int main(int argc, char *argv[])
 
     // Launch Touch screen thread
     std::thread tsThread(handleTouchScreenInput, view);
-
 
     // Launch app
     const int resultCode = app->exec();

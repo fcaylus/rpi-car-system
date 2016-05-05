@@ -45,7 +45,6 @@
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
-        <file alias="FontAwesome">fonts/FontAwesome.otf</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="default_artwork">imgs/default_artwork.png</file>
@@ -93,6 +92,9 @@
         <file alias="playlist_add">imgs/icons/playlist_add.png</file>
         <file alias="play_arrow">imgs/icons/play_arrow.png</file>
         <file alias="unarchive">imgs/icons/unarchive.png</file>
+        <file alias="check">imgs/icons/check.png</file>
+        <file alias="backspace">imgs/icons/backspace.png</file>
+        <file alias="up">imgs/icons/up.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>

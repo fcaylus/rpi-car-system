@@ -32,11 +32,6 @@ Rectangle {
         source: "qrc:/fonts/OpenSans-Regular"
     }
 
-    FontLoader {
-        id: awesomeFont
-        source: "qrc:/fonts/FontAwesome"
-    }
-
     gradient: Gradient {
         GradientStop {
             color: Style.backgroundColorEnd
@@ -59,14 +54,9 @@ Rectangle {
         // Used by password prompts
         property string firstPass
 
-        function loadStackView() {
-            source = "qrc:/qml/MainStackView.qml"
-        }
-
         Component {
             id: askPassword
             PasswordPrompt {
-                //visible: !isPassFileCreated
                 titleText: qsTr("It's your first radio boot !\nPlease enter a new password :")
                 onPromptFinish: {
                     if(text.length >= 1) {
@@ -90,9 +80,7 @@ Rectangle {
                 onPromptFinish: {
                     if(text === firstPass) {
                         if(passwordManager.createPasswordFile(text)) {
-                            startupLoader.visible = false
-                            startupLoader.sourceComponent = undefined
-                            startupLoader.loadStackView()
+                            startupLoader.source = "qrc:/qml/MainStackView.qml"
                         }
                     }
                 }
@@ -106,10 +94,8 @@ Rectangle {
 
     Component.onCompleted: {
         if(!passFileCreated) {
-            console.log("pass !")
-            passPromptsLoader.sourceComponent = askPassword
+            startupLoader.sourceComponent = askPassword
         } else {
-            console.log("Stackview !")
             startupLoader.source = "qrc:/qml/MainStackView.qml"
         }
     }

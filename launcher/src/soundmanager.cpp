@@ -763,6 +763,9 @@ QString SoundManager::lastHistoryEntryHeaderText()
 
 void SoundManager::saveSettings()
 {
+    if(!_init)
+        return;
+
     _settings->beginGroup(settingsGroupStr);
     _settings->setValue(settingsRandomStr, random());
     _settings->setValue(settingsRepeatModeStr, static_cast<int>(repeatMode()));

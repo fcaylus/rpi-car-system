@@ -66,6 +66,8 @@ QtObject {
     readonly property color dangerousColor: "#8B0000"
     readonly property color safeColor: "#29991D"
 
+    readonly property color keyboardPanelBackground: "#111"
+
     property QtObject mainMenu: QtObject {
         readonly property int margin: 20
         readonly property int buttonWidth: (windowWidth - margin * 4) / 3

@@ -21,11 +21,12 @@ Item {
         property int verticalSpacing: 5
         property int horizontalSpacing: 5
         property int rowHeight: keyboard.height/4 - verticalSpacing
-        property int buttonWidth:  (keyboard.width-column.anchors.margins)/10 - horizontalSpacing
+        property int buttonWidth: (keyboard.width - column.anchors.margins)/10 - horizontalSpacing
     }
 
     Component {
         id: keyButtonDelegate
+
         KeyButton {
             width: pimpl.buttonWidth
             height: pimpl.rowHeight
@@ -36,10 +37,12 @@ Item {
 
     Rectangle {
         id: keyboard
-        color: Style.button.bottomBorderColor
+        color: Style.keyboardPanelBackground
+
         width: parent.width
         height: parent.height * .4
         anchors.bottom: parent.bottom
+
         MouseArea {
             anchors.fill: parent
         }
@@ -54,6 +57,7 @@ Item {
                 height: pimpl.rowHeight
                 spacing: pimpl.horizontalSpacing
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 Repeater {
                     model: keyModel.firstRowModel
                     delegate: keyButtonDelegate
@@ -63,6 +67,7 @@ Item {
                 height: pimpl.rowHeight
                 spacing: pimpl.horizontalSpacing
                 anchors.horizontalCenter: parent.horizontalCenter
+
                 Repeater {
                     model: keyModel.secondRowModel
                     delegate: keyButtonDelegate
@@ -77,9 +82,12 @@ Item {
                     anchors.left: parent.left
                     width: 1.25*pimpl.buttonWidth
                     height: pimpl.rowHeight
-                    font.family: awesomeFont.name
-                    textColor: (pimpl.shiftModifier)? Style.button.checkedOverlayColor: Style.fontColor
-                    text: "\uf0aa"
+
+                    textColor: pimpl.shiftModifier ? Style.button.checkedOverlayColor: Style.fontColor
+
+                    useCustomIcon: true
+                    customIcon: "qrc:/images/up"
+
                     onClicked: {
                         if (pimpl.symbolModifier) {
                             pimpl.symbolModifier = false
@@ -91,6 +99,7 @@ Item {
                     height: pimpl.rowHeight
                     spacing: pimpl.horizontalSpacing
                     anchors.horizontalCenter: parent.horizontalCenter
+
                     Repeater {
                         anchors.horizontalCenter: parent.horizontalCenter
                         model: keyModel.thirdRowModel
@@ -103,10 +112,11 @@ Item {
                     anchors.right: parent.right
                     width: 1.25 * pimpl.buttonWidth
                     height: pimpl.rowHeight
-                    font.family: awesomeFont.name
-                    text: "\uf177"
-                    onClicked: root.backPressed()
 
+                    useCustomIcon: true
+                    customIcon: "qrc:/images/backspace"
+
+                    onClicked: root.backPressed()
                 }
             }
             Row {

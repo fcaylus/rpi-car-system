@@ -31,17 +31,16 @@ CheckBox {
             implicitWidth: 40
             implicitHeight: 40
 
-            StyledText {
+            Image {
+                asynchronous: true
                 visible: control.checked
-                font.family: awesomeFont.name
+                source: "qrc:/images/check"
                 anchors.margins: 2
                 anchors.fill: parent
-                fontSizeMode: Text.Fit
-                font.pixelSize: 100
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
 
-                text: "\uf00c"
+                fillMode: Image.PreserveAspectFit
             }
         }
 
