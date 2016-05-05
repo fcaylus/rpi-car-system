@@ -59,7 +59,8 @@ SOURCES += \
     src/main.cpp \
     src/soundmanager.cpp \
     src/mediainfo.cpp \
-    src/devicesmanager.cpp
+    src/devicesmanager.cpp \
+    src/tshandler.cpp
 
 HEADERS += \
     src/dirutility.h \
@@ -71,7 +72,8 @@ HEADERS += \
     src/filereader.h \
     src/devicesmanager.h \
     src/sysinfomanager.h \
-    src/updatemanager.h
+    src/updatemanager.h \
+    src/tshandler.h
 
 RESOURCES += \
     res.qrc

@@ -26,25 +26,9 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QDir>
+#include <QThread>
 
 #include <VLCQtCore/Common.h>
-
-#include <linux/types.h>
-#include <linux/input.h>
-#include <linux/hidraw.h>
-
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include <cerrno>
-
-#include <thread>
 
 #include "devicesmanager.h"
 #include "filereader.h"
@@ -53,141 +37,9 @@
 #include "passwordmanager.h"
 #include "sysinfomanager.h"
 #include "updatemanager.h"
+#include "tshandler.h"
 
 static const QString settingsLocaleStr = "locale";
-static bool appRunning = true;
-
-void handleTouchScreenInput(QQuickView *view)
-{
-    QDir devDir("/dev");
-    QStringList hidrawList = devDir.entryList(QStringList({"hidraw*"}), QDir::Files | QDir::System);
-    for(QString hidrawPath : hidrawList)
-    {
-        int fd = open(QString("/dev/" + hidrawPath).toStdString().c_str(), O_RDWR);
-
-        if(fd < 0)
-        {
-            qDebug() << strerror(errno);
-            qDebug() << "Can't open hidraw device at:" << hidrawPath;
-            continue;
-        }
-
-        struct hidraw_devinfo info;
-        memset(&info, 0x0, sizeof(info));
-
-        int ret = ioctl(fd, HIDIOCGRAWINFO, &info);
-        if(ret < 0)
-        {
-            qDebug() << strerror(errno);
-            close(fd);
-            continue;
-        }
-
-        // Check product and vendor information
-        // Only handle this device:
-        // http://www.waveshare.com/wiki/7inch_HDMI_LCD_(B)
-
-        if(info.vendor == QString("0x0EEF").toInt(0, 16)
-           && info.product == QString("0x0005").toInt(0, 16))
-        {
-            // Handle this device
-            qDebug() << "Found a touchscreen";
-            bool lastPressed = false;
-            uint16_t lastX = 0;
-            uint16_t lastY = 0;
-
-            QQuickItem *rootItem = view->rootObject();
-
-            uint8_t buf[30];
-            memset(buf, 0x0, sizeof(buf));
-
-            while(appRunning)
-            {
-                ret = read(fd, buf, 25);
-
-                // Messages format: [tag] [pressed] [x] [y]
-                // sizes in Bytes:    1       1      2   2
-                if(ret < 6)
-                {
-                    if(ret == -1)
-                        qWarning() << "TS: Error while reading:" << strerror(errno);
-                    else if(ret == 0)
-                        qWarning() << "TS: End of file";
-                    else
-                        qWarning() << "TS: Read only" << ret << "bytes";
-
-                    continue;
-                }
-
-                // false == 0 and true == 1
-                bool pressed = buf[1] != 0;
-                uint16_t x = ((uint16_t)buf[2] << 8) | buf[3];
-                uint16_t y = ((uint16_t)buf[4] << 8) | buf[5];
-
-                const int dx = std::abs(x - lastX);
-                const int dy = std::abs(y - lastY);
-
-                //qDebug() << buf[0] << pressed << x << y;
-
-                if(pressed && lastPressed && (dx > 15 || dy > 15) && x != 0 && y != 0)
-                {
-                    if(lastX != 0 && lastY != 0)
-                    {
-                        qDebug() << "TS moved at: " << QPoint(x,y);
-                        QCoreApplication::postEvent(rootItem->childAt(x, y),
-                                                    new QMouseEvent(QEvent::MouseMove,
-                                                                    QPoint(x,y),
-                                                                    Qt::NoButton,
-                                                                    Qt::NoButton,
-                                                                    Qt::NoModifier));
-                    }
-
-                    lastX = x;
-                    lastY = y;
-                }
-
-                if(pressed && !lastPressed)
-                {
-                    qDebug() << "TS pressed at: " << QPoint(x,y);
-                   /* QCoreApplication::postEvent(rootItem->childAt(x, y),
-                                                new QMouseEvent(QEvent::MouseButtonRelease,
-                                                                QPoint(0,0),
-                                                                Qt::LeftButton,
-                                                                Qt::LeftButton,
-                                                                Qt::NoModifier));*/
-                    QCoreApplication::postEvent(rootItem->childAt(x, y),
-                                                new QMouseEvent(QEvent::MouseButtonPress,
-                                                                QPoint(x,y),
-                                                                Qt::LeftButton,
-                                                                Qt::LeftButton,
-                                                                Qt::NoModifier));
-                    lastPressed = true;
-                }
-                else if(lastPressed && !pressed)
-                {
-                    qDebug() << "TS released at: " << QPoint(lastX, lastY);
-                    QCoreApplication::postEvent(rootItem->childAt(lastX, lastY),
-                                                new QMouseEvent(QEvent::MouseButtonRelease,
-                                                                QPoint(lastX, lastY),
-                                                                Qt::LeftButton,
-                                                                Qt::LeftButton,
-                                                                Qt::NoModifier));
-                    lastPressed = false;
-                }
-            }
-
-            qDebug() << "Exit TS loop ...";
-
-            close(fd);
-            return;
-        }
-
-        close(fd);
-        continue;
-    }
-
-    qWarning() << "No touch screen found !";
-}
 
 int main(int argc, char *argv[])
 {
@@ -259,14 +111,20 @@ int main(int argc, char *argv[])
         view->show();
 #endif
 
-    // Launch Touch screen thread
-    std::thread tsThread(handleTouchScreenInput, view);
+    TSHandler *tsHandler = new TSHandler(view);
+    QThread tsThread;
+    tsHandler->moveToThread(&tsThread);
+    QObject::connect(&tsThread, &QThread::finished, tsHandler, &QObject::deleteLater);
+    QObject::connect(&tsThread, &QThread::started, tsHandler, &TSHandler::handle);
+    tsThread.start();
 
     // Launch app
     const int resultCode = app->exec();
-    appRunning = false;
 
     qDebug() << "Cleaning up ...";
+
+    tsHandler->requestStop();
+    tsThread.terminate();
 
     delete view;
 
@@ -286,8 +144,6 @@ int main(int argc, char *argv[])
     delete soundMgr;
 
     delete app;
-
-    tsThread.join();
 
     return resultCode;
 }
