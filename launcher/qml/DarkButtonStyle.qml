@@ -46,15 +46,7 @@ ButtonStyle {
             visible: inMainMenu ? false : !control.pressed
         }
 
-        Rectangle {
-            height: 1
-            width: parent.width
-            anchors.bottom: parent.bottom
-            color: inToolbar ? Style.toolbar.bottomBorderColor : Style.button.bottomBorderColor
-            visible: !inMainMenu
-        }
-
-        border.color: Style.toolbar.bottomBorderColor
+        border.color: Style.button.borderColor
         border.width: inMainMenu ? 1 : 0
     }
 

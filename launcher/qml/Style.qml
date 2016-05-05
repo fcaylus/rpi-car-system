@@ -33,7 +33,6 @@ QtObject {
         readonly property color gradientEnd: "#111"
 
         readonly property color topBorderColor: "#444"
-        readonly property color bottomBorderColor: "#000"
     }
 
     property QtObject button: QtObject {
@@ -42,7 +41,8 @@ QtObject {
         readonly property color gradientEnd: "#222"
 
         readonly property color topBorderColor: "#555"
-        readonly property color bottomBorderColor: "#111"
+
+        readonly property color borderColor: "#101010"
 
         readonly property color clickedOverlayColor: "#1A6680"
         readonly property color checkedOverlayColor: "#33CCFF"
@@ -60,6 +60,7 @@ QtObject {
 
     readonly property color backgroundColorStart: "#252525"
     readonly property color backgroundColorEnd: "#090909"
+    readonly property color backgroundColor: "#1B1B1B"
 
     readonly property color popupBackground: "#BB101010"
 

@@ -32,20 +32,7 @@ Rectangle {
         source: "qrc:/fonts/OpenSans-Regular"
     }
 
-    gradient: Gradient {
-        GradientStop {
-            color: Style.backgroundColorEnd
-            position: 0
-        }
-        GradientStop {
-            color: Style.backgroundColorStart
-            position: .5
-        }
-        GradientStop {
-            color: Style.backgroundColorEnd
-            position: 1
-        }
-    }
+    color: Style.backgroundColor
 
     Loader {
         id: startupLoader

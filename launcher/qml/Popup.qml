@@ -60,20 +60,7 @@ Rectangle {
         border.color: Style.button.topBorderColor
         border.width: 1
 
-        gradient: Gradient {
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 0
-            }
-            GradientStop {
-                color: Style.backgroundColorStart
-                position: .5
-            }
-            GradientStop {
-                color: Style.backgroundColorEnd
-                position: 1
-            }
-        }
+        color: Style.backgroundColor
 
         FlatButton {
             iconSource: "qrc:/images/close"

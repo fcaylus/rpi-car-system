@@ -49,14 +49,6 @@ Rectangle {
         color: Style.toolbar.topBorderColor
     }
 
-    // Bottom border
-    Rectangle {
-        height: 1
-        width: parent.width
-        anchors.bottom: parent.bottom
-        color: Style.toolbar.bottomBorderColor
-    }
-
     // Home button
     // Back to the main menu on click
     DarkButton {
