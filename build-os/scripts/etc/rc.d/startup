@@ -16,10 +16,6 @@ echo -n "Starting mdev: "
 /sbin/mdev -s
 check_status
 
-echo -n "Mounting devpts: "
-/bin/mount -t devpts none /dev/pts
-check_status
-
 echo -n "Mounting shared memory: "
 /bin/mount -t tmpfs none /dev/shm
 check_status
@@ -27,12 +23,6 @@ check_status
 if [ -x /sbin/hwclock ] && [ -e /dev/rtc0 ]; then
 	echo -n "Setting system clock: "
 	hwclock --hctosys --utc
-	check_status
-fi
-
-if [ -x /sbin/swapon ]; then
-	echo -n "Enabling swap space: "
-	swapon -a
 	check_status
 fi
 

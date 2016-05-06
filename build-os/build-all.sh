@@ -153,6 +153,9 @@ rm -r "${SYSTEM_ROOT}/usr/share/kde4"
 rm -r "${SYSTEM_ROOT}/usr/share/imlib2"
 rm -r "${SYSTEM_ROOT}/usr/share/pixmaps"
 rm -r "${SYSTEM_ROOT}/usr/share/vlc"
+rm -r "${SYSTEM_ROOT}/usr/share/glib-2.0"
+rm -r "${SYSTEM_ROOT}/usr/share/icu"
+rm -r "${SYSTEM_ROOT}/usr/share/keyutils"
 
 set -e
 

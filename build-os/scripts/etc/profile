@@ -1,28 +1,4 @@
 # /etc/profile
-
-#
-# Defines some colors
-###########################################
-
-
-RCol='\e[0m'
-BGre='\e[1;32m'
-BPur='\e[1;35m'
-Gre='\e[0;32m'
-
-#
-# Escaped versions
-
-E_RCol="\[$RCol\]"
-E_BGre="\[$BGre\]"
-E_BPur="\[$BPur\]"
-E_Gre="\[$Gre\]"
-
-
-#
-# Other definitions
-###########################################
-
 # Set the initial path
 export PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 
@@ -30,13 +6,9 @@ export PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 export USER=`id -un`
 export LOGNAME=$USER
 export HOSTNAME=`/bin/hostname`
-export PAGER='/bin/more '
 export EDITOR='/bin/nano'
 export TERMINFO='/share/terminfo'
 export INPUTRC=/etc/inputrc
-
-# Set console color
-PS1="$E_BGre[\u$E_BPur@$E_BGre\h] $E_Gre\$ \w $E_BGre>$E_RCol "
 
 # enable color support of ls
 alias ls='ls --color=auto'
