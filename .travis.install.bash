@@ -13,5 +13,5 @@ tar xf 1.0.1.tar.gz
 cd vlc-qt-1.0.1
 cmake -DCMAKE_INSTALL_PREFIX=/usr .
 make
-make install
+sudo make install
 
