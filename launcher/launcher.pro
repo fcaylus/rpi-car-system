@@ -44,10 +44,6 @@ QMAKE_POST_LINK = echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION";
 # PugiXml
 include(../thirdparty/pugixml.pri)
 
-# TODO: will be used by update system
-# Quazip
-#LIBS += -lquazip
-
 # VLCQt
 include(../thirdparty/vlc-qt.pri)
 
