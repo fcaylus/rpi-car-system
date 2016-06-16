@@ -7,9 +7,12 @@ env:
     - DEBUG_BUILD=0
 before_install:
     - sudo add-apt-repository -y ppa:beineri/opt-qt551-trusty
-    - sudo add-apt-repository -y ppa:ntadej/tano
+    - sudo add-apt-repository -y ppa:mc3man/trusty-media
     - sudo apt-get update -q
-    - sudo apt-get install -yq build-essential qt55base qt55declarative qt55graphicaleffects qt55quickcontrols qt55tools qt55translations qt55xmlpatterns libvlc-qt-core2 libvlc-qt-dbg libvlc-qt-dev libarchive13 libarchive-dev
+    - sudo apt-get install -yq build-essential cmake libvlc5 libvlc-dev libvlccore-dev libvlccore8 qt55base qt55declarative qt55graphicaleffects qt55quickcontrols qt55tools qt55translations qt55xmlpatterns libarchive13 libarchive-dev
+
+install:
+    - bash -e ${TRAVIS_BUILD_DIR}/.travis.install.bash
 
 script:
     - bash -e ${TRAVIS_BUILD_DIR}/.travis.bash
