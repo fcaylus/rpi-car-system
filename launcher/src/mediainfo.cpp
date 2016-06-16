@@ -205,6 +205,16 @@ QString MediaInfo::playlistsDirectory()
     return Common::configDir() + QStringLiteral("/playlists");
 }
 
+QString MediaInfo::equalizerCustomConfigDir()
+{
+    return Common::configDir() + QStringLiteral("/equalizer/custom");
+}
+
+QString MediaInfo::equalizerDefaultConfigDir()
+{
+    return Common::configDir() + QStringLiteral("/equalizer/default");
+}
+
 QStringList MediaInfo::musicFilesFormats()
 {
     // From: https://en.wikipedia.org/wiki/Audio_file_format

@@ -24,9 +24,11 @@
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/MediaPlayer.h>
 #include <VLCQtCore/Media.h>
+#include <VLCQtCore/Equalizer.h>
 
 #include <QUrl>
 #include <QStack>
+#include <QList>
 
 class QSettings;
 
@@ -36,6 +38,19 @@ struct ListViewHistoryEntry {
     QString sourceQuery;
     QString headerText;
 };
+
+// Contains a configuration of the equalizer
+struct EqualizerConfig {
+    QList<float> frequencies;
+    QList<float> amplifications;
+    float preamplification;
+    QString name;
+
+    QString fileName;
+
+    bool modified = false;
+};
+typedef QList<EqualizerConfig> EqualizerConfigList;
 
 // Singleton sound manager
 class SoundManager: public QObject
@@ -122,14 +137,27 @@ class SoundManager: public QObject
         void setRepeatMode(RepeatMode mode);
         void setRandom(bool random);
 
+        //
         // Playlist stuff
         void addSongToPlaylist(QString playlistFileName, QString musicTitle, QString musicPath, QString musicCover);
         void removePlaylistFile(const QString& fileName);
         void removeFromPlaylist(const QString& playlistFilePath, const QString& musicFile);
 
+        //
         // History stuff
         void addHistoryEntry(QUrl source, QString sourceFile, QString sourceQuery, QString headerText);
         void removeLastHistoryEntry();
+
+        //
+        // Equalizer stuff
+        void setEqualizerConfig(int idx);
+        void resetEqualizerConfig(int idx);
+        void updateEqualizerConfig();
+
+        void setEqualizerPreamp(float preamp);
+        void setEqualizerAmp(int freqId, float amp);
+        void increaseEqualizerPreamp(float inc);
+        void increaseEqualizerAmp(int freqId, float inc);
 
         void setPlayerVisibility(bool visible);
         void saveSettings();
@@ -160,6 +188,9 @@ class SoundManager: public QObject
 
         void currentMediaQueueChanged();
         void newMediaPlayedFromFile();
+
+        void newEqualizerConfigLoaded();
+        void equalizerConfigChanged();
 
     public:
 
@@ -210,14 +241,29 @@ class SoundManager: public QObject
         // Return the created file name
         Q_INVOKABLE QString createNewPlaylist(QString name);
 
-        // Convert time in ms to "hh:mm:ss"
-        static QString timeToString(unsigned int time);
+        //
+        // Equalizer stuff
+        Q_INVOKABLE int nbOfFrequenciesAvailable();
+        Q_INVOKABLE QStringList equalizerConfigListNames();
+        Q_INVOKABLE QString equalizerConfigName();
+        Q_INVOKABLE int currentEqualizerConfigId();
+        Q_INVOKABLE bool isEqualizerConfigModified(int idx);
+
+        // Return freqs for the current preset
+        Q_INVOKABLE float equalizerFrequency(int idx);
+        Q_INVOKABLE QString equalizerFrequencyString(int idx);
+        Q_INVOKABLE float equalizerAmplification(int idx);
+        Q_INVOKABLE QString equalizerAmplificationString(int idx);
+        Q_INVOKABLE float equalizerPreamplification();
+        Q_INVOKABLE QString equalizerPreamplificationString();
+
 
     private:
         bool _init = false;
 
         VlcInstance *_vlcInstance = nullptr;
         VlcMediaPlayer *_vlcMediaPlayer = nullptr;
+        VlcEqualizer *_vlcEqualizer = nullptr;
         VlcAudio *_vlcAudio = nullptr;
         VlcMedia *_currentMedia = nullptr;
 
@@ -243,11 +289,19 @@ class SoundManager: public QObject
 
         QSettings *_settings;
 
+        EqualizerConfigList _equalizerList;
+        int _equalizerCurrentConfig = 0;
+
         // Emits all signals for the qml part
         void emitNewMediaSignals();
 
         void randomizeQueue();
         void updatePlaylistsData();
+
+        void checkForDefaultEqualizerConfigs();
+        EqualizerConfig parseEqualizerConfigFile(const QString filePath, const QString fileName);
+        void initEqualizerConfigList();
+        void saveEqualizerConfigs();
 
         Q_DISABLE_COPY(SoundManager)
 };

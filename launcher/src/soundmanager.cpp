@@ -28,6 +28,8 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QXmlStreamWriter>
+#include <QUrl>
+#include <QStringList>
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Audio.h>
@@ -44,6 +46,7 @@ static const QString settingsRandomStr = "random";
 static const QString settingsRepeatModeStr = "repeat";
 static const QString settingsLastMainViewType = "lastviewtype";
 static const QString settingsVolumeStr = "volume";
+static const QString settingsEqualizerStr = "eqconfig";
 
 // Public constructor
 SoundManager::SoundManager(QSettings *settings, QObject *parent): QObject(parent)
@@ -62,6 +65,7 @@ void SoundManager::init()
     // Load the engine
     _vlcInstance = new VlcInstance(args, this);
     _vlcMediaPlayer = new VlcMediaPlayer(_vlcInstance);
+    _vlcEqualizer = new VlcEqualizer(_vlcMediaPlayer);
     _vlcAudio = new VlcAudio(_vlcMediaPlayer);
 
     connect(_vlcMediaPlayer, &VlcMediaPlayer::timeChanged, this, &SoundManager::timeChanged);
@@ -91,6 +95,7 @@ void SoundManager::init()
     setRepeatMode(static_cast<RepeatMode>(_settings->value(settingsRepeatModeStr, 0).toInt()));
     _lastMainViewType = static_cast<MainViewType>(_settings->value(settingsLastMainViewType, 0).toInt());
     setVolume(_settings->value(settingsVolumeStr, -1).toInt());
+    _equalizerCurrentConfig = _settings->value(settingsEqualizerStr, 0).toInt();
     _settings->endGroup();
 
     //
@@ -118,6 +123,17 @@ void SoundManager::init()
         }
     });
     musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
+
+    checkForDefaultEqualizerConfigs();
+    initEqualizerConfigList();
+    // Check if the equalizer idx is in bound, else set to 0
+    if(_equalizerCurrentConfig < 0 || _equalizerCurrentConfig >= _equalizerList.size())
+        _equalizerCurrentConfig = 0;
+    setEqualizerConfig(_equalizerCurrentConfig);
+
+    _init = true;
+
+    qDebug() << "SoundManager initialized !";
 }
 
 bool SoundManager::initialized() const
@@ -129,6 +145,7 @@ SoundManager::~SoundManager()
 {
     delete _vlcAudio;
     delete _currentMedia;
+    delete _vlcEqualizer;
     delete _vlcMediaPlayer;
     delete _vlcInstance;
 }
@@ -421,7 +438,7 @@ int SoundManager::time()
 
 QString SoundManager::formatedTime()
 {
-    return timeToString(_vlcMediaPlayer->time()) + QString(" / ") + timeToString(_vlcMediaPlayer->length());
+    return Common::timeToString(_vlcMediaPlayer->time()) + QString(" / ") + Common::timeToString(_vlcMediaPlayer->length());
 }
 
 int SoundManager::volume() const
@@ -543,6 +560,291 @@ void SoundManager::randomizeQueue()
 }
 
 //
+// Equalizer stuff
+//
+
+// Private
+void SoundManager::checkForDefaultEqualizerConfigs()
+{
+    const QString defaultDirPath = MediaInfo::equalizerDefaultConfigDir();
+    const QString customDirPath = MediaInfo::equalizerCustomConfigDir();
+    const int presetCount = _vlcEqualizer->presetCount();
+
+    bool create = false;
+    if(!QDir(defaultDirPath).exists())
+        create = true;
+    else
+    {
+        QStringList filesList = QDir(defaultDirPath).entryList(QStringList({QStringLiteral("*.eqconfig")}), QDir::Writable | QDir::Readable | QDir::Files);
+        if(filesList.size() < presetCount)
+            create = true;
+    }
+
+    // We need to create the default configs
+    if(create)
+    {
+        QDir defaultDir(defaultDirPath);
+        defaultDir.removeRecursively();
+        defaultDir.mkpath(".");
+
+        QDir customDir(customDirPath);
+        if(!customDir.exists())
+            customDir.mkpath(".");
+
+        for(int i=0; i < presetCount; ++i)
+        {
+            QFile presetFile(defaultDirPath + QString("/preset%1.eqconfig").arg(i, 3, 10, QChar('0')));
+            if(!presetFile.open(QFile::WriteOnly | QFile::Text))
+                continue;
+
+            QTextStream out(&presetFile);
+            //
+            // File structure:
+            //
+            // <file version>
+            // <preset name>
+            // <modified>
+            // <preamplication>
+            // <freq_i=amp_i>
+            // ...
+            //
+            out << "v1\n" << _vlcEqualizer->presetNameAt(i) << "\nfalse\n" << _vlcEqualizer->preamplification() << "\n";
+
+            _vlcEqualizer->loadFromPreset(i);
+            for(int j=0, freqNb=_vlcEqualizer->bandCount(); j < freqNb; ++j)
+                out << _vlcEqualizer->bandFrequency(j) << "=" << _vlcEqualizer->amplificationForBandAt(j) << "\n";
+
+            out.flush();
+            presetFile.close();
+
+            // Check if the coresponding custom file exists
+            if(!QFile::exists(customDirPath + QString("/preset%1.eqconfig").arg(i, 3, 10, QChar('0'))))
+                presetFile.copy(customDirPath + QString("/preset%1.eqconfig").arg(i, 3, 10, QChar('0')));
+        }
+
+        // Reset the equalizer
+        delete _vlcEqualizer;
+        _vlcEqualizer = new VlcEqualizer(_vlcMediaPlayer);
+    }
+}
+
+// Private
+void SoundManager::initEqualizerConfigList()
+{
+    _equalizerList.clear();
+
+    const QString path = MediaInfo::equalizerCustomConfigDir();
+    QStringList filesList = QDir(path).entryList(QStringList({QStringLiteral("*.eqconfig")}), QDir::Writable | QDir::Readable | QDir::Files, QDir::Name);
+    for(QString fileName: filesList)
+    {
+        QFile file(path + "/" + fileName);
+        EqualizerConfig eq = parseEqualizerConfigFile(path + "/" + fileName, fileName);
+
+        // Check frequencies count
+        if((uint)eq.frequencies.size() == _vlcEqualizer->bandCount())
+            _equalizerList.append(eq);
+    }
+}
+
+// Private
+EqualizerConfig SoundManager::parseEqualizerConfigFile(const QString filePath, const QString fileName)
+{
+    EqualizerConfig eq;
+    QFile file(filePath);
+    if(file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QTextStream in(&file);
+        if(in.readLine() == "v1")
+        {
+            eq.fileName = fileName;
+            eq.name = in.readLine();
+            eq.modified = (in.readLine() == "true" ? true : false);
+            eq.preamplification = in.readLine().toDouble();
+
+            while(!in.atEnd())
+            {
+                QString line = in.readLine();
+                QStringList values = line.split("=");
+                if(values.size() == 2)
+                {
+                    eq.frequencies.append(values[0].toDouble());
+                    eq.amplifications.append(values[1].toDouble());
+                }
+            }
+        }
+        file.close();
+    }
+
+    return eq;
+}
+
+// Private
+void SoundManager::saveEqualizerConfigs()
+{
+    for(EqualizerConfig eq: _equalizerList)
+    {
+        if(eq.modified)
+        {
+            const QString path = MediaInfo::equalizerCustomConfigDir() + "/" + eq.fileName;
+            QFile file(path);
+            if(file.open(QFile::WriteOnly | QFile::Text))
+            {
+                QTextStream out(&file);
+                out << "v1\n" << eq.name << "\ntrue\n" << eq.preamplification << "\n";
+                for(int i=0, size = eq.amplifications.size(); i < size; ++i)
+                    out << eq.frequencies[i] << "=" << eq.amplifications[i] << "\n";
+
+                out.flush();
+                file.close();
+            }
+        }
+    }
+}
+
+void SoundManager::resetEqualizerConfig(int idx)
+{
+    if(idx < 0 || idx >= _equalizerList.size())
+        return;
+
+    EqualizerConfig eq = _equalizerList[idx];
+    const QString customPath = MediaInfo::equalizerCustomConfigDir() + "/" + eq.fileName;
+    const QString defaultPath = MediaInfo::equalizerDefaultConfigDir() + "/" + eq.fileName;
+    if(QFile::exists(defaultPath))
+    {
+        QFile::remove(customPath);
+        QFile::copy(defaultPath, customPath);
+    }
+
+    // Update the eq config object
+    _equalizerList[idx] = parseEqualizerConfigFile(customPath, eq.fileName);
+    if(idx == _equalizerCurrentConfig)
+        updateEqualizerConfig();
+}
+
+void SoundManager::setEqualizerConfig(int idx)
+{
+    if(idx >= 0 && idx < _equalizerList.size())
+    {
+        _equalizerCurrentConfig = idx;
+        updateEqualizerConfig();
+        emit newEqualizerConfigLoaded();
+    }
+}
+
+void SoundManager::updateEqualizerConfig()
+{
+    EqualizerConfig eq = _equalizerList.at(_equalizerCurrentConfig);
+    _vlcEqualizer->setPreamplification(eq.preamplification);
+
+    for(int i=0; i < eq.frequencies.size(); ++i)
+        _vlcEqualizer->setAmplificationForBandAt(eq.amplifications[i], i);
+
+    _vlcEqualizer->setEnabled(true);
+    emit equalizerConfigChanged();
+}
+
+// Setters
+void SoundManager::setEqualizerPreamp(float preamp)
+{
+    _equalizerList[_equalizerCurrentConfig].preamplification = preamp;
+    _equalizerList[_equalizerCurrentConfig].modified = true;
+    _vlcEqualizer->setPreamplification(preamp);
+    _vlcEqualizer->setEnabled(true);
+    emit equalizerConfigChanged();
+}
+
+void SoundManager::setEqualizerAmp(int freqId, float amp)
+{
+    _equalizerList[_equalizerCurrentConfig].amplifications[freqId] = amp;
+    _equalizerList[_equalizerCurrentConfig].modified = true;
+    _vlcEqualizer->setAmplificationForBandAt(freqId, amp);
+    _vlcEqualizer->setEnabled(true);
+    emit equalizerConfigChanged();
+}
+
+void SoundManager::increaseEqualizerPreamp(float inc)
+{
+    float v = equalizerPreamplification() + inc;
+    if(v > 20.0f)
+        v = 20.0f;
+    else if (v < -20.0f)
+        v = -20.0f;
+
+    setEqualizerPreamp(v);
+}
+
+void SoundManager::increaseEqualizerAmp(int freqId, float inc)
+{
+    float v = equalizerAmplification(freqId) + inc;
+    if(v > 20.0f)
+        v = 20.0f;
+    else if (v < -20.0f)
+        v = -20.0f;
+
+    setEqualizerAmp(freqId, v);
+}
+
+int SoundManager::currentEqualizerConfigId()
+{
+    return _equalizerCurrentConfig;
+}
+
+bool SoundManager::isEqualizerConfigModified(int idx)
+{
+    if(idx >= 0 && idx < _equalizerList.size())
+        return _equalizerList[idx].modified;
+    return false;
+}
+
+int SoundManager::nbOfFrequenciesAvailable()
+{
+    return _vlcEqualizer->bandCount();
+}
+
+QStringList SoundManager::equalizerConfigListNames()
+{
+    QStringList names;
+    for(EqualizerConfig eq: _equalizerList)
+        names.append(eq.name);
+    return names;
+}
+
+QString SoundManager::equalizerConfigName()
+{
+    return _equalizerList.at(_equalizerCurrentConfig).name;
+}
+
+float SoundManager::equalizerFrequency(int idx)
+{
+    return _equalizerList.at(_equalizerCurrentConfig).frequencies[idx];
+}
+
+QString SoundManager::equalizerFrequencyString(int idx)
+{
+    return Common::unitToString(equalizerFrequency(idx), "Hz", 2);
+}
+
+float SoundManager::equalizerAmplification(int idx)
+{
+    return _equalizerList.at(_equalizerCurrentConfig).amplifications[idx];
+}
+
+QString SoundManager::equalizerAmplificationString(int idx)
+{
+    return Common::unitToString(equalizerAmplification(idx), "dB", 1, false);
+}
+
+float SoundManager::equalizerPreamplification()
+{
+    return _equalizerList.at(_equalizerCurrentConfig).preamplification;
+}
+
+QString SoundManager::equalizerPreamplificationString()
+{
+    return Common::unitToString(equalizerPreamplification(), "dB", 1, false);
+}
+
+//
 // Playlist stuff
 //
 
@@ -558,6 +860,9 @@ void SoundManager::updatePlaylistsData()
         QDir playlistDir(playlistDirPath);
         playlistDir.mkpath(".");
     }
+
+    if(!QDir(playlistDirPath).exists())
+        return;
 
     QDirIterator it(playlistDirPath,
                     QStringList({"*.xml"}),
@@ -771,33 +1076,9 @@ void SoundManager::saveSettings()
     _settings->setValue(settingsRepeatModeStr, static_cast<int>(repeatMode()));
     _settings->setValue(settingsLastMainViewType, static_cast<int>(lastMainViewType()));
     _settings->setValue(settingsVolumeStr, volume());
+    saveEqualizerConfigs();
+    _settings->setValue(settingsEqualizerStr, _equalizerCurrentConfig);
     _settings->endGroup();
 }
 
-// Static
-QString SoundManager::timeToString(unsigned int time)
-{
-    const unsigned int timeInSeconds = time / 1000;
-    const unsigned int hours = timeInSeconds / 3600;
-    const unsigned int minutes = (timeInSeconds % 3600) / 60;
-    const unsigned int secondes = timeInSeconds - hours * 3600 - minutes * 60;
 
-    QString result = "";
-
-    if(hours != 0)
-        result += QString::number(hours) + QString(":");
-
-    if(minutes < 10 && hours != 0)
-        result += QString("0") + QString::number(minutes);
-    else
-        result += QString::number(minutes);
-
-    result += ":";
-
-    if(secondes < 10)
-        result += QString("0") + QString::number(secondes);
-    else
-        result += QString::number(secondes);
-
-    return result;
-}

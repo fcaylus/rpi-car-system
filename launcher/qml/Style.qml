@@ -52,6 +52,7 @@ QtObject {
         readonly property color backgroundColor: "#707070"
         readonly property color borderColor: "#303030"
         readonly property color progressColor: "#33CCFF"
+        readonly property color selectedColor: "#2AE8C8"
     }
 
     readonly property color fontColor: "#e7e7e7"

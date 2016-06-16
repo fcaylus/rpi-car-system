@@ -67,6 +67,8 @@ class MediaInfo: public QObject
         static QString musicIndexFilePath();
 
         static QString playlistsDirectory();
+        static QString equalizerDefaultConfigDir();
+        static QString equalizerCustomConfigDir();
 
         static QStringList musicFilesFormats();
 

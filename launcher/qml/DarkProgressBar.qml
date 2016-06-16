@@ -22,6 +22,8 @@ import QtQuick.Controls.Styles 1.4
 import "."
 
 ProgressBar {
+    property bool selected: false
+
     style: ProgressBarStyle {
         background: Rectangle {
             radius: 3
@@ -32,7 +34,7 @@ ProgressBar {
         }
 
         progress: Rectangle {
-            color: Style.progressBar.progressColor
+            color: selected ? Style.progressBar.selectedColor : Style.progressBar.progressColor
             border.color: Style.progressBar.borderColor
         }
     }

@@ -23,6 +23,40 @@ import QtGraphicalEffects 1.0
 import "."
 
 Button {
+    id: button
+
+    property bool repeatClick: false
+    property int repeatFirstDelay: 500
+    property int repeatInterval: 100
+
+    Timer {
+        id: repeatTimer
+        running: false
+        onTriggered: {
+            if(button.pressed) {
+                button.clicked()
+
+                if(interval === button.repeatFirstDelay) {
+                    interval = button.repeatInterval
+                    repeat = true
+                    start()
+                }
+            }
+        }
+    }
+
+    onPressedChanged: {
+        if(repeatClick) {
+            repeatTimer.stop()
+            if(pressed) {
+                repeatTimer.interval = button.repeatFirstDelay
+                repeatTimer.repeat = false
+                repeatTimer.start()
+            }
+        }
+    }
+
+
     style: ButtonStyle {
         background: Rectangle {
             color: "transparent"
