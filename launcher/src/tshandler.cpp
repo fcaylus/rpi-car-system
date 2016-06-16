@@ -61,17 +61,12 @@ void TSHandler::handle()
     QDir devDir("/dev");
     QStringList hidrawList = devDir.entryList(QStringList({"hidraw*"}), QDir::Files | QDir::System);
 
-    qDebug() << "hidraw list:" << hidrawList;
     for(QString hidrawPath : hidrawList)
     {
         _fd = open(QString("/dev/" + hidrawPath).toStdString().c_str(), O_RDWR);
 
         if(_fd < 0)
-        {
-            qDebug() << strerror(errno);
-            qDebug() << "Can't open hidraw device at:" << hidrawPath;
             continue;
-        }
 
         struct hidraw_devinfo info;
         memset(&info, 0x0, sizeof(info));
@@ -79,7 +74,7 @@ void TSHandler::handle()
         int ret = ioctl(_fd, HIDIOCGRAWINFO, &info);
         if(ret < 0)
         {
-            qDebug() << strerror(errno);
+            qWarning() << strerror(errno);
             close(_fd);
             continue;
         }
@@ -103,7 +98,6 @@ void TSHandler::handle()
             bool quit = needToQuit();
             while(!quit)
             {
-                qDebug() << quit;
                 ret = read(_fd, buf, 25);
 
                 // Messages format: [tag] [pressed] [x] [y]

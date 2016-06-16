@@ -165,6 +165,4 @@ ListViewBase {
         target: soundManager
         onMediaListReadyChanged: playlistListView.fillData()
     }
-
-
 }
