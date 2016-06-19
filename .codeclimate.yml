@@ -1,0 +1,16 @@
+exclude_paths:
+- LICENSE
+- build-os/buildroot-patches/*.config
+- "**/thirdparty/"
+- launcher/fonts/
+- launcher/imgs/
+- launcher/LICENSE.html
+engines:
+  fixme:
+    enabled: true
+  gnu-complexity:
+    enabled: true
+  markdownlint:
+    enabled: true
+  shellcheck:
+    enabled: true

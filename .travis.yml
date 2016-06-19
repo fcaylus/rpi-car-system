@@ -16,6 +16,3 @@ install:
 
 script:
     - bash -e ${TRAVIS_BUILD_DIR}/.travis.bash
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)

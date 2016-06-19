@@ -1,4 +1,4 @@
-RPI Car System
+RPI Car System [![Build Status](https://travis-ci.org/Tranqyll/rpi-car-system.svg?branch=master)](https://travis-ci.org/Tranqyll/rpi-car-system) [![Code Climate](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/gpa.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system) [![Issue Count](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/issue_count.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system)
 ==============
 
 Full-featured headunit system. This project is in an early development stage and not ready for production.
