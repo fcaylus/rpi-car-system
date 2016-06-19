@@ -25,7 +25,7 @@ fi
 
 if [ ! -f download.done ]; then
 	wget -nc http://buildroot.uclibc.org/downloads/buildroot-${BUILDROOT_VER}.tar.gz
-	> $SCRIPT_DIR/build/download.done
+	> "$SCRIPT_DIR/build/download.done"
 fi
 
 if [ ! -d buildroot-${BUILDROOT_VER} ]; then
@@ -61,7 +61,7 @@ if [ ! -f system-build.done ]; then
 	cp output/build/rpi-car-system-undefined/build/bin/release/VERSION output/target/opt/rpi-car-system/VERSION
 
     # This file is used to check if the system has been built
-    > $SCRIPT_DIR/build/system-build.done
+    > "$SCRIPT_DIR/build/system-build.done"
 else
     echo "System already built !!!"
 fi
@@ -123,11 +123,11 @@ install -m 644 etc/mdev.conf "${SYSTEM_ROOT}/etc/"
 
 #
 # profile files
-rm ${SYSTEM_ROOT}/etc/profile 
+rm "${SYSTEM_ROOT}/etc/profile"
 install -m 754 etc/profile "${SYSTEM_ROOT}/etc/"
 install -m 644 etc/nanorc "${SYSTEM_ROOT}/etc/"
 
-rm ${SYSTEM_ROOT}/etc/group
+rm "${SYSTEM_ROOT}/etc/group"
 install -m 644 etc/group "${SYSTEM_ROOT}/etc/"
 
 #
@@ -170,7 +170,7 @@ cd "${SYSTEM_ROOT}"
 echo "Creating tarball ..."
 
 # When uncompressing the tarball, make sure to pass tar the "-p" switch to ensure permissions are preserved.
-tar -Jcf ../../../rpi-car-system.tar.xz *
+tar -Jcf ../../../rpi-car-system.tar.xz ./*
 
 echo "----------------------------------"
 echo "Build Finish !!!!"

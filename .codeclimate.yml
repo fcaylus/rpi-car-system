@@ -1,16 +1,33 @@
 exclude_paths:
 - LICENSE
+- thirdparty/
 - build-os/buildroot-patches/*.config
-- "**/thirdparty/"
+- build-os/scipts/fr-latin9.bmap
+- launcher/thirdparty/
 - launcher/fonts/
 - launcher/imgs/
 - launcher/LICENSE.html
 engines:
   fixme:
     enabled: true
+
   gnu-complexity:
     enabled: true
+
   markdownlint:
     enabled: true
+    exclude_fingerprints:
+    - 379aebd80e90e19d9daf1abf4d8b60e0
+
   shellcheck:
     enabled: true
+    exclude_fingerprints:
+    - def411ab4f2d3895e74dbb749f5ad9fd
+
+    checks:
+      # Not following check
+      SC1091:
+        enabled: false
+      # Echo flags
+      SC2039:
+        enabled: false

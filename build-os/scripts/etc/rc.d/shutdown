@@ -13,7 +13,7 @@ echo "Starting stop scripts."
 
 for i in /etc/rc.d/stop/*
 do
-	if [ -x $i ]; then
+	if [ -x "$i" ]; then
 		$i stop
 	fi
 done

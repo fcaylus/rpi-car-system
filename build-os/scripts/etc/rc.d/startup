@@ -51,7 +51,7 @@ echo "Running start scripts."
 
 for i in /etc/rc.d/start/*
 do
-	if [ -x $i ]; then
+	if [ -x "$i" ]; then
 		$i start
 	fi
 done

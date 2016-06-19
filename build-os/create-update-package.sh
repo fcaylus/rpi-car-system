@@ -3,7 +3,7 @@ set -e
 
 function usage {
     cat <<EOF
-Usage: $(basename $0) [system-package-tarball] [output-package-tarball]
+Usage: $(basename "$0") [system-package-tarball] [output-package-tarball]
 Be careful: Arguments must be absolute file paths !!!
 EOF
 }
@@ -48,25 +48,26 @@ tar -xJpvf "${SYS_PKG}"
 echo ">>> Remove useless files ..."
 shopt -s extglob
 rm -rf !(bin|etc|lib|opt|sbin|usr)
-cd usr/
+(
+cd usr/ || exit
 rm -rf !(bin|lib|libexec|qml|sbin|share)
-cd ..
+)
 
 # Copy VERSION file
 cp opt/rpi-car-system/VERSION ../
 
 # Generate md5 datas
 echo ">>> Generate md5 data ..."
-md5deep -lrofbc * > ../sums.md5 # Don't follow symlinks
+md5deep -lrofbc ./* > ../sums.md5 # Don't follow symlinks
 
 echo ">>> Generate symlinks list ..."
 find -type l -fprint ../symlinks.list
 
-cd ..
+cd "${WORK_DIR}"
 
 # Generate final package
 echo ">>> Creating the final tarball ..."
-tar -Jvcf "${OUT_PKG}" *
+tar -Jvcf "${OUT_PKG}" ./*
 
 echo ">>> Remove temp directory ..."
 rm -rf "${WORK_DIR}"
