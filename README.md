@@ -1,4 +1,4 @@
-RPI Car System [![Build Status](https://travis-ci.org/Tranqyll/rpi-car-system.svg?branch=master)](https://travis-ci.org/Tranqyll/rpi-car-system)[![Code Climate](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/gpa.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system)[![Issue Count](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/issue_count.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system)
+RPI Car System [![Build Status](https://travis-ci.org/Tranqyll/rpi-car-system.svg?branch=master)](https://travis-ci.org/Tranqyll/rpi-car-system) [![Code Climate](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/gpa.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system) [![Issue Count](https://codeclimate.com/github/Tranqyll/rpi-car-system/badges/issue_count.svg)](https://codeclimate.com/github/Tranqyll/rpi-car-system)
 ==============
 
 Full-featured headunit system. This project is in an early development stage and
@@ -8,9 +8,9 @@ Project components
 ------------------
 
 - build-os : Scripts to build to complete OS
-    - build-os/build-all.sh : Downloads all packages and create a system tarball
-      (using buildroot)
-    - build-os/flash-all.sh : Flash the tarball into a SD-Card
+  - build-os/build-all.sh : Downloads all packages and create a system tarball
+    (using buildroot)
+  - build-os/flash-all.sh : Flash the tarball into a SD-Card
 - launcher: Main GUI app. This app will be launched on startup.
 - musicindex-generator: Creates and updates the media index.
 

@@ -7,7 +7,7 @@ cd "$SCRIPT_DIR"
 mkdir -pv build
 cd build
 
-BUILDROOT_VER="2015.11.1"
+BUILDROOT_VER="2016.05"
 
 # Check if a clean is requested
 if [ "$1" = "--remove-rpi-car-system-pkg" ]; then
@@ -47,7 +47,7 @@ if [ ! -f system-build.done ]; then
 	
 	set +e
 	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"
-	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/qt5.patch"
+	#patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/qt5.patch"
 	set -e
 
 	# Create rpi-car-system sources tarball

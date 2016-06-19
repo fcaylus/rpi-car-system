@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBVLC_VERSION = 2.2.1
+LIBVLC_VERSION = 2.2.3
 LIBVLC_SITE = http://get.videolan.org/vlc/$(LIBVLC_VERSION)
 LIBVLC_SOURCE = vlc-$(LIBVLC_VERSION).tar.xz
 LIBVLC_LICENSE = GPLv2+ LGPLv2.1+
