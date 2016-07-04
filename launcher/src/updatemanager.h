@@ -27,7 +27,7 @@
 #include <QMutex>
 
 #include "common.h"
-#include "filereader.h"
+#include "dirutility.h"
 #include "../../updater/src/updatercodes.h"
 
 class SearchUpdateThread : public QThread
@@ -126,7 +126,7 @@ class UpdateManager : public QObject
         // Launch script will handle the return code and start the updater
         void launchUpdate(const QString& updateFile)
         {
-            FileReader::writeFile(QCoreApplication::applicationDirPath() + "/update-package-path", updateFile);
+            DirUtility::writeFile(QCoreApplication::applicationDirPath() + "/update-package-path", updateFile);
             _app->exit(UPDATE_CODE);
         }
 

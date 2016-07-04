@@ -173,7 +173,7 @@ int searchUpdates()
                         archive_write_close(out);
                         archive_write_free(out);
 
-                        version = FileReader::readFile("/tmp/rpi-car-system-VERSION").trimmed();
+                        version = DirUtility::readFile("/tmp/rpi-car-system-VERSION").trimmed();
                         QFile::remove("/tmp/rpi-car-system-VERSION");
                         versionFound = true;
                     }

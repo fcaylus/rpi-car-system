@@ -20,43 +20,63 @@
 #define SYSINFOMANAGER_H
 
 #include <QObject>
-#include <QSysInfo>
 
 class SysInfoManager : public QObject
 {
         Q_OBJECT
+
+        Q_PROPERTY(bool isLittleEndian READ isLittleEndian CONSTANT)
+        Q_PROPERTY(int wordSize READ wordSize CONSTANT)
+        Q_PROPERTY(QString buildAbi READ buildAbi CONSTANT)
+        Q_PROPERTY(QString cpuArch READ cpuArch CONSTANT)
+        Q_PROPERTY(QString kernelType READ kernelType CONSTANT)
+        Q_PROPERTY(QString kernelVersion READ kernelVersion CONSTANT)
+
+        Q_PROPERTY(QString programVersion READ programVersion CONSTANT)
+        Q_PROPERTY(int hardwareVersion READ hardwareVersion CONSTANT)
+        Q_PROPERTY(QString vlcVersion READ vlcVersion CONSTANT)
+        Q_PROPERTY(QString vlcqtVersion READ vlcqtVersion CONSTANT)
+        Q_PROPERTY(QString buildDate READ buildDate CONSTANT)
+
+        Q_PROPERTY(qint64 bytesAvailable READ bytesAvailable CONSTANT)
+        Q_PROPERTY(qint64 bytesTotal READ bytesTotal CONSTANT)
+        Q_PROPERTY(qint64 bytesUsedConfig READ bytesUsedConfig CONSTANT)
+        Q_PROPERTY(qint64 bytesUsedSystem READ bytesUsedSystem CONSTANT)
+
+        Q_PROPERTY(QString bytesAvailableString READ bytesAvailableString CONSTANT)
+        Q_PROPERTY(QString bytesTotalString READ bytesTotalString CONSTANT)
+        Q_PROPERTY(QString bytesUsedConfigString READ bytesUsedConfigString CONSTANT)
+        Q_PROPERTY(QString bytesUsedSystemString READ bytesUsedSystemString CONSTANT)
+
+        Q_PROPERTY(QString license READ license CONSTANT)
+
     public:
-        SysInfoManager(QObject* parent = nullptr): QObject(parent) {}
+        SysInfoManager(QObject* parent = nullptr);
 
-        Q_INVOKABLE bool isLittleEndian()
-        {
-            return QSysInfo::ByteOrder == QSysInfo::LittleEndian;
-        }
+        bool isLittleEndian() const;
+        int wordSize() const;
+        QString buildAbi() const;
+        QString cpuArch() const;
+        QString kernelType() const;
+        QString kernelVersion() const;
 
-        Q_INVOKABLE int wordSize()
-        {
-            return QSysInfo::WordSize;
-        }
+        QString programVersion() const;
+        int hardwareVersion() const;
+        QString vlcVersion() const;
+        QString vlcqtVersion() const;
+        QString buildDate() const;
 
-        Q_INVOKABLE QString buildAbi()
-        {
-            return QSysInfo::buildAbi();
-        }
+        QString license() const;
 
-        Q_INVOKABLE QString cpuArch()
-        {
-            return QSysInfo::buildCpuArchitecture();
-        }
+        qint64 bytesAvailable() const;
+        qint64 bytesTotal() const;
+        qint64 bytesUsedConfig() const;
+        qint64 bytesUsedSystem() const;
 
-        Q_INVOKABLE QString kernelType()
-        {
-            return QSysInfo::kernelType();
-        }
-
-        Q_INVOKABLE QString kernelVersion()
-        {
-            return QSysInfo::kernelVersion();
-        }
+        QString bytesAvailableString() const;
+        QString bytesTotalString() const;
+        QString bytesUsedConfigString() const;
+        QString bytesUsedSystemString() const;
 };
 
 #endif // SYSINFOMANAGER_H

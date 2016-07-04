@@ -116,8 +116,8 @@ Activity {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
-            text: "<b>" +  qsTr("Version:") + "</b>   " + programVersion
-                  + "<br><b>" + qsTr("Hardware version:") + "</b>   " + hardwareVersion
+            text: "<b>" +  qsTr("Version:") + "</b>   " + sysinfoManager.programVersion
+                  + "<br><b>" + qsTr("Hardware version:") + "</b>   " + sysinfoManager.hardwareVersion
         }
 
         StyledText {
@@ -127,8 +127,8 @@ Activity {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             wrapMode: Text.WordWrap
-            text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + vlcVersion
-                  + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + vlcqtVersion
+            text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + sysinfoManager.vlcVersion
+                  + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + sysinfoManager.vlcqtVersion
         }
     }
 
@@ -145,7 +145,7 @@ Activity {
             textFormat: Text.RichText
             wrapMode: Text.Wrap
             verticalAlignment: Text.AlignVCenter
-            text: fileReader.read(":/LICENSE.html")
+            text: sysinfoManager.license
         }
     }
 

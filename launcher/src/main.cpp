@@ -28,9 +28,6 @@
 #include <QDir>
 #include <QThread>
 
-#include <VLCQtCore/Common.h>
-
-#include "filereader.h"
 #include "languagemanager.h"
 #include "passwordmanager.h"
 #include "sysinfomanager.h"
@@ -78,8 +75,6 @@ int main(int argc, char *argv[])
     // QML Stuff
     //
 
-    VlcCommon::setPluginPath(appDirPath + QStringLiteral("/plugins"));
-
     // Register some types into the QT metatype System
     qRegisterMetaType<MediaInfoList>("MediaInfoList");
     qRegisterMetaType<MetadataTypeList>("MetadataTypeList");
@@ -95,7 +90,6 @@ int main(int argc, char *argv[])
 
     PasswordManager *passMgr = new PasswordManager();
     LanguageManager *langMgr = new LanguageManager(app, settings, locale);
-    FileReader *fileReader = new FileReader();
     SysInfoManager *sysinfoMgr = new SysInfoManager();
     UpdateManager *updateMgr = new UpdateManager(app);
 
@@ -108,16 +102,10 @@ int main(int argc, char *argv[])
     context->setContextProperty(QStringLiteral("mediaManager"), MediaManager::instance());
     context->setContextProperty(QStringLiteral("passwordManager"), passMgr);
     context->setContextProperty(QStringLiteral("languageManager"), langMgr);
-    context->setContextProperty(QStringLiteral("fileReader"), fileReader);
     context->setContextProperty(QStringLiteral("sysinfoManager"), sysinfoMgr);
     context->setContextProperty(QStringLiteral("updateManager"), updateMgr);
 
     context->setContextProperty(QStringLiteral("passFileCreated"), QVariant(PasswordManager::passFileExists()));
-    context->setContextProperty(QStringLiteral("programVersion"), QVariant(QString(APPLICATION_VERSION)));
-    context->setContextProperty(QStringLiteral("hardwareVersion"), QVariant(HARDWARE_VERSION));
-    context->setContextProperty(QStringLiteral("vlcVersion"), QVariant(VlcInstance::version()));
-    context->setContextProperty(QStringLiteral("vlcqtVersion"), QVariant(VlcInstance::libVersion()));
-    context->setContextProperty(QStringLiteral("buildDate"), QVariant(QString(BUILD_DATE)));
 
     view->setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
@@ -152,7 +140,6 @@ int main(int argc, char *argv[])
 
     delete passMgr;
     delete langMgr;
-    delete fileReader;
     delete sysinfoMgr;
     delete updateMgr;
 

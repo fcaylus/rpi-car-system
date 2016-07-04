@@ -27,7 +27,6 @@
 
 #include "dirutility.h"
 #include "updatercodes.h"
-#include "filereader.h"
 
 namespace DecompressUtilInternal
 {
@@ -127,7 +126,7 @@ namespace DecompressUtil
         // Check VERSION file
         if(found)
         {
-            QString ver = FileReader::readFile("/tmp/rpi-car-system-VERSION").trimmed();
+            QString ver = DirUtility::readFile("/tmp/rpi-car-system-VERSION").trimmed();
             QStringList nums = ver.split(".", QString::SkipEmptyParts);
 
             QFile::remove("/tmp/rpi-car-system-VERSION");

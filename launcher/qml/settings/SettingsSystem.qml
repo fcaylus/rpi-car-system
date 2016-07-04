@@ -37,100 +37,71 @@ Activity {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("Kernel:") + "</b> " + sysinfoManager.kernelType()
+                text: "<b>" + qsTr("Kernel:") + "</b> " + sysinfoManager.kernelType
             }
 
             StyledText {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("Kernel version:") + "</b> " + sysinfoManager.kernelVersion()
+                text: "<b>" + qsTr("Kernel version:") + "</b> " + sysinfoManager.kernelVersion
             }
 
             StyledText {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("CPU architecture:") + "</b> " + sysinfoManager.cpuArch()
+                text: "<b>" + qsTr("CPU architecture:") + "</b> " + sysinfoManager.cpuArch
             }
 
             StyledText {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("Word size:") + "</b> " + sysinfoManager.wordSize()
+                text: "<b>" + qsTr("Word size:") + "</b> " + sysinfoManager.wordSize
             }
 
             StyledText {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("Build ABI:") + "</b> " + sysinfoManager.buildAbi()
+                text: "<b>" + qsTr("Build ABI:") + "</b> " + sysinfoManager.buildAbi
             }
 
             StyledText {
                 width: parent.width
                 font.pixelSize: 17
                 verticalAlignment: Text.AlignVCenter
-                text: "<b>" + qsTr("Build date:") + "</b> " + buildDate
+                text: "<b>" + qsTr("Build date:") + "</b> " + sysinfoManager.buildDate
             }
-        }
 
-        // Disk Usage
-        Rectangle {
-            id: diskSpaceUsage
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            anchors.margins: 20
-            height: 50 + border.width * 2
-
-            color: Style.diskSpace.free
-            border.color: Style.diskSpace.border
-            border.width: 3
-
-            property int lineWidth: Style.windowWidth - anchors.margins * 2
-
-            Row {
-                anchors.fill: parent
-                anchors.margins: parent.border.width
-                spacing: 0
-
-                // System used
-                Rectangle {
-                    height: parent.height
-                    color: Style.diskSpace.systemUsed
-
-                    Component.onCompleted: {
-                        width = ((devicesManager.rootStorageSize()
-                                  - devicesManager.rootStorageAvailableSize()
-                                  - devicesManager.musicDirSize()) / devicesManager.rootStorageSize()) * diskSpaceUsage.lineWidth
-                    }
-                }
-
-                // Music used
-                Rectangle {
-                    height: parent.height
-                    color: Style.diskSpace.musicUsed
-
-                    Component.onCompleted: {
-                        width = (devicesManager.musicDirSize() / devicesManager.rootStorageSize()) * diskSpaceUsage.lineWidth
-                    }
-                }
+            StyledText {
+                width: parent.width
+                font.pixelSize: 17
+                verticalAlignment: Text.AlignVCenter
+                text: "<b>" + qsTr("Bytes total:") + "</b> " + sysinfoManager.bytesTotalString
             }
-        }
 
-        StyledText {
-            anchors.bottom: diskSpaceUsage.top
-            anchors.left: parent.left
-            anchors.right: parent.right
+            StyledText {
+                width: parent.width
+                font.pixelSize: 17
+                verticalAlignment: Text.AlignVCenter
+                text: "<b>" + qsTr("Bytes available:") + "</b> " + sysinfoManager.bytesAvailableString
+            }
 
-            anchors.margins: 20
+            StyledText {
+                width: parent.width
+                font.pixelSize: 17
+                verticalAlignment: Text.AlignVCenter
+                text: "<b>" + qsTr("Bytes used by system:") + "</b> " + sysinfoManager.bytesUsedSystemString
+            }
 
-            font.pixelSize: 20
-            verticalAlignment: Text.AlignVCenter
-            text: "<b>" + qsTr("Free space:") + "</b> " + devicesManager.rootStorageAvailableSizeStr()
+            StyledText {
+                width: parent.width
+                font.pixelSize: 17
+                verticalAlignment: Text.AlignVCenter
+                text: "<b>" + qsTr("Bytes used by config/cache:") + "</b> " + sysinfoManager.bytesUsedConfigString
+            }
         }
     }
 }

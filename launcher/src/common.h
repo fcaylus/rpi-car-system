@@ -142,17 +142,6 @@ namespace Common {
         return QCoreApplication::applicationDirPath();
 #endif
     }
-
-    static inline QString musicDir()
-    {
-#ifdef READY_FOR_CARSYSTEM
-        return QStringLiteral("/root/music");
-#else
-        // Get standard music path
-        const QString path = startProcessAndReadOutput("xdg-user-dir", QStringList({"MUSIC"}));
-        return path.isEmpty() ? QString("/home/" + qgetenv("USER") + "/Music") : path;
-#endif
-    }
 }
 
 #endif // COMMON

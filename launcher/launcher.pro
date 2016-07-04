@@ -75,14 +75,14 @@ SOURCES += \
     src/mediamanager/musiclistmodel.cpp \
     src/mediamanager/metadatalistmodel.cpp \
     src/musicqueuelistmodel.cpp \
-    src/mediamanager/playlistlistmodel.cpp
+    src/mediamanager/playlistlistmodel.cpp \
+    src/sysinfomanager.cpp
 
 HEADERS += \
     src/dirutility.h \
     src/passwordmanager.h \
     src/common.h \
     src/languagemanager.h \
-    src/filereader.h \
     src/sysinfomanager.h \
     src/updatemanager.h \
     src/tshandler.h \

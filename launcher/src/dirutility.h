@@ -24,6 +24,7 @@
 #include <QString>
 #include <QUrl>
 #include <QFile>
+#include <QTextStream>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QStorageInfo>
@@ -35,6 +36,26 @@
 
 namespace DirUtility
 {
+
+    static inline QString readFile(const QString &fileName)
+    {
+        QFile file(fileName);
+        if(!file.open(QFile::ReadOnly | QFile::Text))
+            return QString();
+        QTextStream in(&file);
+        return in.readAll();
+    }
+
+    static inline void writeFile(const QString& fileName, const QString& content)
+    {
+        QFile file(fileName);
+        if(file.open(QFile::WriteOnly | QFile::Text))
+        {
+            QTextStream out(&file);
+            out << content;
+        }
+    }
+
     static inline QString fileNameFromPath(QString path)
     {
         QFileInfo info(path);
