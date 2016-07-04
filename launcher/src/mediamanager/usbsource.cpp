@@ -382,8 +382,26 @@ QList<QVariantList> UsbSource::listMetadata(MetadataTypeList metadataToRetrieve,
            || accessMediaMetadata(info->mediaUri(), requiredMeta) == requiredMetaValue)
         {
             QVariantList vars;
-            for(MediaInfo::MetadataType meta : metadataToRetrieve)
-                vars.append(accessMediaMetadata(info->mediaUri(), meta));
+
+            // If the first metadata to retrieve is ALBUM, and the album name is unknown,
+            // set the icon to a custom one
+            if(metadataToRetrieve.size() == 2
+               && metadataToRetrieve.at(0) == MediaInfo::ALBUM
+               && metadataToRetrieve.at(1) == MediaInfo::COVER_URI)
+            {
+                QVariant val = accessMediaMetadata(info->mediaUri(), MediaInfo::ALBUM);
+                vars.append(val);
+
+                if(val.toString() == MediaInfo::defaultAlbumName())
+                    vars.append(QStringLiteral("qrc:/images/album"));
+                else
+                    vars.append(accessMediaMetadata(info->mediaUri(), MediaInfo::COVER_URI));
+            }
+            else
+            {
+                for(MediaInfo::MetadataType meta : metadataToRetrieve)
+                    vars.append(accessMediaMetadata(info->mediaUri(), meta));
+            }
 
             if(!list.contains(vars))
                 list.append(vars);

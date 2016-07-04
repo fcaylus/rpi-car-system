@@ -97,7 +97,7 @@ Item {
 
                 onClicked: {
                     // Do nothing if "artists tab" is already selected
-                    if(loader.source === "qrc:/qml/music/ListViewArtist.qml") {
+                    if(loader.source == "qrc:/qml/music/ListViewArtist.qml") {
                         return
                     }
 
@@ -126,7 +126,7 @@ Item {
                 text: qsTr("Albums")
 
                 onClicked: {
-                    if(loader.source === "qrc:/qml/music/ListViewAlbum.qml"
+                    if(loader.source == "qrc:/qml/music/ListViewAlbum.qml"
                             && loader.meta === MediaInfo.UNKNOWN
                             && loader.metaValue === undefined) {
                         return
@@ -154,7 +154,7 @@ Item {
                 text: qsTr("Tracks")
 
                 onClicked: {
-                    if(loader.source === "qrc:/qml/music/ListViewTrack.qml"
+                    if(loader.source == "qrc:/qml/music/ListViewTrack.qml"
                             && loader.meta === MediaInfo.UNKNOWN
                             && loader.metaValue === undefined
                             && loader.inPlaylist === false) {
@@ -183,7 +183,7 @@ Item {
                 text: qsTr("Playlists")
 
                 onClicked: {
-                    if(loader.source === "qrc:/qml/music/ListViewPlaylist.qml") {
+                    if(loader.source == "qrc:/qml/music/ListViewPlaylist.qml") {
                         return
                     }
                     if(firstClicked) {
@@ -255,6 +255,7 @@ Item {
                     inPlaylist = musicPlayer.lastHistoryEntryInPlaylist()
                     playlistFile = musicPlayer.lastHistoryEntryPlaylistFile()
 
+                    source = ""
                     source = musicPlayer.lastHistoryEntrySource()
 
                     musicPlayer.removeLastHistoryEntry()
