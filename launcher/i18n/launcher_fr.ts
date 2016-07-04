@@ -4,7 +4,7 @@
 <context>
     <name>ActivityMusic</name>
     <message>
-        <location filename="../qml/ActivityMusic.qml" line="193"/>
+        <location filename="../qml/ActivityMusic.qml" line="204"/>
         <source>New playlist&apos;s name:</source>
         <translation>Nom de la nouvelle playlist:</translation>
     </message>
@@ -43,44 +43,6 @@
     </message>
 </context>
 <context>
-    <name>ActivityTransfer</name>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="34"/>
-        <source>Refresh</source>
-        <translation>Rafraichir</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="61"/>
-        <source>USB sticks list :</source>
-        <translation>Liste des clés USB :</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="73"/>
-        <source>Please insert a USB stick !</source>
-        <translation>Veuillez insérer une clé USB !</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="152"/>
-        <source>Are you sure to transfer all music files from this device ?</source>
-        <translation>Êtes-vous sûr de vouloir transférer tous les fichiers musicaux depuis ce périphérique ?</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="162"/>
-        <source>Copy all files from device ...</source>
-        <translation>Copie de tous les fichiers du périphérique ...</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="193"/>
-        <source>Are you sure to delete all media stored in the radio ?</source>
-        <translation>Êtes-vous sûr de vouloir supprimer tous les médias stockés localement ?</translation>
-    </message>
-    <message>
-        <location filename="../qml/ActivityTransfer.qml" line="206"/>
-        <source>Deleting local media files ...</source>
-        <translation>Suppression des médias locaux ...</translation>
-    </message>
-</context>
-<context>
     <name>ConfirmationPopup</name>
     <message>
         <location filename="../qml/ConfirmationPopup.qml" line="76"/>
@@ -104,7 +66,7 @@
 <context>
     <name>ListViewAlbum</name>
     <message>
-        <location filename="../qml/music/ListViewAlbum.qml" line="67"/>
+        <location filename="../qml/music/ListViewAlbum.qml" line="73"/>
         <source>Album: </source>
         <translation>Album: </translation>
     </message>
@@ -112,7 +74,7 @@
 <context>
     <name>ListViewArtist</name>
     <message>
-        <location filename="../qml/music/ListViewArtist.qml" line="65"/>
+        <location filename="../qml/music/ListViewArtist.qml" line="71"/>
         <source>Artist: </source>
         <translation>Artiste: </translation>
     </message>
@@ -120,55 +82,45 @@
 <context>
     <name>ListViewPlaylist</name>
     <message>
-        <location filename="../qml/music/ListViewPlaylist.qml" line="74"/>
+        <location filename="../qml/music/ListViewPlaylist.qml" line="78"/>
         <source>Playlist: </source>
         <translation>Playlist:</translation>
-    </message>
-    <message>
-        <location filename="../qml/music/ListViewPlaylist.qml" line="126"/>
-        <source>New playlist</source>
-        <translation>Nouvelle playlist</translation>
     </message>
 </context>
 <context>
     <name>MainStackView</name>
     <message>
-        <location filename="../qml/MainStackView.qml" line="83"/>
+        <location filename="../qml/MainStackView.qml" line="81"/>
         <source>My Music</source>
         <translation>Ma Musique</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="89"/>
+        <location filename="../qml/MainStackView.qml" line="87"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="95"/>
+        <location filename="../qml/MainStackView.qml" line="93"/>
         <source>My Videos</source>
         <translation>Mes Vidéos</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="101"/>
+        <location filename="../qml/MainStackView.qml" line="99"/>
         <source>Informations</source>
         <translation>Informations</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="107"/>
+        <location filename="../qml/MainStackView.qml" line="105"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="113"/>
+        <location filename="../qml/MainStackView.qml" line="111"/>
         <source>Call</source>
         <translation>Appeller</translation>
     </message>
     <message>
-        <location filename="../qml/MainStackView.qml" line="119"/>
-        <source>Transfer</source>
-        <translation>Transférer</translation>
-    </message>
-    <message>
-        <location filename="../qml/MainStackView.qml" line="125"/>
+        <location filename="../qml/MainStackView.qml" line="117"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
@@ -176,12 +128,12 @@
 <context>
     <name>MediaInfo</name>
     <message>
-        <location filename="../src/mediainfo.cpp" line="62"/>
+        <location filename="../src/mediamanager/mediainfo.cpp" line="132"/>
         <source>Unknown Album</source>
         <translation>Album Inconnu</translation>
     </message>
     <message>
-        <location filename="../src/mediainfo.cpp" line="67"/>
+        <location filename="../src/mediamanager/mediainfo.cpp" line="138"/>
         <source>Unknown Artist</source>
         <translation>Artiste Inconnu</translation>
     </message>
@@ -189,57 +141,57 @@
 <context>
     <name>MusicListView</name>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="90"/>
+        <location filename="../qml/music/MusicListView.qml" line="66"/>
         <source>Search for music files ...</source>
         <translation>Recherche de fichiers musicaux en cours ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="120"/>
+        <location filename="../qml/music/MusicListView.qml" line="96"/>
         <source>Artists</source>
         <translation>Artistes</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="134"/>
+        <location filename="../qml/music/MusicListView.qml" line="110"/>
         <source>Artists list ...</source>
         <translation>Liste des artistes ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="147"/>
+        <location filename="../qml/music/MusicListView.qml" line="126"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="157"/>
+        <location filename="../qml/music/MusicListView.qml" line="138"/>
         <source>Albums list ...</source>
         <translation>Liste des albums ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="170"/>
+        <location filename="../qml/music/MusicListView.qml" line="154"/>
         <source>Tracks</source>
         <translation>Titres</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="180"/>
+        <location filename="../qml/music/MusicListView.qml" line="167"/>
         <source>Tracks list ...</source>
         <translation>Liste des titres ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="193"/>
+        <location filename="../qml/music/MusicListView.qml" line="183"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="203"/>
+        <location filename="../qml/music/MusicListView.qml" line="193"/>
         <source>Playlists ...</source>
         <translation>Playlists ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="281"/>
+        <location filename="../qml/music/MusicListView.qml" line="280"/>
         <source>Are you sure to remove &quot;%1&quot; playlist ?</source>
         <translation>Voulez-vous vraiment supprimer la playlist &quot;%1&quot; ?</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="298"/>
+        <location filename="../qml/music/MusicListView.qml" line="297"/>
         <source>Are you sure to remove &quot;%1&quot; from the playlist ?</source>
         <translation>Voulez-vous vraiment supprimer &quot;%1&quot; de la playlist ?</translation>
     </message>
@@ -247,7 +199,7 @@
 <context>
     <name>MusicQueuePopup</name>
     <message>
-        <location filename="../qml/music/MusicQueuePopup.qml" line="43"/>
+        <location filename="../qml/music/MusicQueuePopup.qml" line="44"/>
         <source>Music queue ...</source>
         <translation>Liste de lecture ...</translation>
     </message>
@@ -261,9 +213,17 @@
     </message>
 </context>
 <context>
+    <name>PlaylistListModel</name>
+    <message>
+        <location filename="../src/mediamanager/playlistlistmodel.cpp" line="41"/>
+        <source>New Playlist</source>
+        <translation>Nouvelle Playlist</translation>
+    </message>
+</context>
+<context>
     <name>PlaylistPopup</name>
     <message>
-        <location filename="../qml/music/PlaylistPopup.qml" line="47"/>
+        <location filename="../qml/music/PlaylistPopup.qml" line="46"/>
         <source>Add %1 to ...</source>
         <translation>Ajouter %1 à ...</translation>
     </message>
@@ -271,7 +231,7 @@
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../src/dirutility.h" line="176"/>
+        <location filename="../src/dirutility.h" line="199"/>
         <source>%1 device</source>
         <translation>Volume de %1</translation>
     </message>
@@ -373,9 +333,24 @@
         <translation>Date de compilation:</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsSystem.qml" line="133"/>
-        <source>Free space:</source>
-        <translation>Espace libre:</translation>
+        <location filename="../qml/settings/SettingsSystem.qml" line="82"/>
+        <source>Bytes total:</source>
+        <translation>Espace total:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="89"/>
+        <source>Bytes available:</source>
+        <translation>Espace disponible:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="96"/>
+        <source>Bytes used by system:</source>
+        <translation>Espace utilisé par le système:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsSystem.qml" line="103"/>
+        <source>Bytes used by config/cache:</source>
+        <translation>Espace utilisé pour les configs/cache:</translation>
     </message>
 </context>
 <context>
