@@ -26,7 +26,6 @@
         <file>qml/DarkTextInput.qml</file>
         <file>qml/DarkCheckBox.qml</file>
         <file>qml/PasswordPrompt.qml</file>
-        <file>qml/ActivityTransfer.qml</file>
         <file>qml/settings/SettingsLanguage.qml</file>
         <file>qml/settings/SettingsAbout.qml</file>
         <file>LICENSE.html</file>

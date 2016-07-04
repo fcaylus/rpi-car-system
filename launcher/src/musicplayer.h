@@ -16,28 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOUNDMANAGER_H
-#define SOUNDMANAGER_H
+#ifndef MUSICPLAYER_H
+#define MUSICPLAYER_H
 
-#include "mediainfo.h"
+#include "mediamanager/mediainfo.h"
 
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/MediaPlayer.h>
 #include <VLCQtCore/Media.h>
 #include <VLCQtCore/Equalizer.h>
 
-#include <QUrl>
 #include <QStack>
 #include <QList>
 
 class QSettings;
-
-struct ListViewHistoryEntry {
-    QUrl source;
-    QString sourceFile;
-    QString sourceQuery;
-    QString headerText;
-};
 
 // Contains a configuration of the equalizer
 struct EqualizerConfig {
@@ -52,8 +44,7 @@ struct EqualizerConfig {
 };
 typedef QList<EqualizerConfig> EqualizerConfigList;
 
-// Singleton sound manager
-class SoundManager: public QObject
+class MusicPlayer: public QObject
 {
         Q_OBJECT
 
@@ -62,9 +53,10 @@ class SoundManager: public QObject
         Q_PROPERTY(QString mediaTitle READ mediaTitle NOTIFY mediaTitleChanged)
         Q_PROPERTY(QString mediaArtist READ mediaArtist NOTIFY mediaArtistChanged)
         Q_PROPERTY(QString mediaAlbum READ mediaAlbum NOTIFY mediaAlbumChanged)
-        Q_PROPERTY(QUrl mediaCover READ mediaCover NOTIFY mediaCoverChanged)
+        Q_PROPERTY(QString mediaCover READ mediaCover NOTIFY mediaCoverChanged)
         Q_PROPERTY(int volume READ volume WRITE setVolume)
         Q_PROPERTY(QString formatedTime READ formatedTime NOTIFY formatedTimeChanged)
+        Q_PROPERTY(int mediaIndex READ mediaIndex NOTIFY mediaIndexChanged)
 
         Q_PROPERTY(int time READ time NOTIFY timeChanged) // Time between 0 and 100
         Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY isPlayingChanged)
@@ -72,27 +64,16 @@ class SoundManager: public QObject
         Q_PROPERTY(bool random READ random WRITE setRandom NOTIFY randomChanged)
         Q_PROPERTY(RepeatMode repeatMode READ repeatMode WRITE setRepeatMode NOTIFY repeatModeChanged)
 
-        Q_PROPERTY(bool mediaListReady READ mediaListReady NOTIFY mediaListReadyChanged)
-
-        Q_PROPERTY(QUrl trackListFilePath READ trackListFilePath NOTIFY mediaListReadyChanged)
-        Q_PROPERTY(QUrl artistMapFilePath READ artistMapFilePath NOTIFY mediaListReadyChanged)
-        Q_PROPERTY(QUrl albumMapFilePath READ albumMapFilePath NOTIFY mediaListReadyChanged)
-
-        Q_PROPERTY(bool hasHistoryEntry READ hasHistoryEntry NOTIFY hasHistoryEntryChanged)
-
         // Tell the QML interface if at least one music has been played
         Q_PROPERTY(bool started READ started NOTIFY startedChanged)
         Q_PROPERTY(MainViewType lastMainViewType READ lastMainViewType)
+        Q_PROPERTY(bool hasHistoryEntry READ hasHistoryEntry NOTIFY hasHistoryEntryChanged)
 
-        Q_PROPERTY(QStringList currentMediaQueueTitles READ currentMediaQueueTitles NOTIFY currentMediaQueueChanged)
-        Q_PROPERTY(QStringList currentMediaQueueCovers READ currentMediaQueueCovers NOTIFY currentMediaQueueChanged)
-
-        Q_PROPERTY(QStringList playlistNames READ playlistNames)
-        Q_PROPERTY(QStringList playlistFiles READ playlistFiles)
+        Q_PROPERTY(MediaInfoList mediaQueue READ mediaQueue NOTIFY mediaQueueChanged)
 
     public:
-        SoundManager(QSettings *settings, QObject *parent = nullptr); // ctor
-        ~SoundManager();
+        MusicPlayer(QSettings *settings, QObject *parent = nullptr); // ctor
+        ~MusicPlayer();
 
         enum RepeatMode {
             NoRepeat = 0,
@@ -109,19 +90,37 @@ class SoundManager: public QObject
         };
         Q_ENUM(MainViewType)
 
+        struct ListViewHistoryEntry {
+            QUrl source;
+            MediaInfo::MetadataType meta;
+            QVariant metaValue;
+            QString headerText;
+            bool inPlaylist;
+            QString playlistFile;
+        };
+
+        // Statics
+        static QString equalizerDefaultConfigDir();
+        static QString equalizerCustomConfigDir();
+
     public slots:
 
         // Init the manager
         // This is the first thing to do
         void init();
 
-        // xmlSourceFile and xmlSourceQuery are used to fill the current media queue
-        // if path is empty, play the first music in the sourceQuery
-        void playFromFile(QString path, QString xmlSourceFile = "", const QString& xmlSourceQuery = "");
+        void play(MediaInfoList musicList, int index);
+        // Play the specified media in the music list
+        void play(MediaInfoList musicList, const QString& currentMediaUri);
+        // Play the media. The music list is retrieve from the current media manager list
+        void play(const QString &currentMediaUri);
+        // Play the first media in the playlist
+        void playFromPlaylist(const QString& playlistFileName);
+        void playFromPlaylist(const QString& playlistFileName, const QString& mediaUri);
+
         void playNextIndex();
         void playPreviousIndex();
         void playFromIndex(const int& idx);
-        void playFromPlaylist(const QString& playlistFile);
 
         void setVolume(int volume);
 
@@ -138,17 +137,6 @@ class SoundManager: public QObject
         void setRandom(bool random);
 
         //
-        // Playlist stuff
-        void addSongToPlaylist(QString playlistFileName, QString musicTitle, QString musicPath, QString musicCover);
-        void removePlaylistFile(const QString& fileName);
-        void removeFromPlaylist(const QString& playlistFilePath, const QString& musicFile);
-
-        //
-        // History stuff
-        void addHistoryEntry(QUrl source, QString sourceFile, QString sourceQuery, QString headerText);
-        void removeLastHistoryEntry();
-
-        //
         // Equalizer stuff
         void setEqualizerConfig(int idx);
         void resetEqualizerConfig(int idx);
@@ -159,6 +147,14 @@ class SoundManager: public QObject
         void increaseEqualizerPreamp(float inc);
         void increaseEqualizerAmp(int freqId, float inc);
 
+        //
+        // History stuff
+        void addHistoryEntry(QUrl source, MediaInfo::MetadataType meta, QVariant metaValue,
+                             const QString& headerText, bool inPlaylist, const QString& playlistFile);
+        void removeLastHistoryEntry();
+
+        //
+        // GUI stuff
         void setPlayerVisibility(bool visible);
         void saveSettings();
 
@@ -171,6 +167,7 @@ class SoundManager: public QObject
         void mediaArtistChanged();
         void mediaAlbumChanged();
         void mediaCoverChanged();
+        void mediaIndexChanged();
 
         void formatedTimeChanged();
         void timeChanged();
@@ -181,26 +178,23 @@ class SoundManager: public QObject
         void randomChanged();
         void repeatModeChanged();
 
-        void mediaListReadyChanged();
-
-        void hasHistoryEntryChanged();
-        void startedChanged();
-
-        void currentMediaQueueChanged();
-        void newMediaPlayedFromFile();
+        void mediaQueueChanged();
+        void newMediaListPlayed();
 
         void newEqualizerConfigLoaded();
         void equalizerConfigChanged();
 
-    public:
+        void hasHistoryEntryChanged();
+        void startedChanged();
 
+    public:
         bool initialized() const;
 
         // Getters
         QString mediaTitle() const;
         QString mediaArtist() const;
         QString mediaAlbum() const;
-        QUrl mediaCover() const;
+        QString mediaCover() const;
 
         bool isPlaying();
         int volume() const;
@@ -211,35 +205,12 @@ class SoundManager: public QObject
         QString formatedTime();
         int time();
 
-        bool mediaListReady();
-
-        QUrl artistMapFilePath() const;
-        QUrl albumMapFilePath() const;
-        QUrl trackListFilePath() const;
+        MediaInfoList mediaQueue() const;
+        int mediaIndex() const;
 
         bool started() const;
         Q_INVOKABLE bool isPlayerVisible();
         MainViewType lastMainViewType() const;
-
-        //
-        // History stuff
-        bool hasHistoryEntry();
-        Q_INVOKABLE QUrl lastHistoryEntrySource();
-        Q_INVOKABLE QString lastHistoryEntrySourceFile();
-        Q_INVOKABLE QString lastHistoryEntrySourceQuery();
-        Q_INVOKABLE QString lastHistoryEntryHeaderText();
-
-        QStringList currentMediaQueueTitles();
-        QStringList currentMediaQueueCovers();
-        Q_INVOKABLE int currentIndex();
-
-        //
-        // Playlist stuff
-        QStringList playlistNames();
-        QStringList playlistFiles();
-        Q_INVOKABLE QUrl playlistUrl(QString file);
-        // Return the created file name
-        Q_INVOKABLE QString createNewPlaylist(QString name);
 
         //
         // Equalizer stuff
@@ -257,6 +228,15 @@ class SoundManager: public QObject
         Q_INVOKABLE float equalizerPreamplification();
         Q_INVOKABLE QString equalizerPreamplificationString();
 
+        //
+        // History stuff
+        bool hasHistoryEntry();
+        Q_INVOKABLE QUrl lastHistoryEntrySource();
+        Q_INVOKABLE MediaInfo::MetadataType lastHistoryEntryMeta();
+        Q_INVOKABLE QVariant lastHistoryEntryMetaValue();
+        Q_INVOKABLE QString lastHistoryEntryHeaderText();
+        Q_INVOKABLE bool lastHistoryEntryInPlaylist();
+        Q_INVOKABLE QString lastHistoryEntryPlaylistFile();
 
     private:
         bool _init = false;
@@ -267,25 +247,20 @@ class SoundManager: public QObject
         VlcAudio *_vlcAudio = nullptr;
         VlcMedia *_currentMedia = nullptr;
 
-        MediaList _currentMediaList;
-        MediaList _currentMediaListRandomized;
+        MediaInfoList _currentMediaList;
+        MediaInfoList _currentMediaListRandomized;
+
         int _currentMediaIndex = 0;
 
         // Play parameters
         bool _playRandom = false;
         RepeatMode _repeatMode = NoRepeat;
 
-        bool _mediaListReady = false;
-
         bool _started = false;
         bool _playerVisibility = false;
-
+        MainViewType _lastMainViewType = MainViewType::Artists;
         // List view history
         QStack<ListViewHistoryEntry> _listViewHistory;
-        MainViewType _lastMainViewType = MainViewType::Artists;
-
-        QStringList _playlistNames;
-        QStringList _playlistFiles;
 
         QSettings *_settings;
 
@@ -296,15 +271,13 @@ class SoundManager: public QObject
         void emitNewMediaSignals();
 
         void randomizeQueue();
-        void updatePlaylistsData();
 
         void checkForDefaultEqualizerConfigs();
         EqualizerConfig parseEqualizerConfigFile(const QString filePath, const QString fileName);
         void initEqualizerConfigList();
         void saveEqualizerConfigs();
 
-        Q_DISABLE_COPY(SoundManager)
+        Q_DISABLE_COPY(MusicPlayer)
 };
 
-
-#endif // SOUNDMANAGER_H
+#endif // MUSICPLAYER_H

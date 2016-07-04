@@ -18,4 +18,19 @@ diff -uNr a/package/Config.in b/package/Config.in
  endmenu
  
  menu "Compression and decompression"
-
+@@ -1088,6 +1088,7 @@
+ 	source "package/libhdhomerun/Config.in"
+ 	source "package/libimxvpuapi/Config.in"
+ 	source "package/libmatroska/Config.in"
++	source "package/libmediainfo/Config.in"
+ 	source "package/libmms/Config.in"
+ 	source "package/libmpeg2/Config.in"
+ 	source "package/libogg/Config.in"
+@@ -1253,6 +1254,7 @@
+ 	source "package/libunwind/Config.in"
+ 	source "package/liburcu/Config.in"
+ 	source "package/libuv/Config.in"
++	source "package/libzen/Config.in"
+ 	source "package/lightning/Config.in"
+ 	source "package/linux-pam/Config.in"
+ if BR2_PACKAGE_LINUX_PAM

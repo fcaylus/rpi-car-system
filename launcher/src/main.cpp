@@ -30,14 +30,19 @@
 
 #include <VLCQtCore/Common.h>
 
-#include "devicesmanager.h"
 #include "filereader.h"
 #include "languagemanager.h"
-#include "soundmanager.h"
 #include "passwordmanager.h"
 #include "sysinfomanager.h"
 #include "updatemanager.h"
 #include "tshandler.h"
+
+#include "musicplayer.h"
+#include "musicqueuelistmodel.h"
+#include "mediamanager/mediamanager.h"
+#include "mediamanager/metadatalistmodel.h"
+#include "mediamanager/musiclistmodel.h"
+#include "mediamanager/playlistlistmodel.h"
 
 static const QString settingsLocaleStr = "locale";
 
@@ -75,11 +80,22 @@ int main(int argc, char *argv[])
 
     VlcCommon::setPluginPath(appDirPath + QStringLiteral("/plugins"));
 
-    SoundManager *soundMgr = new SoundManager(settings);
+    // Register some types into the QT metatype System
+    qRegisterMetaType<MediaInfoList>("MediaInfoList");
+    qRegisterMetaType<MetadataTypeList>("MetadataTypeList");
+
+    qmlRegisterType<MusicListModel>("rpicarsystem.mediamanager", 1, 0, "MusicListModel");
+    qmlRegisterType<MetadataListModel>("rpicarsystem.mediamanager", 1, 0, "MetadataListModel");
+    qmlRegisterType<MusicQueueListModel>("rpicarsystem.mediamanager", 1, 0, "MusicQueueListModel");
+    qmlRegisterType<PlaylistListModel>("rpicarsystem.mediamanager", 1, 0, "PlaylistListModel");
+    qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
+
+    MusicPlayer *musicPlayer = new MusicPlayer(settings);
+    MediaManager::instance()->initialScan();
+
     PasswordManager *passMgr = new PasswordManager();
     LanguageManager *langMgr = new LanguageManager(app, settings, locale);
     FileReader *fileReader = new FileReader();
-    DevicesManager *devicesMgr = new DevicesManager();
     SysInfoManager *sysinfoMgr = new SysInfoManager();
     UpdateManager *updateMgr = new UpdateManager(app);
 
@@ -88,10 +104,10 @@ int main(int argc, char *argv[])
     view->setResizeMode(QQuickView::SizeViewToRootObject);
 
     QQmlContext *context = view->rootContext();
-    context->setContextProperty(QStringLiteral("soundManager"), soundMgr);
+    context->setContextProperty(QStringLiteral("musicPlayer"), musicPlayer);
+    context->setContextProperty(QStringLiteral("mediaManager"), MediaManager::instance());
     context->setContextProperty(QStringLiteral("passwordManager"), passMgr);
     context->setContextProperty(QStringLiteral("languageManager"), langMgr);
-    context->setContextProperty(QStringLiteral("devicesManager"), devicesMgr);
     context->setContextProperty(QStringLiteral("fileReader"), fileReader);
     context->setContextProperty(QStringLiteral("sysinfoManager"), sysinfoMgr);
     context->setContextProperty(QStringLiteral("updateManager"), updateMgr);
@@ -129,7 +145,7 @@ int main(int argc, char *argv[])
     delete view;
 
     // Save settings
-    soundMgr->saveSettings();
+    musicPlayer->saveSettings();
 
     settings->sync();
     delete settings;
@@ -137,11 +153,10 @@ int main(int argc, char *argv[])
     delete passMgr;
     delete langMgr;
     delete fileReader;
-    delete devicesMgr;
     delete sysinfoMgr;
     delete updateMgr;
 
-    delete soundMgr;
+    delete musicPlayer;
 
     delete app;
 

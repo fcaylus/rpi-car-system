@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.3
-import QtQuick.XmlListModel 2.0
+import rpicarsystem.mediamanager 1.0
 import ".."
 import "."
 
@@ -28,31 +28,27 @@ import "."
 Item {
     id: musicLister
 
-    property bool started: false
+    property bool started: mediaManager.scanned
+    property bool firstClicked: false
 
     Component.onCompleted: {
-        if(soundManager.mediaListReady) {
-            waitText.visible = false
-            mainRow.visible = true
-
-            var lastMainView = soundManager.lastMainViewType
-            switch(lastMainView) {
-                case 0:
-                    artistButton.clicked()
-                    break;
-                case 1:
-                    albumButton.clicked()
-                    break;
-                case 2:
-                    trackButton.clicked()
-                    break;
-                case 3:
-                    playlistButton.clicked()
-                    break;
-            }
-
-            started = true
+        var lastMainView = musicPlayer.lastMainViewType
+        switch(lastMainView) {
+            case 0:
+                artistButton.clicked()
+                break;
+            case 1:
+                albumButton.clicked()
+                break;
+            case 2:
+                trackButton.clicked()
+                break;
+            case 3:
+                playlistButton.clicked()
+                break;
         }
+
+        firstClicked = true
 
         // Update history status
         loader.loadPreviousHistory()
@@ -62,29 +58,9 @@ Item {
         loader.appendLastEntry()
     }
 
-    Connections {
-        target: soundManager
-        onMediaListReadyChanged: {
-            if(soundManager.mediaListReady) {
-                if(!mainRow.visible) {
-                    waitText.visible = false
-                    mainRow.visible = true
-                    artistButton.clicked()
-                    started = true
-                } else {
-                    // ListView is already visible
-                    // Reload current view
-                    var src = loader.source
-                    loader.source = ""
-                    loader.source = src
-                }
-            }
-        }
-    }
-
     StyledText {
         id: waitText
-        visible: true
+        visible: !started
         width: parent.width
         height: parent.height
         text: qsTr("Search for music files ...");
@@ -96,7 +72,7 @@ Item {
 
     Row {
         id: mainRow
-        visible: false
+        visible: started
         anchors.fill: parent
         anchors.leftMargin: 5
         anchors.rightMargin: 5
@@ -121,19 +97,22 @@ Item {
 
                 onClicked: {
                     // Do nothing if "artists tab" is already selected
-                    if(loader.sourceQuery === "/artists/artist") {
+                    if(loader.source === "qrc:/qml/music/ListViewArtist.qml") {
                         return
                     }
 
                     // Small trick to avoid addition of the first entry
-                    // Started is set to true only after the first add
-                    if(started) {
+                    // "firstClicked" is set to true only after the first add
+                    if(firstClicked) {
                         loader.appendLastEntry()
                     }
 
                     loader.headerText = qsTr("Artists list ...");
-                    loader.sourceFile = soundManager.artistMapFilePath
-                    loader.sourceQuery = "/artists/artist"
+                    loader.meta = MediaInfo.UNKNOWN
+                    loader.metaValue = undefined
+                    loader.inPlaylist = false
+                    loader.playlistFile = ""
+                    loader.source = ""
                     loader.source = "qrc:/qml/music/ListViewArtist.qml"
                 }
             }
@@ -147,16 +126,21 @@ Item {
                 text: qsTr("Albums")
 
                 onClicked: {
-                    if(loader.sourceQuery === "/albums/album") {
+                    if(loader.source === "qrc:/qml/music/ListViewAlbum.qml"
+                            && loader.meta === MediaInfo.UNKNOWN
+                            && loader.metaValue === undefined) {
                         return
                     }
-                    if(started) {
+                    if(firstClicked) {
                         loader.appendLastEntry()
                     }
 
                     loader.headerText = qsTr("Albums list ...")
-                    loader.sourceFile = soundManager.albumMapFilePath
-                    loader.sourceQuery = "/albums/album"
+                    loader.meta = MediaInfo.UNKNOWN
+                    loader.metaValue = undefined
+                    loader.inPlaylist = false
+                    loader.playlistFile = ""
+                    loader.source = ""
                     loader.source = "qrc:/qml/music/ListViewAlbum.qml"
                 }
             }
@@ -170,16 +154,22 @@ Item {
                 text: qsTr("Tracks")
 
                 onClicked: {
-                    if(loader.sourceQuery === "/tracks/track") {
+                    if(loader.source === "qrc:/qml/music/ListViewTrack.qml"
+                            && loader.meta === MediaInfo.UNKNOWN
+                            && loader.metaValue === undefined
+                            && loader.inPlaylist === false) {
                         return
                     }
-                    if(started) {
+                    if(firstClicked) {
                         loader.appendLastEntry()
                     }
 
                     loader.headerText = qsTr("Tracks list ...")
-                    loader.sourceFile = soundManager.trackListFilePath
-                    loader.sourceQuery = "/tracks/track"
+                    loader.meta = MediaInfo.UNKNOWN
+                    loader.metaValue = undefined
+                    loader.inPlaylist = false
+                    loader.playlistFile = ""
+                    loader.source = ""
                     loader.source = "qrc:/qml/music/ListViewTrack.qml"
                 }
             }
@@ -193,15 +183,18 @@ Item {
                 text: qsTr("Playlists")
 
                 onClicked: {
-                    if(loader.sourceQuery === "/playlist") {
+                    if(loader.source === "qrc:/qml/music/ListViewPlaylist.qml") {
                         return
                     }
-                    if(started) {
+                    if(firstClicked) {
                         loader.appendLastEntry()
                     }
 
                     loader.headerText = qsTr("Playlists ...")
-                    loader.sourceQuery = "/playlist"
+                    loader.meta = MediaInfo.UNKNOWN
+                    loader.metaValue = undefined
+                    loader.inPlaylist = false
+                    loader.playlistFile = ""
                     loader.source = "qrc:/qml/music/ListViewPlaylist.qml"
                 }
             }
@@ -214,7 +207,7 @@ Item {
                 onClicked: {
                     loader.loadPreviousHistory()
                 }
-                visible: soundManager.hasHistoryEntry
+                visible: musicPlayer.hasHistoryEntry
             }
         }
 
@@ -244,21 +237,26 @@ Item {
             visible: status == Loader.Ready
 
             property string headerText
-            property string sourceFile
-            property string sourceQuery
+            property int meta: MediaInfo.UNKNOWN
+            property var metaValue
+            property bool inPlaylist: false
+            property string playlistFile
 
             function appendLastEntry() {
-                soundManager.addHistoryEntry(source, sourceFile, sourceQuery, headerText)
+                musicPlayer.addHistoryEntry(source, meta, metaValue, headerText, inPlaylist, playlistFile)
             }
 
             function loadPreviousHistory() {
-                if(soundManager.hasHistoryEntry) {
-                    headerText = soundManager.lastHistoryEntryHeaderText()
-                    sourceFile = soundManager.lastHistoryEntrySourceFile()
-                    sourceQuery = soundManager.lastHistoryEntrySourceQuery()
-                    source = soundManager.lastHistoryEntrySource()
+                if(musicPlayer.hasHistoryEntry) {
+                    headerText = musicPlayer.lastHistoryEntryHeaderText()
+                    meta = musicPlayer.lastHistoryEntryMeta()
+                    metaValue = musicPlayer.lastHistoryEntryMetaValue()
+                    inPlaylist = musicPlayer.lastHistoryEntryInPlaylist()
+                    playlistFile = musicPlayer.lastHistoryEntryPlaylistFile()
 
-                    soundManager.removeLastHistoryEntry()
+                    source = musicPlayer.lastHistoryEntrySource()
+
+                    musicPlayer.removeLastHistoryEntry()
                 }
             }
         }
@@ -281,7 +279,7 @@ Item {
         title: qsTr("Are you sure to remove \"%1\" playlist ?").arg(userData)
 
         onExitSuccess: {
-            soundManager.removePlaylistFile(userData2);
+            mediaManager.removePlaylist(userData2)
         }
     }
 
@@ -298,7 +296,7 @@ Item {
         title: qsTr("Are you sure to remove \"%1\" from the playlist ?").arg(userData3)
 
         onExitSuccess: {
-            soundManager.removeFromPlaylist(userData, userData2)
+            mediaManager.removeMediaFromPlaylist(userData, userData2)
 
             // Reload current view
             var src = loader.source

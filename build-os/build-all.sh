@@ -44,6 +44,8 @@ if [ ! -f system-build.done ]; then
 	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
 	cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
+	cp -r "$SCRIPT_DIR/buildroot-patches/libmediainfo" package/
+	cp -r "$SCRIPT_DIR/buildroot-patches/libzen" package/
 	
 	set +e
 	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"

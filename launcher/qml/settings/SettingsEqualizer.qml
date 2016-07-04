@@ -49,9 +49,9 @@ Activity {
             repeatInterval: 30
             onClicked: {
                 if(equalizerModifier.preamp) {
-                    soundManager.increaseEqualizerPreamp(-0.2)
+                    musicPlayer.increaseEqualizerPreamp(-0.2)
                 } else {
-                    soundManager.increaseEqualizerAmp(equalizerModifier.freqId, -0.2)
+                    musicPlayer.increaseEqualizerAmp(equalizerModifier.freqId, -0.2)
                 }
             }
         }
@@ -90,18 +90,18 @@ Activity {
             repeatInterval: 30
             onClicked: {
                 if(equalizerModifier.preamp) {
-                    soundManager.increaseEqualizerPreamp(0.2)
+                    musicPlayer.increaseEqualizerPreamp(0.2)
                 } else {
-                    soundManager.increaseEqualizerAmp(equalizerModifier.freqId, 0.2)
+                    musicPlayer.increaseEqualizerAmp(equalizerModifier.freqId, 0.2)
                 }
             }
         }
 
         function updateText() {
             if(preamp) {
-                amp = soundManager.equalizerPreamplificationString()
+                amp = musicPlayer.equalizerPreamplificationString()
             } else {
-                amp = soundManager.equalizerAmplificationString(freqId)
+                amp = musicPlayer.equalizerAmplificationString(freqId)
             }
         }
 
@@ -115,7 +115,7 @@ Activity {
         }
 
         Connections {
-            target: soundManager
+            target: musicPlayer
             onEqualizerConfigChanged: {
                 equalizerModifier.updateText()
             }
@@ -137,12 +137,12 @@ Activity {
         bold: true
         fontRatio: .4
 
-        text: soundManager.equalizerConfigName()
+        text: musicPlayer.equalizerConfigName()
 
         Connections {
-            target: soundManager
+            target: musicPlayer
             onNewEqualizerConfigLoaded: {
-                labelConfig.text = soundManager.equalizerConfigName()
+                labelConfig.text = musicPlayer.equalizerConfigName()
             }
         }
 
@@ -184,7 +184,7 @@ Activity {
 
                         anchors.horizontalCenter: parent.horizontalCenter
 
-                        value: soundManager.equalizerPreamplification() + 20
+                        value: musicPlayer.equalizerPreamplification() + 20
                     }
 
                     StyledText {
@@ -204,14 +204,14 @@ Activity {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
 
-                        text: soundManager.equalizerPreamplificationString()
+                        text: musicPlayer.equalizerPreamplificationString()
                     }
 
                     Connections {
-                        target: soundManager
+                        target: musicPlayer
                         onEqualizerConfigChanged: {
-                            preampSelect.value = soundManager.equalizerPreamplification() + 20
-                            labelPreAmpVal.text = soundManager.equalizerPreamplificationString()
+                            preampSelect.value = musicPlayer.equalizerPreamplification() + 20
+                            labelPreAmpVal.text = musicPlayer.equalizerPreamplificationString()
                         }
                     }
                 }
@@ -245,7 +245,7 @@ Activity {
 
             Repeater {
                 id: repeater
-                model: soundManager.nbOfFrequenciesAvailable()
+                model: musicPlayer.nbOfFrequenciesAvailable()
 
                 Rectangle {
                     height: parent.height
@@ -267,7 +267,7 @@ Activity {
 
                             selected: itemSelected
 
-                            value: soundManager.equalizerAmplification(index) + 20
+                            value: musicPlayer.equalizerAmplification(index) + 20
 
                             height: parent.height - labelAmp.height - labelAmpVal.height - 2*parent.spacing
                             width: 20
@@ -281,7 +281,7 @@ Activity {
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             font.bold: true
-                            text: soundManager.equalizerFrequencyString(index)
+                            text: musicPlayer.equalizerFrequencyString(index)
                         }
 
                         StyledText {
@@ -290,14 +290,14 @@ Activity {
                             font.pixelSize: 14
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
-                            text: soundManager.equalizerAmplificationString(index)
+                            text: musicPlayer.equalizerAmplificationString(index)
                         }
 
                         Connections {
-                            target: soundManager
+                            target: musicPlayer
                             onEqualizerConfigChanged: {
-                                ampSelect.value = soundManager.equalizerAmplification(index) + 20
-                                labelAmpVal.text = soundManager.equalizerAmplificationString(index)
+                                ampSelect.value = musicPlayer.equalizerAmplification(index) + 20
+                                labelAmpVal.text = musicPlayer.equalizerAmplificationString(index)
                             }
                         }
                     }
@@ -327,7 +327,7 @@ Activity {
 
             Component.onCompleted: {
                 // Fix spacing for all progress bars
-                var count = soundManager.nbOfFrequenciesAvailable()
+                var count = musicPlayer.nbOfFrequenciesAvailable()
                 var widthSum = 35*count + 1 + 25
                 row.spacing = (row.width - widthSum) / (count+3)
                 row.anchors.leftMargin = row.spacing
@@ -389,7 +389,7 @@ Activity {
                         MouseArea {
                             anchors.fill: row
                             onClicked: {
-                                soundManager.setEqualizerConfig(index)
+                                musicPlayer.setEqualizerConfig(index)
                                 listPopup.visible = false
                             }
                         }
@@ -414,7 +414,7 @@ Activity {
                             visible: modified
                             anchors.fill: clearImage
                             onClicked: {
-                                soundManager.resetEqualizerConfig(index)
+                                musicPlayer.resetEqualizerConfig(index)
                                 equalizerListView.updateModifiedStatus(index)
                                 listPopup.visible = false
                             }
@@ -432,14 +432,14 @@ Activity {
 
                     function fillData() {
                         model.clear()
-                        var list = soundManager.equalizerConfigListNames()
+                        var list = musicPlayer.equalizerConfigListNames()
                         for (var i=0; i < list.length; i++) {
-                            model.append({"name": list[i],  "modified": soundManager.isEqualizerConfigModified(i)})
+                            model.append({"name": list[i],  "modified": musicPlayer.isEqualizerConfigModified(i)})
                         }
                     }
 
                     function updateModifiedStatus(idx) {
-                        model.setProperty(idx, "modified", soundManager.isEqualizerConfigModified(idx))
+                        model.setProperty(idx, "modified", musicPlayer.isEqualizerConfigModified(idx))
                     }
 
                     Component.onCompleted: fillData()
@@ -447,7 +447,7 @@ Activity {
                     // Center list on update
                     onVisibleChanged: {
                         if(visible) {
-                            var currentId = soundManager.currentEqualizerConfigId()
+                            var currentId = musicPlayer.currentEqualizerConfigId()
                             equalizerListView.positionViewAtIndex(currentId, ListView.Center)
                             equalizerListView.currentIndex = currentId
                             updateModifiedStatus(currentId)

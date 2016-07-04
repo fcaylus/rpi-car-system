@@ -21,7 +21,6 @@ import ".."
 import "."
 
 Rectangle {
-    id: musicPlayer
     color: "transparent"
 
     property int coverWidth: 260
@@ -45,7 +44,7 @@ Rectangle {
                 width: height
                 sourceSize.width: width
                 sourceSize.height: height
-                source: soundManager.mediaCover
+                source: musicPlayer.mediaCover
             }
 
             Column {
@@ -64,7 +63,7 @@ Rectangle {
 
                 StyledText {
                     width: rightWidth
-                    text: soundManager.mediaTitle
+                    text: musicPlayer.mediaTitle
                     font.bold: true
                     font.pixelSize: 30
                     horizontalAlignment: Text.AlignHCenter
@@ -72,7 +71,7 @@ Rectangle {
                 }
                 StyledText {
                     width: rightWidth
-                    text: soundManager.mediaArtist
+                    text: musicPlayer.mediaArtist
                     font.italic: true
                     font.pixelSize: 20
                     horizontalAlignment: Text.AlignHCenter
@@ -112,9 +111,9 @@ Rectangle {
                         id: volumeBar
                         width: 150
                         anchors.verticalCenter: parent.verticalCenter
-                        onValueChanged: soundManager.setVolume(value*100)
+                        onValueChanged: musicPlayer.setVolume(value*100)
                         Component.onCompleted: {
-                            value = soundManager.volume / 100
+                            value = musicPlayer.volume / 100
                         }
                     }
 
@@ -148,7 +147,7 @@ Rectangle {
                         height: width
                         iconSource: "qrc:/images/fast_rewind"
                         anchors.verticalCenter: parent.verticalCenter
-                        onClicked: soundManager.rewind()
+                        onClicked: musicPlayer.rewind()
                     }
 
                     FlatButton {
@@ -165,7 +164,7 @@ Rectangle {
                         height: width
                         iconSource: "qrc:/images/fast_forward"
                         anchors.verticalCenter: parent.verticalCenter
-                        onClicked: soundManager.forward()
+                        onClicked: musicPlayer.forward()
                     }
                 }
             }
@@ -185,7 +184,7 @@ Rectangle {
 
             StyledText {
                 anchors.verticalCenter: parent.verticalCenter
-                text: soundManager.formatedTime
+                text: musicPlayer.formatedTime
                 font.italic: true
                 font.pixelSize: 15
                 horizontalAlignment: Text.AlignHCenter
@@ -193,8 +192,8 @@ Rectangle {
             }
 
             Connections {
-                target: soundManager
-                onTimeChanged: timeBar.value = soundManager.time / 100
+                target: musicPlayer
+                onTimeChanged: timeBar.value = musicPlayer.time / 100
                 onEndReached: timeBar.value = 1
             }
         }

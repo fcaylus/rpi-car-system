@@ -41,11 +41,24 @@ QMAKE_POST_LINK = echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION";
 # Thirdparty stuff
 #
 
+# Workaround for installation where an another Qt distro is installed in /usr
+QTDIR = $$getenv(QTDIR)
+!isEmpty(QTDIR) {
+    LIBS = -L$$QTDIR/lib $$LIBS
+}
+
 # PugiXml
 include(../thirdparty/pugixml.pri)
 
 # VLCQt
 include(../thirdparty/vlc-qt.pri)
+
+# libudev
+INCLUDEPATH += /usr/include
+LIBS += -L/usr/lib -ludev
+
+# MediaInfoLib
+include(../thirdparty/mediainfolib.pri)
 
 #
 # Project sources
@@ -53,23 +66,36 @@ include(../thirdparty/vlc-qt.pri)
 
 SOURCES += \
     src/main.cpp \
-    src/soundmanager.cpp \
-    src/mediainfo.cpp \
-    src/devicesmanager.cpp \
-    src/tshandler.cpp
+    src/tshandler.cpp \
+    src/mediamanager/mediamanager.cpp \
+    src/mediamanager/playlist.cpp \
+    src/mediamanager/usbsource.cpp \
+    src/mediamanager/mediainfo.cpp \
+    src/musicplayer.cpp \
+    src/mediamanager/musiclistmodel.cpp \
+    src/mediamanager/metadatalistmodel.cpp \
+    src/musicqueuelistmodel.cpp \
+    src/mediamanager/playlistlistmodel.cpp
 
 HEADERS += \
     src/dirutility.h \
-    src/soundmanager.h \
-    src/mediainfo.h \
     src/passwordmanager.h \
     src/common.h \
     src/languagemanager.h \
     src/filereader.h \
-    src/devicesmanager.h \
     src/sysinfomanager.h \
     src/updatemanager.h \
-    src/tshandler.h
+    src/tshandler.h \
+    src/mediamanager/mediamanager.h \
+    src/mediamanager/playlist.h \
+    src/mediamanager/mediasource.h \
+    src/mediamanager/usbsource.h \
+    src/mediamanager/mediainfo.h \
+    src/musicplayer.h \
+    src/mediamanager/musiclistmodel.h \
+    src/mediamanager/metadatalistmodel.h \
+    src/musicqueuelistmodel.h \
+    src/mediamanager/playlistlistmodel.h
 
 RESOURCES += \
     res.qrc

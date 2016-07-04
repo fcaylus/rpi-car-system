@@ -25,7 +25,6 @@ Popup {
 
     property string newTitle
     property string newMusicFile
-    property string newCover
 
     Component {
         id: popupContent
@@ -53,7 +52,6 @@ Popup {
     {
         newMusicFile = musicFile
         newTitle = title
-        newCover = cover
         visible = true
     }
 

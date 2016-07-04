@@ -19,7 +19,6 @@
 #ifndef DIRUTILITY_H
 #define DIRUTILITY_H
 
-#include <ctime>
 #include <random>
 
 #include <QString>
@@ -28,6 +27,9 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QStorageInfo>
+#include <QDateTime>
+#include <QByteArray>
+#include <QCryptographicHash>
 
 #include "common.h"
 
@@ -191,23 +193,35 @@ namespace DirUtility
         }
     }
 
+    // Check if the file content equals to <content>
+    static inline bool checkContent(const QString& fileName, QByteArray& content)
+    {
+        QCryptographicHash hash1(QCryptographicHash::Sha1);
+        QFile file(fileName);
+        if(file.open(QFile::ReadOnly))
+        {
+            hash1.addData(file.readAll());
+            file.close();
+
+            QCryptographicHash hash2(QCryptographicHash::Sha1);
+            hash2.addData(content);
+
+            return hash1.result() == hash2.result();
+        }
+        return false;
+    }
+
     // Get a unique filename
     // Use the date-time and a random number
     // /!\ It's not guaranted to be unique
     static inline QString uniqueFileName()
     {
-        // Generate datetime
-        time_t now = std::time(nullptr);
-        struct tm tstruct = *std::localtime(&now);
-        char buf[100];
-        std::strftime(buf, sizeof(buf), "%Y%m%d-%H%M%S", &tstruct);
-
         // Generate random number
         std::minstd_rand generator;
         std::uniform_int_distribution<> distrib(0, 10000000);
         const int randNb = distrib(generator);
 
-        return QString("tempfile-") + QString(buf) + QString::number(randNb);
+        return QDateTime::currentDateTime().toString("ddMMyyyy-HHmmsszzz") + QLatin1String("-") + QString::number(randNb);
     }
 }
 

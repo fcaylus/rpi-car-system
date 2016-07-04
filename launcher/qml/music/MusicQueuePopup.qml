@@ -17,6 +17,7 @@
  */
 
 import QtQuick 2.3
+import rpicarsystem.mediamanager 1.0
 import ".."
 import "."
 
@@ -41,9 +42,11 @@ Popup {
                 anchors.bottomMargin: 15
 
                 property string headerText: qsTr("Music queue ...")
+                property bool needToFillData: true
 
-                model: ListModel {
+                model: MusicQueueListModel {
                     id: model
+                    player: musicPlayer
                 }
 
                 delegate: Item {
@@ -62,7 +65,7 @@ Popup {
                         }
 
                         StyledText {
-                            text: name
+                            text: title
                             font.pixelSize: 22
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -73,7 +76,7 @@ Popup {
                     MouseArea {
                         anchors.fill: queueRow
                         onClicked: {
-                            soundManager.playFromIndex(index)
+                            musicPlayer.playFromIndex(index)
                             musicQueuePopup.visible = false
                         }
                     }
@@ -88,30 +91,23 @@ Popup {
                 }
 
                 function fillData() {
-                    model.clear()
-                    var titlesList = soundManager.currentMediaQueueTitles
-                    var coversList = soundManager.currentMediaQueueCovers
-                    for (var i=0; i < titlesList.length; i++) {
-                        model.append({"name": titlesList[i],
-                                         "cover": coversList[i],
-                                         "index": i})
-                    }
-                    queueListView.positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
-                    queueListView.currentIndex = soundManager.currentIndex();
-                }
-
-                Connections {
-                    target: soundManager
-                    onCurrentMediaQueueChanged: queueListView.fillData()
-                    onMediaTitleChanged: queueListView.currentIndex = soundManager.currentIndex()
+                    model.update()
+                    queueListView.positionViewAtIndex(musicPlayer.mediaIndex, ListView.Center)
+                    queueListView.currentIndex = musicPlayer.mediaIndex;
                 }
 
                 Component.onCompleted: fillData()
 
+                Connections {
+                    target: musicPlayer
+                    onMediaQueueChanged: queueListView.fillData()
+                    onMediaTitleChanged: queueListView.currentIndex = musicPlayer.mediaIndex
+                }
+
                 // Center list on update
                 onVisibleChanged: {
                     if(visible) {
-                        positionViewAtIndex(soundManager.currentIndex(), ListView.Center)
+                        positionViewAtIndex(musicPlayer.mediaIndex, ListView.Center)
                     }
                 }
             }

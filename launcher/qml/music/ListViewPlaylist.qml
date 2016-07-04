@@ -17,19 +17,21 @@
  */
 
 import QtQuick 2.3
-import QtQuick.XmlListModel 2.0
+import rpicarsystem.mediamanager 1.0
 import ".."
 import "."
 
 ListViewBase {
     id: playlistListView
-    property bool newPlaylistRequested: false
 
+    property bool newPlaylistRequested: false
     property bool addMode: false
 
-    model: ListModel {
+    model: PlaylistListModel {
         id: model
     }
+
+    Component.onCompleted: model.update()
 
     delegate: Item {
         width: playlistListView.width
@@ -38,6 +40,7 @@ ListViewBase {
         Row {
             id: playlistRow
             spacing: 20
+
             Image {
                 asynchronous: true
                 width: 65
@@ -61,19 +64,22 @@ ListViewBase {
             anchors.fill: playlistRow
             onClicked: {
                 // Create new playlist
-                if(file == "%%new%%") {
+                if(fileName == "%%new%%") {
                     addPlaylistPrompt.visible = true
                     playlistListView.newPlaylistRequested = true
                 }
                 else if(addMode === true) {
-                    soundManager.addSongToPlaylist(file, newTitle, newMusicFile, newCover);
+                    mediaManager.addMediaToPlaylist(fileName, newMusicFile);
                     playlistPopup.visible = false
                 }
                 else {
                     loader.appendLastEntry()
+
                     loader.headerText = qsTr("Playlist: ") + name
-                    loader.sourceFile = soundManager.playlistUrl(file)
-                    loader.sourceQuery = "/playlist/track"
+                    loader.meta = MediaInfo.UNKNOWN
+                    loader.metaValue = undefined
+                    loader.inPlaylist = true
+                    loader.playlistFile = fileName
                     loader.source = "qrc:/qml/music/ListViewTrack.qml"
                 }
             }
@@ -81,7 +87,7 @@ ListViewBase {
             onPressAndHold: {
                 if(!addMode) {
                     removePlaylistPopup.userData = name
-                    removePlaylistPopup.userData2 = file
+                    removePlaylistPopup.userData2 = fileName
                     removePlaylistPopup.visible = true
                 }
             }
@@ -108,24 +114,9 @@ ListViewBase {
             visible: isRealPlaylist && !addMode
             anchors.fill: playImage
             onClicked: {
-                soundManager.playFromPlaylist(file)
+                musicPlayer.playFromPlaylist(fileName)
             }
         }
-    }
-
-    function fillData() {
-        model.clear()
-        var namesList = soundManager.playlistNames
-        var filesList = soundManager.playlistFiles
-        for (var i=0; i < namesList.length; i++) {
-            model.append({"name": namesList[i],
-                             "file": filesList[i],
-                             "isRealPlaylist": true})
-        }
-
-        model.append({"name": qsTr("New playlist"),
-                         "file": "%%new%%",
-                         "isRealPlaylist": false})
     }
 
     // Update playlist when a new one was created
@@ -134,8 +125,8 @@ ListViewBase {
         onPromptFinish: {
             if(newPlaylistRequested) {
                 newPlaylistRequested = false
-                soundManager.createNewPlaylist(text)
-                playlistListView.fillData()
+                mediaManager.createPlaylist(text)
+                //model.update()
             }
         }
         onBackClicked: {
@@ -148,21 +139,7 @@ ListViewBase {
     Connections {
         target: removePlaylistPopup
         onExitSuccess: {
-            playlistListView.fillData()
+            model.update()
         }
-    }
-
-    onVisibleChanged: {
-        if(visible) {
-            fillData()
-        }
-    }
-
-    Component.onCompleted: fillData()
-
-    // Update playlists when the index change
-    Connections {
-        target: soundManager
-        onMediaListReadyChanged: playlistListView.fillData()
     }
 }

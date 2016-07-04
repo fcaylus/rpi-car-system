@@ -17,19 +17,23 @@
  */
 
 import QtQuick 2.3
-import QtQuick.XmlListModel 2.0
+import rpicarsystem.mediamanager 1.0
 import ".."
 import "."
 
 ListViewBase {
-    model: XmlListModel {
+    model: MetadataListModel {
         id: model
 
-        source: sourceFile
-        query: sourceQuery
+        requiredMeta: meta
+        requiredMetaValue: metaValue
 
-        XmlRole { name: "name"; query: "@name/string()" }
+        Component.onCompleted: {
+            addDisplayedMeta(MediaInfo.ARTIST)
+        }
     }
+
+    Component.onCompleted: model.update()
 
     delegate: Item {
         width: artistRow.implicitWidth
@@ -38,6 +42,7 @@ ListViewBase {
         Row {
             id: artistRow
             spacing: 20
+
             Image {
                 asynchronous: true
                 width: 65
@@ -48,7 +53,7 @@ ListViewBase {
             }
 
             StyledText {
-                text: name
+                text: artist
                 font.pixelSize: 22
                 //font.bold: true
                 horizontalAlignment: Text.AlignHCenter
@@ -61,11 +66,21 @@ ListViewBase {
             anchors.fill: artistRow
             onClicked: {
                 loader.appendLastEntry()
+
                 // show the selected artist
-                loader.headerText = qsTr("Artist: ") + name
-                loader.sourceQuery = loader.sourceQuery + "[@name='" + name + "']/album"
+                loader.headerText = qsTr("Artist: ") + artist
+                loader.meta = MediaInfo.ARTIST
+                loader.metaValue = artist
+                loader.inPlaylist = false
+                loader.playlistFile = ""
                 loader.source = "qrc:/qml/music/ListViewAlbum.qml"
             }
+        }
+    }
+
+    onVisibleChanged: {
+        if(visible) {
+            model.update()
         }
     }
 }

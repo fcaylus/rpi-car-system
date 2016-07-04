@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "soundmanager.h"
+#include "musicplayer.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -27,7 +27,6 @@
 #include <QProcess>
 #include <QSettings>
 #include <QDateTime>
-#include <QXmlStreamWriter>
 #include <QUrl>
 #include <QStringList>
 
@@ -37,9 +36,11 @@
 
 #include <algorithm>
 
-#include "pugixml.hpp"
 #include "dirutility.h"
 #include "common.h"
+
+#include "mediamanager/mediamanager.h"
+#include "mediamanager/playlist.h"
 
 static const QString settingsGroupStr = "music";
 static const QString settingsRandomStr = "random";
@@ -49,12 +50,12 @@ static const QString settingsVolumeStr = "volume";
 static const QString settingsEqualizerStr = "eqconfig";
 
 // Public constructor
-SoundManager::SoundManager(QSettings *settings, QObject *parent): QObject(parent)
+MusicPlayer::MusicPlayer(QSettings *settings, QObject *parent): QObject(parent)
 {
     _settings = settings;
 }
 
-void SoundManager::init()
+void MusicPlayer::init()
 {
 #ifdef QT_DEBUG
     QStringList args = VlcCommon::args() << "--verbose=1";
@@ -62,29 +63,29 @@ void SoundManager::init()
     QStringList args = VlcCommon::args() << "--verbose=0";
 #endif
 
+    args << "--no-plugins-cache";
+
     // Load the engine
     _vlcInstance = new VlcInstance(args, this);
     _vlcMediaPlayer = new VlcMediaPlayer(_vlcInstance);
     _vlcEqualizer = new VlcEqualizer(_vlcMediaPlayer);
     _vlcAudio = new VlcAudio(_vlcMediaPlayer);
 
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::timeChanged, this, &SoundManager::timeChanged);
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::timeChanged, this, &SoundManager::formatedTimeChanged);
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::lengthChanged, this, &SoundManager::formatedTimeChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::timeChanged, this, &MusicPlayer::timeChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::timeChanged, this, &MusicPlayer::formatedTimeChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::lengthChanged, this, &MusicPlayer::formatedTimeChanged);
 
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::playing, this, &SoundManager::isPlayingChanged);
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::paused, this, &SoundManager::isPlayingChanged);
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::stopped, this, &SoundManager::isPlayingChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::playing, this, &MusicPlayer::isPlayingChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::paused, this, &MusicPlayer::isPlayingChanged);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::stopped, this, &MusicPlayer::isPlayingChanged);
 
     // On end handler
-    connect(_vlcMediaPlayer, &VlcMediaPlayer::end, this, &SoundManager::onEndReachedHandler, Qt::QueuedConnection);
+    connect(_vlcMediaPlayer, &VlcMediaPlayer::end, this, &MusicPlayer::onEndReachedHandler, Qt::QueuedConnection);
 
     // On error handler
     connect(_vlcMediaPlayer, &VlcMediaPlayer::error, [this](){
         qWarning() << VlcError::errmsg();
     });
-
-    updatePlaylistsData();
 
     //
     // Load settings
@@ -99,30 +100,8 @@ void SoundManager::init()
     _settings->endGroup();
 
     //
-    // Update media indexes
+    // Load equalizer configs
     //
-
-    // Check if map files exists
-    if(QFileInfo::exists(MediaInfo::albumMapFilePath())
-       && QFileInfo::exists(MediaInfo::artistMapFilePath())
-       && QFileInfo::exists(MediaInfo::trackListFilePath()))
-    {
-        // Medias are already parsed, send the signal
-        _mediaListReady = true;
-        emit mediaListReadyChanged();
-    }
-
-    // Start the process for searching new media
-    QProcess *musicSearchProcess = new QProcess(this);
-    connect(musicSearchProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            [this](int exitCode, QProcess::ExitStatus exitStatus) {
-        if(exitCode == 0 && exitStatus == QProcess::NormalExit)
-        {
-            _mediaListReady = true;
-            emit mediaListReadyChanged();
-        }
-    });
-    musicSearchProcess->start(QCoreApplication::applicationDirPath() + QStringLiteral("/musicindex-generator"));
 
     checkForDefaultEqualizerConfigs();
     initEqualizerConfigList();
@@ -131,17 +110,86 @@ void SoundManager::init()
         _equalizerCurrentConfig = 0;
     setEqualizerConfig(_equalizerCurrentConfig);
 
+    //
+    // Connect to the MediaManager events
+    //
+
+    connect(MediaManager::instance(), &MediaManager::sourceAboutToBeDeleted, this, [this](MediaSource *source) {
+        //
+        // Remove all medias from the deleted source in the current queue
+        MediaInfo *currentInfo = _playRandom ? _currentMediaListRandomized[_currentMediaIndex] : _currentMediaList[_currentMediaIndex];
+        bool currentInfoAffected = false;
+        bool somethingChanged = false;
+
+        int i=0;
+        while (i < _currentMediaList.size())
+        {
+            if(_currentMediaList.at(i)->sourceId() == source->identifier())
+            {
+                if(_currentMediaList.at(i) == currentInfo)
+                    currentInfoAffected = true;
+
+                somethingChanged = true;
+                _currentMediaList.removeAt(i);
+            }
+            else
+                i++;
+        }
+
+        while (i < _currentMediaListRandomized.size())
+        {
+            if(_currentMediaListRandomized.at(i)->sourceId() == source->identifier())
+            {
+                somethingChanged = true;
+                _currentMediaListRandomized.removeAt(i);
+            }
+            else
+                i++;
+        }
+
+        if(somethingChanged)
+        {
+            // Check if there is no more media
+            if(_currentMediaList.isEmpty())
+            {
+                _vlcMediaPlayer->stop();
+                delete _currentMedia;
+                _currentMedia = nullptr;
+
+                // Hide the "playing" view
+                _started = false;
+                emit startedChanged();
+            }
+            else
+            {
+                if(currentInfoAffected)
+                {
+                    if(_currentMediaIndex >= _currentMediaList.size())
+                        _currentMediaIndex = 0;
+                    emit mediaQueueChanged();
+                    playFromIndex(_currentMediaIndex);
+                }
+                else
+                {
+                    // Update the index, but continue to play the current media
+                    _currentMediaIndex = _playRandom ? _currentMediaListRandomized.indexOf(currentInfo) : _currentMediaList.indexOf(currentInfo);
+                    emit mediaQueueChanged();
+                }
+            }
+        }
+    });
+
     _init = true;
 
-    qDebug() << "SoundManager initialized !";
+    qDebug() << "MusicPlayer initialized !";
 }
 
-bool SoundManager::initialized() const
+bool MusicPlayer::initialized() const
 {
     return _init;
 }
 
-SoundManager::~SoundManager()
+MusicPlayer::~MusicPlayer()
 {
     delete _vlcAudio;
     delete _currentMedia;
@@ -154,7 +202,7 @@ SoundManager::~SoundManager()
 // Private slot
 //
 
-void SoundManager::onEndReachedHandler()
+void MusicPlayer::onEndReachedHandler()
 {
     emit isPlayingChanged();
     emit endReached();
@@ -169,8 +217,11 @@ void SoundManager::onEndReachedHandler()
 // Public methods
 //
 
-void SoundManager::playFromFile(QString path, QString xmlSourceFile, const QString &xmlSourceQuery)
+void MusicPlayer::play(MediaInfoList musicList, int index)
 {
+    if(musicList.isEmpty())
+        return;
+
     if(_currentMedia != nullptr)
     {
         delete _currentMedia;
@@ -178,57 +229,12 @@ void SoundManager::playFromFile(QString path, QString xmlSourceFile, const QStri
     }
 
     _currentMediaListRandomized.clear();
-    while(!_currentMediaList.isEmpty())
-        delete _currentMediaList.takeLast();
+    _currentMediaList.clear();
     _currentMediaIndex = 0;
 
-    // Add all medias in the list
-    if(!xmlSourceFile.isEmpty() && !xmlSourceQuery.isEmpty()
-       && xmlSourceFile != trackListFilePath().toString())
-    {
-        // Use pugixml since Qt doesn't provide "simple" xpath support
-        pugi::xml_document xmlDoc;
-        if(!xmlDoc.load_file(xmlSourceFile.remove(0, 7).toStdString().c_str())) // Remove "file://" prefix
-        {
-            qCritical() << "Cannot open xml file at:" << xmlSourceFile;
-            return;
-        }
-
-        pugi::xpath_node_set nodes = xmlDoc.select_nodes(xmlSourceQuery.toStdString().c_str());
-        for(pugi::xpath_node_set::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
-        {
-            pugi::xpath_node node = *it;
-            const QString trackPath = node.node().child_value("path");
-
-            // Set the path to the first entry if the path is empty
-            if(path.isEmpty() && it == nodes.begin())
-                path = trackPath;
-
-            // Check the place of the current track
-            if(trackPath == path)
-            {
-                _currentMedia = new VlcMedia(path, true, _vlcInstance);
-                _currentMediaList.append(new MediaInfo(_currentMedia, path));
-                _currentMediaIndex = _currentMediaList.size() - 1;
-            }
-            else
-            {
-                VlcMedia *media = new VlcMedia(trackPath, true, _vlcInstance);
-                _currentMediaList.append(new MediaInfo(media, trackPath));
-                delete media;
-            }
-
-        }
-    }
-    // Only add the specified media
-    else
-    {
-        if(path.isEmpty())
-            return;
-
-        _currentMedia = new VlcMedia(path, true, _vlcInstance);
-        _currentMediaList.append(new MediaInfo(_currentMedia, path));
-    }
+    _currentMediaList = musicList;
+    _currentMedia = new VlcMedia(musicList.at(index)->mediaUri(), musicList.at(index)->isLocalFile(), _vlcInstance);
+    _currentMediaIndex = index;
 
     // Only play if a media was found
     if(_currentMedia != nullptr)
@@ -237,7 +243,7 @@ void SoundManager::playFromFile(QString path, QString xmlSourceFile, const QStri
             randomizeQueue();
 
         emitNewMediaSignals();
-        emit currentMediaQueueChanged();
+        emit mediaQueueChanged();
 
         //_vlcMediaPlayer->stop();
         _vlcMediaPlayer->open(_currentMedia);
@@ -250,11 +256,45 @@ void SoundManager::playFromFile(QString path, QString xmlSourceFile, const QStri
         }
 
         // Must be after startedChanged() signal
-        emit newMediaPlayedFromFile();
+        emit newMediaListPlayed();
     }
 }
 
-void SoundManager::playNextIndex()
+void MusicPlayer::play(MediaInfoList musicList, const QString &currentMediaUri)
+{
+    int idx = 0;
+    for(int i=0; i < musicList.size(); ++i)
+    {
+        if(musicList.at(i)->mediaUri() == currentMediaUri)
+        {
+            idx = i;
+            break;
+        }
+    }
+
+    return play(musicList, idx);
+}
+
+void MusicPlayer::play(const QString &currentMediaUri)
+{
+    return play(MediaManager::instance()->lastMediaList(), currentMediaUri);
+}
+
+void MusicPlayer::playFromPlaylist(const QString &playlistFileName)
+{
+    Playlist* playlist = MediaManager::instance()->findPlaylistFromFileName(playlistFileName);
+    if(playlist)
+        play(playlist->availableMedias(), 0);
+}
+
+void MusicPlayer::playFromPlaylist(const QString &playlistFileName, const QString &mediaUri)
+{
+    Playlist* playlist = MediaManager::instance()->findPlaylistFromFileName(playlistFileName);
+    if(playlist)
+        play(playlist->availableMedias(), mediaUri);
+}
+
+void MusicPlayer::playNextIndex()
 {
     if(_repeatMode == RepeatOne)
         playFromIndex(_currentMediaIndex);
@@ -264,7 +304,7 @@ void SoundManager::playNextIndex()
         playFromIndex(_currentMediaIndex + 1);
 }
 
-void SoundManager::playPreviousIndex()
+void MusicPlayer::playPreviousIndex()
 {
     if(_repeatMode == RepeatOne)
         playFromIndex(_currentMediaIndex);
@@ -276,29 +316,36 @@ void SoundManager::playPreviousIndex()
         _vlcMediaPlayer->setTime(0);
 }
 
-void SoundManager::playFromIndex(const int& idx)
+void MusicPlayer::playFromIndex(const int& idx)
 {
+    if(_currentMediaList.isEmpty())
+        return;
+
     _currentMediaIndex = idx;
 
     if(_currentMedia != nullptr)
         delete _currentMedia;
 
+    MediaInfo *info = nullptr;
+
     if(_playRandom)
-        _currentMedia = new VlcMedia(_currentMediaListRandomized[_currentMediaIndex]->filePath(), true, _vlcInstance);
+        info = _currentMediaListRandomized[_currentMediaIndex];
     else
-        _currentMedia = new VlcMedia(_currentMediaList[_currentMediaIndex]->filePath(), true, _vlcInstance);
+        info = _currentMediaList[_currentMediaIndex];
+
+    _currentMedia = new VlcMedia(info->mediaUri(), info->isLocalFile(), _vlcInstance);
 
     emitNewMediaSignals();
     _vlcMediaPlayer->open(_currentMedia);
     _vlcMediaPlayer->play();
 }
 
-void SoundManager::pauseMusic()
+void MusicPlayer::pauseMusic()
 {
     _vlcMediaPlayer->pause();
 }
 
-void SoundManager::resumeMusic()
+void MusicPlayer::resumeMusic()
 {
     _vlcMediaPlayer->resume();
 
@@ -310,12 +357,12 @@ void SoundManager::resumeMusic()
     }
 }
 
-void SoundManager::nextMusic()
+void MusicPlayer::nextMusic()
 {
     playNextIndex();
 }
 
-void SoundManager::previousMusic()
+void MusicPlayer::previousMusic()
 {
     // Re-start if the media reach the end
     if(_vlcMediaPlayer->state() == Vlc::Ended)
@@ -331,7 +378,7 @@ void SoundManager::previousMusic()
         playPreviousIndex();
 }
 
-void SoundManager::forward()
+void MusicPlayer::forward()
 {
     if(!isPlaying())
         return;
@@ -343,7 +390,7 @@ void SoundManager::forward()
         _vlcMediaPlayer->setTime(newTime);
 }
 
-void SoundManager::rewind()
+void MusicPlayer::rewind()
 {
     if(!isPlaying())
         return;
@@ -355,7 +402,7 @@ void SoundManager::rewind()
         _vlcMediaPlayer->setTime(newTime);
 }
 
-void SoundManager::setRandom(bool random)
+void MusicPlayer::setRandom(bool random)
 {
     if(random == _playRandom)
         return;
@@ -372,10 +419,10 @@ void SoundManager::setRandom(bool random)
 
     _playRandom = random;
     emit randomChanged();
-    emit currentMediaQueueChanged();
+    emit mediaQueueChanged();
 }
 
-void SoundManager::setRepeatMode(RepeatMode mode)
+void MusicPlayer::setRepeatMode(RepeatMode mode)
 {
     if(mode == _repeatMode)
         return;
@@ -384,19 +431,19 @@ void SoundManager::setRepeatMode(RepeatMode mode)
     emit repeatModeChanged();
 }
 
-void SoundManager::setVolume(int volume)
+void MusicPlayer::setVolume(int volume)
 {
     if(volume >= 0 && volume <= 100)
         _vlcAudio->setVolume(volume);
 }
 
-void SoundManager::setPlayerVisibility(bool visible)
+void MusicPlayer::setPlayerVisibility(bool visible)
 {
     _playerVisibility = visible;
 }
 
 // Getters
-QString SoundManager::mediaAlbum() const
+QString MusicPlayer::mediaAlbum() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
         return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->album()
@@ -404,7 +451,7 @@ QString SoundManager::mediaAlbum() const
     return MediaInfo::defaultAlbumName();
 }
 
-QString SoundManager::mediaArtist() const
+QString MusicPlayer::mediaArtist() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
         return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->artist()
@@ -412,7 +459,7 @@ QString SoundManager::mediaArtist() const
     return MediaInfo::defaultArtistName();
 }
 
-QString SoundManager::mediaTitle() const
+QString MusicPlayer::mediaTitle() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
         return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->title()
@@ -420,15 +467,15 @@ QString SoundManager::mediaTitle() const
     return QString();
 }
 
-QUrl SoundManager::mediaCover() const
+QString MusicPlayer::mediaCover() const
 {
     if(_currentMediaList.size() > _currentMediaIndex)
-        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->coverFileUrl()
-                           : _currentMediaList[_currentMediaIndex]->coverFileUrl();
-    return QUrl(MediaInfo::defaultCoverPath());
+        return _playRandom ? _currentMediaListRandomized[_currentMediaIndex]->coverUri()
+                           : _currentMediaList[_currentMediaIndex]->coverUri();
+    return MediaInfo::defaultCoverPath();
 }
 
-int SoundManager::time()
+int MusicPlayer::time()
 {
     if(_vlcMediaPlayer->time() == _vlcMediaPlayer->length())
         emit isPlayingChanged();
@@ -436,113 +483,67 @@ int SoundManager::time()
     return _vlcMediaPlayer->length() == 0 ? 0 : _vlcMediaPlayer->time() * 100 / _vlcMediaPlayer->length();
 }
 
-QString SoundManager::formatedTime()
+QString MusicPlayer::formatedTime()
 {
     return Common::timeToString(_vlcMediaPlayer->time()) + QString(" / ") + Common::timeToString(_vlcMediaPlayer->length());
 }
 
-int SoundManager::volume() const
+int MusicPlayer::volume() const
 {
     return _vlcAudio->volume();
 }
 
-bool SoundManager::isPlaying()
+bool MusicPlayer::isPlaying()
 {
     return _vlcMediaPlayer->state() == Vlc::Playing;
 }
 
-bool SoundManager::random() const
+bool MusicPlayer::random() const
 {
     return _playRandom;
 }
 
-SoundManager::RepeatMode SoundManager::repeatMode() const
+MusicPlayer::RepeatMode MusicPlayer::repeatMode() const
 {
     return _repeatMode;
 }
 
-bool SoundManager::mediaListReady()
-{
-    return _mediaListReady;
-}
-
-QUrl SoundManager::albumMapFilePath() const
-{
-    return QUrl::fromLocalFile(MediaInfo::albumMapFilePath());
-}
-
-QUrl SoundManager::artistMapFilePath() const
-{
-    return QUrl::fromLocalFile(MediaInfo::artistMapFilePath());
-}
-
-QUrl SoundManager::trackListFilePath() const
-{
-    return QUrl::fromLocalFile(MediaInfo::trackListFilePath());
-}
-
-bool SoundManager::started() const
+bool MusicPlayer::started() const
 {
     return _started;
 }
 
-bool SoundManager::isPlayerVisible()
+bool MusicPlayer::isPlayerVisible()
 {
     return _playerVisibility;
 }
 
-SoundManager::MainViewType SoundManager::lastMainViewType() const
+MusicPlayer::MainViewType MusicPlayer::lastMainViewType() const
 {
     return _lastMainViewType;
 }
 
-QStringList SoundManager::currentMediaQueueTitles()
+MediaInfoList MusicPlayer::mediaQueue() const
 {
-    QStringList list;
-    if(_playRandom)
-    {
-        for(MediaInfo *info: _currentMediaListRandomized)
-            list << info->title();
-
-        return list;
-    }
-    for(MediaInfo *info: _currentMediaList)
-        list << info->title();
-
-    return list;
+    return _playRandom ? _currentMediaListRandomized : _currentMediaList;
 }
 
-QStringList SoundManager::currentMediaQueueCovers()
-{
-    QStringList list;
-    if(_playRandom)
-    {
-        for(MediaInfo *info: _currentMediaListRandomized)
-            list << info->coverFileUrl().toString();
-
-        return list;
-    }
-    for(MediaInfo *info: _currentMediaList)
-        list << info->coverFileUrl().toString();
-
-    return list;
-}
-
-int SoundManager::currentIndex()
+int MusicPlayer::mediaIndex() const
 {
     return _currentMediaIndex;
 }
 
 // Private
-void SoundManager::emitNewMediaSignals()
+void MusicPlayer::emitNewMediaSignals()
 {
     emit mediaAlbumChanged();
     emit mediaArtistChanged();
     emit mediaTitleChanged();
     emit mediaCoverChanged();
+    emit mediaIndexChanged();
 }
 
-void SoundManager::randomizeQueue()
+void MusicPlayer::randomizeQueue()
 {
     if(_currentMediaList.isEmpty())
         return;
@@ -563,11 +564,24 @@ void SoundManager::randomizeQueue()
 // Equalizer stuff
 //
 
-// Private
-void SoundManager::checkForDefaultEqualizerConfigs()
+// Static
+QString MusicPlayer::equalizerCustomConfigDir()
 {
-    const QString defaultDirPath = MediaInfo::equalizerDefaultConfigDir();
-    const QString customDirPath = MediaInfo::equalizerCustomConfigDir();
+    return Common::configDir() + QStringLiteral("/equalizer/custom");
+}
+
+// Static
+QString MusicPlayer::equalizerDefaultConfigDir()
+{
+    return Common::configDir() + QStringLiteral("/equalizer/default");
+}
+
+
+// Private
+void MusicPlayer::checkForDefaultEqualizerConfigs()
+{
+    const QString defaultDirPath = equalizerDefaultConfigDir();
+    const QString customDirPath = equalizerCustomConfigDir();
     const int presetCount = _vlcEqualizer->presetCount();
 
     bool create = false;
@@ -629,11 +643,11 @@ void SoundManager::checkForDefaultEqualizerConfigs()
 }
 
 // Private
-void SoundManager::initEqualizerConfigList()
+void MusicPlayer::initEqualizerConfigList()
 {
     _equalizerList.clear();
 
-    const QString path = MediaInfo::equalizerCustomConfigDir();
+    const QString path = equalizerCustomConfigDir();
     QStringList filesList = QDir(path).entryList(QStringList({QStringLiteral("*.eqconfig")}), QDir::Writable | QDir::Readable | QDir::Files, QDir::Name);
     for(QString fileName: filesList)
     {
@@ -647,7 +661,7 @@ void SoundManager::initEqualizerConfigList()
 }
 
 // Private
-EqualizerConfig SoundManager::parseEqualizerConfigFile(const QString filePath, const QString fileName)
+EqualizerConfig MusicPlayer::parseEqualizerConfigFile(const QString filePath, const QString fileName)
 {
     EqualizerConfig eq;
     QFile file(filePath);
@@ -679,13 +693,13 @@ EqualizerConfig SoundManager::parseEqualizerConfigFile(const QString filePath, c
 }
 
 // Private
-void SoundManager::saveEqualizerConfigs()
+void MusicPlayer::saveEqualizerConfigs()
 {
     for(EqualizerConfig eq: _equalizerList)
     {
         if(eq.modified)
         {
-            const QString path = MediaInfo::equalizerCustomConfigDir() + "/" + eq.fileName;
+            const QString path = equalizerCustomConfigDir() + "/" + eq.fileName;
             QFile file(path);
             if(file.open(QFile::WriteOnly | QFile::Text))
             {
@@ -701,14 +715,14 @@ void SoundManager::saveEqualizerConfigs()
     }
 }
 
-void SoundManager::resetEqualizerConfig(int idx)
+void MusicPlayer::resetEqualizerConfig(int idx)
 {
     if(idx < 0 || idx >= _equalizerList.size())
         return;
 
     EqualizerConfig eq = _equalizerList[idx];
-    const QString customPath = MediaInfo::equalizerCustomConfigDir() + "/" + eq.fileName;
-    const QString defaultPath = MediaInfo::equalizerDefaultConfigDir() + "/" + eq.fileName;
+    const QString customPath = equalizerCustomConfigDir() + "/" + eq.fileName;
+    const QString defaultPath = equalizerDefaultConfigDir() + "/" + eq.fileName;
     if(QFile::exists(defaultPath))
     {
         QFile::remove(customPath);
@@ -721,7 +735,7 @@ void SoundManager::resetEqualizerConfig(int idx)
         updateEqualizerConfig();
 }
 
-void SoundManager::setEqualizerConfig(int idx)
+void MusicPlayer::setEqualizerConfig(int idx)
 {
     if(idx >= 0 && idx < _equalizerList.size())
     {
@@ -731,7 +745,7 @@ void SoundManager::setEqualizerConfig(int idx)
     }
 }
 
-void SoundManager::updateEqualizerConfig()
+void MusicPlayer::updateEqualizerConfig()
 {
     EqualizerConfig eq = _equalizerList.at(_equalizerCurrentConfig);
     _vlcEqualizer->setPreamplification(eq.preamplification);
@@ -744,7 +758,7 @@ void SoundManager::updateEqualizerConfig()
 }
 
 // Setters
-void SoundManager::setEqualizerPreamp(float preamp)
+void MusicPlayer::setEqualizerPreamp(float preamp)
 {
     _equalizerList[_equalizerCurrentConfig].preamplification = preamp;
     _equalizerList[_equalizerCurrentConfig].modified = true;
@@ -753,7 +767,7 @@ void SoundManager::setEqualizerPreamp(float preamp)
     emit equalizerConfigChanged();
 }
 
-void SoundManager::setEqualizerAmp(int freqId, float amp)
+void MusicPlayer::setEqualizerAmp(int freqId, float amp)
 {
     _equalizerList[_equalizerCurrentConfig].amplifications[freqId] = amp;
     _equalizerList[_equalizerCurrentConfig].modified = true;
@@ -762,7 +776,7 @@ void SoundManager::setEqualizerAmp(int freqId, float amp)
     emit equalizerConfigChanged();
 }
 
-void SoundManager::increaseEqualizerPreamp(float inc)
+void MusicPlayer::increaseEqualizerPreamp(float inc)
 {
     float v = equalizerPreamplification() + inc;
     if(v > 20.0f)
@@ -773,7 +787,7 @@ void SoundManager::increaseEqualizerPreamp(float inc)
     setEqualizerPreamp(v);
 }
 
-void SoundManager::increaseEqualizerAmp(int freqId, float inc)
+void MusicPlayer::increaseEqualizerAmp(int freqId, float inc)
 {
     float v = equalizerAmplification(freqId) + inc;
     if(v > 20.0f)
@@ -784,24 +798,24 @@ void SoundManager::increaseEqualizerAmp(int freqId, float inc)
     setEqualizerAmp(freqId, v);
 }
 
-int SoundManager::currentEqualizerConfigId()
+int MusicPlayer::currentEqualizerConfigId()
 {
     return _equalizerCurrentConfig;
 }
 
-bool SoundManager::isEqualizerConfigModified(int idx)
+bool MusicPlayer::isEqualizerConfigModified(int idx)
 {
     if(idx >= 0 && idx < _equalizerList.size())
         return _equalizerList[idx].modified;
     return false;
 }
 
-int SoundManager::nbOfFrequenciesAvailable()
+int MusicPlayer::nbOfFrequenciesAvailable()
 {
     return _vlcEqualizer->bandCount();
 }
 
-QStringList SoundManager::equalizerConfigListNames()
+QStringList MusicPlayer::equalizerConfigListNames()
 {
     QStringList names;
     for(EqualizerConfig eq: _equalizerList)
@@ -809,264 +823,124 @@ QStringList SoundManager::equalizerConfigListNames()
     return names;
 }
 
-QString SoundManager::equalizerConfigName()
+QString MusicPlayer::equalizerConfigName()
 {
     return _equalizerList.at(_equalizerCurrentConfig).name;
 }
 
-float SoundManager::equalizerFrequency(int idx)
+float MusicPlayer::equalizerFrequency(int idx)
 {
     return _equalizerList.at(_equalizerCurrentConfig).frequencies[idx];
 }
 
-QString SoundManager::equalizerFrequencyString(int idx)
+QString MusicPlayer::equalizerFrequencyString(int idx)
 {
     return Common::unitToString(equalizerFrequency(idx), "Hz", 2);
 }
 
-float SoundManager::equalizerAmplification(int idx)
+float MusicPlayer::equalizerAmplification(int idx)
 {
     return _equalizerList.at(_equalizerCurrentConfig).amplifications[idx];
 }
 
-QString SoundManager::equalizerAmplificationString(int idx)
+QString MusicPlayer::equalizerAmplificationString(int idx)
 {
     return Common::unitToString(equalizerAmplification(idx), "dB", 1, false);
 }
 
-float SoundManager::equalizerPreamplification()
+float MusicPlayer::equalizerPreamplification()
 {
     return _equalizerList.at(_equalizerCurrentConfig).preamplification;
 }
 
-QString SoundManager::equalizerPreamplificationString()
+QString MusicPlayer::equalizerPreamplificationString()
 {
     return Common::unitToString(equalizerPreamplification(), "dB", 1, false);
-}
-
-//
-// Playlist stuff
-//
-
-void SoundManager::updatePlaylistsData()
-{
-    _playlistNames.clear();
-    _playlistFiles.clear();
-
-    const QString playlistDirPath = MediaInfo::playlistsDirectory();
-
-    if(!QDir(playlistDirPath).exists())
-    {
-        QDir playlistDir(playlistDirPath);
-        playlistDir.mkpath(".");
-    }
-
-    if(!QDir(playlistDirPath).exists())
-        return;
-
-    QDirIterator it(playlistDirPath,
-                    QStringList({"*.xml"}),
-                    QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Readable);
-
-    while(it.hasNext())
-    {
-        QString path = it.next();
-        pugi::xml_document xmlDoc;
-        if(!xmlDoc.load_file(path.toStdString().c_str()))
-        {
-            qWarning() << "Cannot open file: " << path << "for parsing !";
-            continue;
-        }
-
-        QString name = xmlDoc.child("playlist").attribute("name").value();
-
-        if(!name.isEmpty())
-        {
-            _playlistFiles.append(path);
-            _playlistNames.append(name);
-        }
-    }
-}
-
-QString SoundManager::createNewPlaylist(QString name) // returns file name
-{
-    QString currentTime = QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss-zzz");
-    QString fileName = MediaInfo::playlistsDirectory() + QStringLiteral("/playlist-") + currentTime + QStringLiteral(".xml");
-
-    // Check if the file exist
-    while(QFile::exists(fileName))
-    {
-        // Append "*" at the end
-        fileName.insert(fileName.size() - 4, "*"); // 4 is the size of ".xml"
-    }
-
-    QFile file(fileName);
-    if(file.open(QFile::ReadWrite | QFile::Text))
-    {
-        QXmlStreamWriter writer(&file);
-#ifdef QT_DEBUG
-        writer.setAutoFormatting(true);
-#endif
-        writer.writeStartDocument();
-        writer.writeStartElement("playlist");
-        writer.writeAttribute("name", name);
-        writer.writeEndElement();
-        writer.writeEndDocument();
-
-        file.close();
-
-        updatePlaylistsData();
-
-        return fileName;
-    }
-
-    qWarning() << "Cannot create playlist file: " << file.errorString();
-    return "";
-}
-
-void SoundManager::addSongToPlaylist(QString playlistFileName, QString musicTitle, QString musicPath, QString musicCover)
-{
-    if(!QFile::exists(playlistFileName))
-        return;
-
-    pugi::xml_document xmlDoc;
-    if(!xmlDoc.load_file(playlistFileName.toStdString().c_str()))
-        return;
-
-    pugi::xml_node newTrack = xmlDoc.child("playlist").append_child("track");
-    newTrack.append_child("title").text().set(musicTitle.toStdString().c_str());
-    newTrack.append_child("path").text().set(musicPath.toStdString().c_str());
-    newTrack.append_child("cover").text().set(musicCover.toStdString().c_str());
-
-    xmlDoc.save_file(playlistFileName.toStdString().c_str(), "\t", PUGI_SAVE_FORMAT, pugi::xml_encoding::encoding_utf8);
-}
-
-void SoundManager::playFromPlaylist(const QString &playlistFile)
-{
-    playFromFile("", QString("file://") + playlistFile, "/playlist/track");
-}
-
-void SoundManager::removePlaylistFile(const QString &fileName)
-{
-    if(QFile::exists(fileName) && QFile::remove(fileName))
-    {
-        updatePlaylistsData();
-    }
-}
-
-void SoundManager::removeFromPlaylist(const QString &playlistFilePath, const QString &musicFile)
-{
-    QString filePath = playlistFilePath;
-    if(filePath.startsWith("file://"))
-        filePath.remove("file://");
-
-    pugi::xml_document xmlDoc;
-    if(!xmlDoc.load_file(filePath.toStdString().c_str()))
-        return;
-
-    pugi::xml_node toBeRemoved;
-    bool found = false;
-
-    pugi::xpath_node_set nodes = xmlDoc.select_nodes("/playlist/track");
-    for(pugi::xpath_node_set::const_iterator it = nodes.begin(); it != nodes.end(); ++it)
-    {
-        pugi::xml_node node = (*it).node();
-        const QString trackPath = node.child_value("path");
-        if(trackPath == musicFile)
-        {
-            found = true;
-            toBeRemoved = node;
-            break;
-        }
-    }
-
-    if(found)
-    {
-        xmlDoc.child("playlist").remove_child(toBeRemoved);
-        xmlDoc.save_file(filePath.toStdString().c_str(), "\t", PUGI_SAVE_FORMAT, pugi::xml_encoding::encoding_utf8);
-    }
-}
-
-QStringList SoundManager::playlistNames()
-{
-    return _playlistNames;
-}
-
-QStringList SoundManager::playlistFiles()
-{
-    return _playlistFiles;
-}
-
-QUrl SoundManager::playlistUrl(QString file)
-{
-    return QUrl::fromLocalFile(file);
 }
 
 //
 // History stuff
 //
 
-void SoundManager::addHistoryEntry(QUrl source, QString sourceFile, QString sourceQuery, QString headerText)
+void MusicPlayer::addHistoryEntry(QUrl source, MediaInfo::MetadataType meta,
+                                  QVariant metaValue, const QString &headerText,
+                                  bool inPlaylist, const QString &playlistFile)
 {
-    _listViewHistory.push(ListViewHistoryEntry({source, sourceFile, sourceQuery, headerText}));
+    _listViewHistory.push(ListViewHistoryEntry({source, meta, metaValue, headerText, inPlaylist, playlistFile}));
     emit hasHistoryEntryChanged();
 
-    // Upadate last view type
-    if(sourceQuery == "/artists/artist")
+    // Update last view type if it's a top level list view
+    if(meta == MediaInfo::UNKNOWN && metaValue.type() == QVariant::Invalid && inPlaylist == false)
     {
-        _lastMainViewType = MainViewType::Artists;
-    }
-    else if(sourceQuery == "/albums/album")
-    {
-        _lastMainViewType = MainViewType::Albums;
-    }
-    else if(sourceQuery == "/tracks/track")
-    {
-        _lastMainViewType = MainViewType::Tracks;
-    }
-    else if(sourceQuery == "/playlist")
-    {
-        _lastMainViewType = MainViewType::Playlists;
+        if(source.toString() == "qrc:/qml/music/ListViewArtist.qml")
+        {
+            _lastMainViewType = MainViewType::Artists;
+        }
+        else if(source.toString() == "qrc:/qml/music/ListViewAlbum.qml")
+        {
+            _lastMainViewType = MainViewType::Albums;
+        }
+        else if(source.toString() == "qrc:/qml/music/ListViewTrack.qml")
+        {
+            _lastMainViewType = MainViewType::Tracks;
+        }
+        else if(source.toString() == "qrc:/qml/music/ListViewPlaylist.qml")
+        {
+            _lastMainViewType = MainViewType::Playlists;
+        }
     }
 }
 
-void SoundManager::removeLastHistoryEntry()
+void MusicPlayer::removeLastHistoryEntry()
 {
+    if(_listViewHistory.isEmpty())
+        return;
+
     _listViewHistory.pop();
     if(_listViewHistory.isEmpty())
         emit hasHistoryEntryChanged();
 }
 
-bool SoundManager::hasHistoryEntry()
+bool MusicPlayer::hasHistoryEntry()
 {
     return !_listViewHistory.isEmpty();
 }
 
-QUrl SoundManager::lastHistoryEntrySource()
+QUrl MusicPlayer::lastHistoryEntrySource()
 {
     return _listViewHistory.top().source;
 }
 
-QString SoundManager::lastHistoryEntrySourceFile()
+QVariant MusicPlayer::lastHistoryEntryMetaValue()
 {
-    return _listViewHistory.top().sourceFile;
+    return _listViewHistory.top().metaValue;
 }
 
-QString SoundManager::lastHistoryEntrySourceQuery()
+MediaInfo::MetadataType MusicPlayer::lastHistoryEntryMeta()
 {
-    return _listViewHistory.top().sourceQuery;
+    return _listViewHistory.top().meta;
 }
 
-QString SoundManager::lastHistoryEntryHeaderText()
+QString MusicPlayer::lastHistoryEntryHeaderText()
 {
     return _listViewHistory.top().headerText;
+}
+
+bool MusicPlayer::lastHistoryEntryInPlaylist()
+{
+    return _listViewHistory.top().inPlaylist;
+}
+
+QString MusicPlayer::lastHistoryEntryPlaylistFile()
+{
+    return _listViewHistory.top().playlistFile;
 }
 
 //
 // Settings
 //
 
-void SoundManager::saveSettings()
+void MusicPlayer::saveSettings()
 {
     if(!_init)
         return;

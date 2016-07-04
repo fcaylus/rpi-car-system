@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LIBMEDIAINFO
+	bool "libmediainfo"
+	select BR2_PACKAGE_LIBZEN
+	select BR2_PACKAGE_ZLIB

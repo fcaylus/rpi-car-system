@@ -23,7 +23,7 @@ import "."
 StackView {
     id: mainStackView
 
-    Component.onCompleted: soundManager.init()
+    Component.onCompleted: musicPlayer.init()
 
     delegate: StackViewDelegate {
         function transitionFinished(properties)
@@ -67,13 +67,11 @@ StackView {
             expectedDepth: 1
 
             property Component activityMusic: ActivityMusic {}
-            property Component activityTransfer: ActivityTransfer {}
             property Component activitySettings: ActivitySettings {}
 
             map: {
                 1: activityMusic,
-                7: activityTransfer,
-                8: activitySettings
+                7: activitySettings
             }
 
             model: ListModel {
@@ -115,12 +113,6 @@ StackView {
                 }
                 ListElement {
                     index: 7
-                    isEnabled: true
-                    title: qsTr("Transfer")
-                    icon: "qrc:/images/upload"
-                }
-                ListElement {
-                    index: 8
                     isEnabled: true
                     title: qsTr("Settings")
                     icon: "qrc:/images/settings"

@@ -49,12 +49,12 @@ Activity {
         disableAutoMgr: true
         onClicked: {
             if(currentState == 0)
-                soundManager.resumeMusic()
+                musicPlayer.resumeMusic()
             else
-                soundManager.pauseMusic()
+                musicPlayer.pauseMusic()
         }
 
-        currentState: soundManager.isPlaying ? 1 : 0
+        currentState: musicPlayer.isPlaying ? 1 : 0
     }
 
     DarkButton {
@@ -67,7 +67,7 @@ Activity {
 
         x: playButton.x - 95
 
-        onClicked: soundManager.previousMusic()
+        onClicked: musicPlayer.previousMusic()
     }
 
     DarkButton {
@@ -80,7 +80,7 @@ Activity {
 
         x: playButton.x + 95
 
-        onClicked: soundManager.nextMusic()
+        onClicked: musicPlayer.nextMusic()
     }
 
     DarkButton {
@@ -96,11 +96,11 @@ Activity {
 
         x: playButton.x + 2 * 95
 
-        onClicked: soundManager.setRandom(checked)
-        currentState: soundManager.random ? 0 : 1
+        onClicked: musicPlayer.setRandom(checked)
+        currentState: musicPlayer.random ? 0 : 1
 
         Component.onCompleted: {
-            if(soundManager.random) {
+            if(musicPlayer.random) {
                 checked = true
             }
         }
@@ -121,18 +121,18 @@ Activity {
         x: playButton.x - 2 * 95
 
         disableAutoMgr: true
-        onClicked: soundManager.setRepeatMode((currentState + 1) % 3)
+        onClicked: musicPlayer.setRepeatMode((currentState + 1) % 3)
 
         Connections {
-            target: soundManager
+            target: musicPlayer
             onRepeatModeChanged: {
-                repeatButton.currentState = soundManager.repeatMode
+                repeatButton.currentState = musicPlayer.repeatMode
                 repeatButton.updateCheckedState()
             }
         }
 
         Component.onCompleted: {
-            repeatButton.currentState = soundManager.repeatMode
+            repeatButton.currentState = musicPlayer.repeatMode
             repeatButton.updateCheckedState()
         }
     }
@@ -148,11 +148,11 @@ Activity {
         checkable: true
         x: playButton.x - 3.5 * 95
 
-        enabled: soundManager.started
+        enabled: musicPlayer.started
 
         disableAutoMgr: true
         Component.onCompleted: {
-            if(soundManager.isPlayerVisible()) {
+            if(musicPlayer.isPlayerVisible()) {
                 currentState = 0
                 updateCheckedState()
                 playerVisible = true
@@ -176,11 +176,22 @@ Activity {
         }
 
         Connections {
-            target: soundManager
-            onNewMediaPlayedFromFile: {
-                if(soundManager.started) {
+            target: musicPlayer
+            onNewMediaListPlayed: {
+                if(musicPlayer.started) {
                     chooseButton.clicked()
                 }
+            }
+        }
+    }
+
+    // Handle when the queue become empty and there is no more media available
+    // (ie: when a source is disconnected)
+    Connections {
+        target: musicPlayer
+        onStartedChanged: {
+            if(!musicPlayer.started) {
+                chooseButton.clicked();
             }
         }
     }
@@ -206,6 +217,6 @@ Activity {
     }
 
     Component.onDestruction: {
-        soundManager.setPlayerVisibility(playerVisible)
+        musicPlayer.setPlayerVisibility(playerVisible)
     }
 }

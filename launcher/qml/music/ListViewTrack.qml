@@ -17,27 +17,25 @@
  */
 
 import QtQuick 2.3
-import QtQuick.XmlListModel 2.0
+import rpicarsystem.mediamanager 1.0
 import ".."
 import "."
 
 ListViewBase {
-    id: trackListView
-    property bool inPlaylist: false
-
-    model: XmlListModel {
+    model: MusicListModel {
         id: model
 
-        source: sourceFile
-        query: sourceQuery
+        requiredMeta: meta
+        requiredMetaValue: metaValue
 
-        XmlRole { name: "title"; query: "title/string()" }
-        XmlRole { name: "path"; query: "path/string()" }
-        XmlRole { name: "cover"; query: "cover/string()" }
+        fromPlaylist: inPlaylist
+        playlistFileName: playlistFile
     }
 
+    Component.onCompleted: model.update()
+
     delegate: Item {
-        width: trackListView.width
+        width: trackRow.implicitWidth
         height: trackRow.implicitHeight
 
         Row {
@@ -65,27 +63,23 @@ ListViewBase {
         MouseArea {
             anchors.fill: trackRow
             onClicked: {
-                soundManager.playFromFile(path, loader.sourceFile, loader.sourceQuery);
+                if(fromPlaylist) {
+                    musicPlayer.playFromPlaylist(playlistFile, mediaUri)
+                } else {
+                    musicPlayer.play(mediaUri)
+                }
             }
 
             onPressAndHold: {
-                if(inPlaylist) {
-                    removeFromPlaylistPopup.userData = sourceFile
-                    removeFromPlaylistPopup.userData2 = path
+                if(fromPlaylist) {
+                    removeFromPlaylistPopup.userData = playlistFile
+                    removeFromPlaylistPopup.userData2 = mediaUri
                     removeFromPlaylistPopup.userData3 = title
                     removeFromPlaylistPopup.visible = true
                 } else {
-                    playlistPopup.requestMusicAddition(path, title, cover)
+                    playlistPopup.requestMusicAddition(mediaUri, title, cover)
                 }
             }
-        }
-    }
-
-    Component.onCompleted: {
-        if(sourceQuery.indexOf("playlist") > -1) {
-            inPlaylist = true
-        } else {
-            inPlaylist = false
         }
     }
 }
