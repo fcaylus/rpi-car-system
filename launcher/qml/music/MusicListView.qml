@@ -231,6 +231,7 @@ Item {
             id: loader
             focus: true
 
+            width: mainRow.width - 200 - 2*3 - 10*4
             height: parent.height - 2
 
             asynchronous: true

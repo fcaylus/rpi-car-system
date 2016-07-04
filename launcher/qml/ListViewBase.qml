@@ -24,7 +24,6 @@ import "."
 ListView {
     id: view
     spacing: 10
-    width: 540
 
     //headerPositioning: ListView.OverlayHeader
     clip: true

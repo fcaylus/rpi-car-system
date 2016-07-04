@@ -64,6 +64,7 @@ Rectangle {
                 StyledText {
                     width: rightWidth
                     text: musicPlayer.mediaTitle
+                    elide: Text.ElideRight
                     font.bold: true
                     font.pixelSize: 30
                     horizontalAlignment: Text.AlignHCenter

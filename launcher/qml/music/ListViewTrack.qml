@@ -53,7 +53,6 @@ ListViewBase {
             StyledText {
                 text: title
                 font.pixelSize: 22
-                //font.bold: true
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 anchors.verticalCenter: parent.verticalCenter

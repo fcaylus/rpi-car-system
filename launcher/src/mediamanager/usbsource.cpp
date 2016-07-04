@@ -125,7 +125,7 @@ QVariant UsbSource::accessMediaMetadata(const QString &mediaUri, MediaInfo::Meta
 
                 line = in.readLine();
                 if(type == MediaInfo::TITLE)
-                    return line.isEmpty() ? QFileInfo(mediaPath).baseName() : line;
+                    return line.isEmpty() ? QFileInfo(mediaPath).completeBaseName() : line;
 
                 line = in.readLine();
                 if(type == MediaInfo::TRACK_NUMBER)
@@ -210,7 +210,7 @@ QVariant UsbSource::accessMediaMetadata(const QString &mediaUri, MediaInfo::Meta
         // Album
         returnList.append((list.at(1).isEmpty()) ? MediaInfo::defaultAlbumName() : list.at(1));
         // Title
-        returnList.append((list.at(2).isEmpty()) ? QFileInfo(mediaUri).baseName() : list.at(2));
+        returnList.append((list.at(2).isEmpty()) ? QFileInfo(mediaUri).completeBaseName() : list.at(2));
         // Track number
         returnList.append((list.at(3).isEmpty()) ? QVariant(0) : list.at(3));
         // Cover Uri
@@ -263,7 +263,7 @@ QVariant UsbSource::accessMediaMetadata(const QString &mediaUri, MediaInfo::Meta
         else if(type == MediaInfo::ARTIST)
             return MediaInfo::defaultArtistName();
         else if(type == MediaInfo::TITLE)
-            return QFileInfo(mediaUri).baseName();
+            return QFileInfo(mediaUri).completeBaseName();
         else if(type == MediaInfo::TRACK_NUMBER)
             return QVariant(0);
     }
