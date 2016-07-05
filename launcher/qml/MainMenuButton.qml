@@ -21,6 +21,7 @@ import "."
 
 DarkButton {
     inMainMenu: true
+
     style: DarkButtonStyle {
         label: Item {
             implicitWidth: col.implicitWidth
@@ -51,6 +52,8 @@ DarkButton {
                     font.bold: true
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+
+                    color: control.enabled ? Style.fontColor : Style.fontColorDisabled
                 }
             }
         }

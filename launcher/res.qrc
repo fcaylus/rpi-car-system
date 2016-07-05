@@ -49,7 +49,6 @@
     <qresource prefix="/images">
         <file alias="default_artwork">imgs/default_artwork.png</file>
         <file alias="video">imgs/icons/video.png</file>
-        <file alias="track">imgs/icons/track.png</file>
         <file alias="skip_previous">imgs/icons/skip_previous.png</file>
         <file alias="skip_next">imgs/icons/skip_next.png</file>
         <file alias="shuffle">imgs/icons/shuffle.png</file>
@@ -87,6 +86,7 @@
         <file alias="backspace">imgs/icons/backspace.png</file>
         <file alias="up">imgs/icons/up.png</file>
         <file alias="remove">imgs/icons/remove.png</file>
+        <file alias="game">imgs/icons/game.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>

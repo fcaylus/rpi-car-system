@@ -71,7 +71,7 @@ StackView {
 
             map: {
                 1: activityMusic,
-                7: activitySettings
+                8: activitySettings
             }
 
             model: ListModel {
@@ -113,6 +113,13 @@ StackView {
                 }
                 ListElement {
                     index: 7
+                    isEnabled: false
+                    title: qsTr("Games")
+                    icon: "qrc:/images/game"
+                }
+
+                ListElement {
+                    index: 8
                     isEnabled: true
                     title: qsTr("Settings")
                     icon: "qrc:/images/settings"

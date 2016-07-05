@@ -50,7 +50,7 @@ Activity {
             ListElement {
                 index: 2
                 isEnabled: false
-                title: qsTr("Remove files")
+                title: qsTr("Clean system")
                 icon: "qrc:/images/folder"
             }
             ListElement {

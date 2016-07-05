@@ -56,6 +56,7 @@ QtObject {
     }
 
     readonly property color fontColor: "#e7e7e7"
+    readonly property color fontColorDisabled: "#606060"
 
     readonly property color separatorColor: "#444"
 

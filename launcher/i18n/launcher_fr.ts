@@ -18,8 +18,8 @@
     </message>
     <message>
         <location filename="../qml/ActivitySettings.qml" line="53"/>
-        <source>Remove files</source>
-        <translation>Supprimer des fichiers</translation>
+        <source>Clean system</source>
+        <translation>Nettoyage système</translation>
     </message>
     <message>
         <location filename="../qml/ActivitySettings.qml" line="59"/>
@@ -121,6 +121,11 @@
     </message>
     <message>
         <location filename="../qml/MainStackView.qml" line="117"/>
+        <source>Games</source>
+        <translation>Jeux</translation>
+    </message>
+    <message>
+        <location filename="../qml/MainStackView.qml" line="124"/>
         <source>Settings</source>
         <translation>Paramètres</translation>
     </message>
@@ -186,12 +191,12 @@
         <translation>Playlists ...</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="280"/>
+        <location filename="../qml/music/MusicListView.qml" line="281"/>
         <source>Are you sure to remove &quot;%1&quot; playlist ?</source>
         <translation>Voulez-vous vraiment supprimer la playlist &quot;%1&quot; ?</translation>
     </message>
     <message>
-        <location filename="../qml/music/MusicListView.qml" line="297"/>
+        <location filename="../qml/music/MusicListView.qml" line="298"/>
         <source>Are you sure to remove &quot;%1&quot; from the playlist ?</source>
         <translation>Voulez-vous vraiment supprimer &quot;%1&quot; de la playlist ?</translation>
     </message>
