@@ -139,7 +139,7 @@ namespace Common {
 #ifdef READY_FOR_CARSYSTEM
         return QStringLiteral("/root/config");
 #else
-        return QCoreApplication::applicationDirPath();
+        return QCoreApplication::applicationDirPath() + QLatin1String("/config");
 #endif
     }
 }

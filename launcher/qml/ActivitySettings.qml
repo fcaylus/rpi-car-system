@@ -27,6 +27,7 @@ Activity {
         expectedDepth: 2
 
         property Component settingsEqualizer: SettingsEqualizer {}
+        property Component settingsClean: SettingsClean {}
         property Component settingsUpdate: SettingsUpdate {}
         property Component settingsLanguage: SettingsLanguage {}
         property Component settingsSystem: SettingsSystem {}
@@ -34,6 +35,7 @@ Activity {
 
         map: {
             1: settingsEqualizer,
+            2: settingsClean,
             3: settingsUpdate,
             4: settingsLanguage,
             5: settingsSystem,
@@ -49,7 +51,7 @@ Activity {
             }
             ListElement {
                 index: 2
-                isEnabled: false
+                isEnabled: true
                 title: qsTr("Clean system")
                 icon: "qrc:/images/folder"
             }

@@ -42,9 +42,12 @@ QMAKE_POST_LINK = echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION";
 #
 
 # Workaround for installation where an another Qt distro is installed in /usr
-QTDIR = $$getenv(QTDIR)
-!isEmpty(QTDIR) {
-    LIBS = -L$$QTDIR/lib $$LIBS
+# Disable this trick when cross compiling
+!CONFIG(READY_FOR_CARSYSTEM) {
+    QTDIR = $$getenv(QTDIR)
+    !isEmpty(QTDIR) {
+        LIBS = -L$$QTDIR/lib $$LIBS
+    }
 }
 
 # PugiXml
@@ -54,8 +57,13 @@ include(../thirdparty/pugixml.pri)
 include(../thirdparty/vlc-qt.pri)
 
 # libudev
-INCLUDEPATH += /usr/include
-LIBS += -L/usr/lib -ludev
+CONFIG(READY_FOR_CARSYSTEM) {
+    # Cross compilation
+    LIBS += -ludev
+} else {
+    INCLUDEPATH += /usr/include
+    LIBS += -L/usr/lib -ludev
+}
 
 # MediaInfoLib
 include(../thirdparty/mediainfolib.pri)

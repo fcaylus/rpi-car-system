@@ -21,12 +21,19 @@ launch () {
 	"$dirname/$appname" "$@"
 	result=$?
 
-	if [ $result -eq $REBOOT_CODE ];then
-		launch "$@"
+	if [ $result -eq $REBOOT_CODE ]; then
+		# check if argument file exist
+		if [ -e "$dirname/arguments.txt" ]; then
+			args=$(cat "$dirname/arguments.txt")
+			launch $args
+		else
+			launch "$@"
+		fi
 	elif [ $result -eq $UPDATE_CODE ];then
 		# Get content of the update package path
 		if [ -e "$dirname/update-package-path" ]; then
-			"$dirname/updater" --apply-update="$(cat \"$dirname/update-package-path\")"
+			path=$(cat "$dirname/update-package-path")
+			"$dirname/updater" --apply-update="$path"
 			result=$?
 
 			if [ $result -eq 0 ]; then
@@ -40,7 +47,8 @@ launch () {
 			# Restart launcher
 			launch "$@"
 		fi
-	elif [ $result -eq $SHUTDOWN_CODE ];then
+	elif [ $result -eq $SHUTDOWN_CODE ]; then
+		echo "Shutting down system ..."
 		poweroff
 	else
 		# Unknown return code, try to re-run the launcher

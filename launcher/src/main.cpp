@@ -27,6 +27,8 @@
 #include <QSettings>
 #include <QDir>
 #include <QThread>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 #include "languagemanager.h"
 #include "passwordmanager.h"
@@ -40,6 +42,7 @@
 #include "mediamanager/metadatalistmodel.h"
 #include "mediamanager/musiclistmodel.h"
 #include "mediamanager/playlistlistmodel.h"
+#include "mediamanager/playlist.h"
 
 static const QString settingsLocaleStr = "locale";
 
@@ -53,13 +56,56 @@ int main(int argc, char *argv[])
     QGuiApplication *app = new QGuiApplication(argc, argv);
     QGuiApplication::setApplicationName(APPLICATION_NAME);
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
-
     const QString appDirPath = app->applicationDirPath();
+
+    // Remove arguments.txt if exists
+    QFile::remove(appDirPath + QLatin1String("/arguments.txt"));
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("RPI Car System main app");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.addOption(QCommandLineOption("clear-usb-cache"));
+    parser.addOption(QCommandLineOption("clear-settings"));
+    parser.addOption(QCommandLineOption("clear-playlists"));
+    parser.addOption(QCommandLineOption("clear-equalizer-confs"));
+    parser.addOption(QCommandLineOption("clear-all-cache"));
+
+    parser.process(app->arguments());
+
+    if(parser.isSet("clear-all-cache"))
+    {
+        QDir dir(Common::configDir());
+        dir.removeRecursively();
+    }
+    else
+    {
+        if(parser.isSet("clear-usb-cache"))
+        {
+            QDir dir(Common::configDir() + "/usbsources");
+            dir.removeRecursively();
+        }
+        if(parser.isSet("clear-settings"))
+        {
+            QFile::remove(Common::configDir() + QLatin1String("/settings.ini"));
+        }
+        if(parser.isSet("clear-playlists"))
+        {
+            QDir dir(Playlist::playlistDirectory());
+            dir.removeRecursively();
+        }
+        if(parser.isSet("clear-equalizer-confs"))
+        {
+            QDir dir(MusicPlayer::equalizerMainConfigDir());
+            dir.removeRecursively();
+        }
+    }
 
     // Try to remove previous update file
     QFile::remove(appDirPath + "/update-package-path");
 
-    QSettings *settings = new QSettings(appDirPath + QStringLiteral("/settings.ini"), QSettings::IniFormat);
+    QSettings *settings = new QSettings(Common::configDir() + QLatin1String("/settings.ini"), QSettings::IniFormat);
     settings->setFallbacksEnabled(false);
 
     // Get locale (system locale by default)

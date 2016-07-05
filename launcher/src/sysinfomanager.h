@@ -20,6 +20,7 @@
 #define SYSINFOMANAGER_H
 
 #include <QObject>
+#include "dirutility.h"
 
 class SysInfoManager : public QObject
 {
@@ -77,6 +78,14 @@ class SysInfoManager : public QObject
         QString bytesTotalString() const;
         QString bytesUsedConfigString() const;
         QString bytesUsedSystemString() const;
+
+    public slots:
+
+        void rebootAndApplyArgs(const QString& args)
+        {
+            DirUtility::writeFile(QCoreApplication::applicationDirPath() + "/arguments.txt", args);
+            QCoreApplication::instance()->exit(REBOOT_CODE);
+        }
 };
 
 #endif // SYSINFOMANAGER_H

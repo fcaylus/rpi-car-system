@@ -102,6 +102,7 @@ class MusicPlayer: public QObject
         // Statics
         static QString equalizerDefaultConfigDir();
         static QString equalizerCustomConfigDir();
+        static QString equalizerMainConfigDir();
 
     public slots:
 

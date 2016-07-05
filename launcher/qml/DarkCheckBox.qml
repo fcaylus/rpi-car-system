@@ -22,6 +22,9 @@ import QtQuick.Controls.Styles 1.4
 import "."
 
 CheckBox {
+
+    property bool textBold: false
+
     style: CheckBoxStyle {
         indicator: Rectangle {
             border.width: 2
@@ -53,7 +56,7 @@ CheckBox {
         label: StyledText {
             text: control.text
             font.pixelSize: control.height * .6
-            //font.bold: true
+            font.bold: control.textBold
         }
 
         spacing: 15

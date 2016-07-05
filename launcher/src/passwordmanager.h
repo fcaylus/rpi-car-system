@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QCryptographicHash>
 #include <QObject>
+#include <QDir>
 
 #include "common.h"
 
@@ -32,14 +33,18 @@ class PasswordManager: public QObject
     public:
         PasswordManager(QObject* parent = nullptr): QObject(parent) {}
 
-        static QString passwordFileName()
+        static QString passwordDir()
         {
-            return QStringLiteral("rootpass");
+#ifdef READY_FOR_CARSYSTEM
+        return QStringLiteral("/root/pwd");
+#else
+        return QCoreApplication::applicationDirPath() + QLatin1String("/pwd");
+#endif
         }
 
         static QString passwordFile()
         {
-            return Common::configDir() + QStringLiteral("/") + passwordFileName();
+            return passwordDir() + QLatin1String("/rootpass");
         }
 
         static bool passFileExists()
@@ -51,6 +56,11 @@ class PasswordManager: public QObject
         {
             if(passFileExists())
                 return false;
+
+            // Try to create the directory if not exists
+            QDir dir(passwordDir());
+            if(!dir.exists())
+                dir.mkpath(".");
 
             QFile file(passwordFile());
             if(!file.open(QFile::ReadWrite))

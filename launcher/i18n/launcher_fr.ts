@@ -12,32 +12,32 @@
 <context>
     <name>ActivitySettings</name>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="47"/>
+        <location filename="../qml/ActivitySettings.qml" line="49"/>
         <source>Equalizer</source>
         <translation>Égaliseur</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="53"/>
+        <location filename="../qml/ActivitySettings.qml" line="55"/>
         <source>Clean system</source>
         <translation>Nettoyage système</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="59"/>
+        <location filename="../qml/ActivitySettings.qml" line="61"/>
         <source>Update</source>
         <translation>Mise à jour</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="65"/>
+        <location filename="../qml/ActivitySettings.qml" line="67"/>
         <source>Languages</source>
         <translation>Langues</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="71"/>
+        <location filename="../qml/ActivitySettings.qml" line="73"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
     <message>
-        <location filename="../qml/ActivitySettings.qml" line="77"/>
+        <location filename="../qml/ActivitySettings.qml" line="79"/>
         <source>About</source>
         <translation>À propos</translation>
     </message>
@@ -282,6 +282,59 @@
         <location filename="../qml/settings/SettingsAbout.qml" line="131"/>
         <source>VLC-Qt version:</source>
         <translation>Version de VLC-Qt:</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsClean</name>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="38"/>
+        <source>Clean system</source>
+        <translation>Nettoyage</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="75"/>
+        <source>Remove:</source>
+        <translation>À supprimer:</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="80"/>
+        <source>All caches/configs</source>
+        <translation>Tout le cache &amp; configuration</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="87"/>
+        <source>USB devices cache</source>
+        <translation>Cache des périphériques USB</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="93"/>
+        <source>Playlists</source>
+        <translation>Playlists</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="99"/>
+        <source>Equalizer configs</source>
+        <translation>Configuration d&apos;égaliseur</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="105"/>
+        <source>Settings</source>
+        <translation>Préférences</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="116"/>
+        <source>Are you sure to remove all these files ?</source>
+        <translation>Êtes-vous sûr de vouloir supprimer tout ces fichiers ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="131"/>
+        <source>Really ?</source>
+        <translation>Vraiment ?</translation>
+    </message>
+    <message>
+        <location filename="../qml/settings/SettingsClean.qml" line="143"/>
+        <source>Enter root password to continue:</source>
+        <translation>Entrer le mot de passe admin pour continuer:</translation>
     </message>
 </context>
 <context>

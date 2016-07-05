@@ -41,6 +41,7 @@
         <file>qml/GridMenu.qml</file>
         <file>qml/MainStackView.qml</file>
         <file>qml/settings/SettingsEqualizer.qml</file>
+        <file>qml/settings/SettingsClean.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

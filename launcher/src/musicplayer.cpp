@@ -576,6 +576,11 @@ QString MusicPlayer::equalizerDefaultConfigDir()
     return Common::configDir() + QStringLiteral("/equalizer/default");
 }
 
+// Static
+QString MusicPlayer::equalizerMainConfigDir()
+{
+    return Common::configDir() + QStringLiteral("/equalizer");
+}
 
 // Private
 void MusicPlayer::checkForDefaultEqualizerConfigs()
