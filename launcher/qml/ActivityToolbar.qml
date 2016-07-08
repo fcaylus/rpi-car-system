@@ -28,16 +28,7 @@ Rectangle {
     height: Style.toolbar.height
     width: Style.toolbar.width
 
-    gradient: Gradient {
-        GradientStop {
-            color: Style.toolbar.gradientStart
-            position: 0
-        }
-        GradientStop {
-            color: Style.toolbar.gradientEnd
-            position: 1
-        }
-    }
+    color: Style.toolbar.color
 
     // Top Border
     Rectangle {

@@ -24,30 +24,15 @@ import "."
 
 ButtonStyle {
     background: Rectangle {
-        radius: inMainMenu ? 20 : 0
-
-        gradient: Gradient {
-            GradientStop {
-                color: inToolbar ? (control.pressed ? Style.toolbar.gradientStartPressed : Style.toolbar.gradientStart)
-                                 : (control.pressed ? Style.button.gradientStartPressed : Style.button.gradientStart)
-                position: 0
-            }
-            GradientStop {
-                color: inToolbar ? Style.toolbar.gradientEnd : Style.button.gradientEnd
-                position: 1
-            }
-        }
+        color: control.pressed ? Style.button.colorPressed : Style.button.color
 
         Rectangle {
             height: 1
             width: parent.width
             anchors.top: parent.top
             color: inToolbar ? Style.toolbar.topBorderColor : Style.button.topBorderColor
-            visible: inMainMenu ? false : !control.pressed
+            visible: !control.pressed
         }
-
-        border.color: Style.button.borderColor
-        border.width: inMainMenu ? 1 : 0
     }
 
     label: Item {

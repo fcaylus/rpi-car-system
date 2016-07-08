@@ -17,12 +17,21 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import "."
 
-DarkButton {
-    inMainMenu: true
+Button {
+    style: ButtonStyle {
+        background: Rectangle {
+            radius: 20
 
-    style: DarkButtonStyle {
+            color: control.pressed ? Style.button.colorPressed : Style.button.color
+
+            border.color: Style.button.borderColor
+            border.width: 1
+        }
+
         label: Item {
             implicitWidth: col.implicitWidth
             implicitHeight: col.implicitHeight

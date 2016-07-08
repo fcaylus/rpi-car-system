@@ -17,15 +17,14 @@
  */
 
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.4
 
 Button {
     property bool inToolbar: false
-    property bool inMainMenu: false
     property bool alignCenter: false
 
     property bool hasSecondIcon: false
-    property url secondIcon;
+    property url secondIcon
     property int statesNumber: 1 + (checkable ?  1 : 0) + (hasSecondIcon ? 1 : 0)
     property int currentState: 0
 

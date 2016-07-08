@@ -16,7 +16,7 @@ Rectangle {
     property bool useCustomIcon: false
 
     radius: 5
-    color: buttonMouseArea.pressed ? Qt.darker(Style.button.gradientEnd, 1.5) : Style.button.gradientEnd
+    color: buttonMouseArea.pressed ? Style.button.colorPressed : Style.button.color
 
     Text {
         id: txt
