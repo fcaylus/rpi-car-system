@@ -24,6 +24,7 @@ import "."
 TextField {
     style: TextFieldStyle {
         textColor: Style.fontColor
+        passwordCharacter: "*"
         background: Rectangle {
             border.width: 2
             border.color: Style.button.checkedOverlayColor
