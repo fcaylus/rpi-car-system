@@ -26,11 +26,6 @@ Rectangle {
     width: Style.windowWidth
     height: Style.windowHeight
 
-    FontLoader {
-        id: mainFont
-        source: "qrc:/fonts/OpenSans-Regular"
-    }
-
     color: Style.backgroundColor
 
     Loader {

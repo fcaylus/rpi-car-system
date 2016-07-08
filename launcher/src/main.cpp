@@ -29,6 +29,8 @@
 #include <QThread>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QFont>
+#include <QFontDatabase>
 
 #include "languagemanager.h"
 #include "passwordmanager.h"
@@ -58,8 +60,9 @@ int main(int argc, char *argv[])
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
     const QString appDirPath = app->applicationDirPath();
 
-    // Remove arguments.txt if exists
+    // Remove useless files
     QFile::remove(appDirPath + QLatin1String("/arguments.txt"));
+    QFile::remove(appDirPath + "/update-package-path");
 
     QCommandLineParser parser;
     parser.setApplicationDescription("RPI Car System main app");
@@ -102,9 +105,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Try to remove previous update file
-    QFile::remove(appDirPath + "/update-package-path");
-
     QSettings *settings = new QSettings(Common::configDir() + QLatin1String("/settings.ini"), QSettings::IniFormat);
     settings->setFallbacksEnabled(false);
 
@@ -120,6 +120,9 @@ int main(int argc, char *argv[])
     //
     // QML Stuff
     //
+
+    const int fontId = QFontDatabase::addApplicationFont(":/fonts/OpenSans-Regular");
+    app->setFont(QFont(QFontDatabase::applicationFontFamilies(fontId).at(0)));
 
     // Register some types into the QT metatype System
     qRegisterMetaType<MediaInfoList>("MediaInfoList");
