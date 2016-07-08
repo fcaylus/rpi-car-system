@@ -16,6 +16,10 @@ if [ "$1" = "--remove-rpi-car-system-pkg" ]; then
 	rm -f rpi-car-system-sources.tar.gz
 	rm -f buildroot-${BUILDROOT_VER}/dl/rpi-car-system-sources.tar.gz
 	rm -rf buildroot-${BUILDROOT_VER}/output/build/rpi-car-system-undefined
+
+	cd buildroot-${BUILDROOT_VER}
+	make skeleton-rebuild
+
 	exit
 fi
 
