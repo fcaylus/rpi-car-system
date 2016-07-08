@@ -1,7 +1,8 @@
 CONFIG(READY_FOR_CARSYSTEM) {
+    # Cross compilation
     LIBS += -lVLCQtCore
-}
-!CONFIG(READY_FOR_CARSYSTEM) {
+} else {
+    # Build on local machine
     INCLUDEPATH += /usr/include
     LIBS += -L/usr/lib -lVLCQtCore
 }

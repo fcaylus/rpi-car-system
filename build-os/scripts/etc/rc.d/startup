@@ -10,41 +10,21 @@
 /bin/mkdir /dev/pts
 /bin/mkdir /dev/shm
 
-/bin/echo "/sbin/mdev" > /proc/sys/kernel/hotplug
-
-echo -n "Starting mdev: "
-/sbin/mdev -s
-check_status
-
 echo -n "Mounting shared memory: "
 /bin/mount -t tmpfs none /dev/shm
 check_status
 
-if [ -x /sbin/hwclock ] && [ -e /dev/rtc0 ]; then
-	echo -n "Setting system clock: "
-	hwclock --hctosys --utc
-	check_status
-fi
-
 echo -n "Remounting root rw: "
-mount -o remount,rw /
+/bin/mount -o remount,rw /
 check_status
 
 echo -n "Linking /var/tmp and /tmp: "
 ln -s ../tmp /var/tmp
 check_status
 
-echo -n "Setting hostname: "
-hostname -F /etc/hostname
-check_status
-
 echo -n "Cleaning up system: "
 rm -rf /var/run/*
 rm -rf /tmp/*
-check_status
-
-echo -n "Change keyboard layout to french:"
-loadkmap < /etc/i18n/fr-latin9.bmap
 check_status
 
 echo "Running start scripts."

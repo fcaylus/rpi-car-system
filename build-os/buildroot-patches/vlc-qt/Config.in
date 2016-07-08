@@ -1,4 +1,4 @@
 config BR2_PACKAGE_VLC_QT
 	bool "vlc-qt"
 	depends on BR2_PACKAGE_QT5
-	depends on BR2_PACKAGE_LIBVLC
+	select BR2_PACKAGE_LIBVLC

@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBVLC_VERSION = 2.2.3
+LIBVLC_VERSION = 2.2.4
 LIBVLC_SITE = http://get.videolan.org/vlc/$(LIBVLC_VERSION)
 LIBVLC_SOURCE = vlc-$(LIBVLC_VERSION).tar.xz
 LIBVLC_LICENSE = GPLv2+ LGPLv2.1+
@@ -28,11 +28,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-rpath \
 	--disable-nls \
 	--disable-winstore-app \
-	--enable-dbus \
-	--disable-mmx \
-	--disable-sse \
-	--disable-neon \
-	--disable-altivec \
+	--disable-dbus \
 	--disable-lua \
 	--disable-httpd \
 	--disable-vlm \
@@ -53,14 +49,14 @@ LIBVLC_CONF_OPTS += \
 	--disable-vcdx \
 	--disable-vcd \
 	--disable-libcddb \
+	--disable-screen \
 	--disable-vnc \
 	--disable-freerdp \
 	--disable-realrtsp \
 	--disable-macosx-eyetv \
 	--disable-macosx-qtkit \
 	--disable-macosx-avfoundation \
-	--disable-asdcp \
-	--disable-dvdpsi \
+	--enable-dvbpsi \
 	--disable-gme \
 	--disable-sid \
 	--enable-ogg \
@@ -98,12 +94,12 @@ LIBVLC_CONF_OPTS += \
 	--enable-png \
 	--enable-jpeg \
 	--disable-x262 \
-	--disable-x265 \
+	--enable-x265 \
 	--disable-x26410b \
 	--enable-x264 \
 	--disable-mfx \
 	--disable-fluidsynth \
-	--disable-vbi \
+	--disable-zvbi \
 	--enable-telx \
 	--enable-libass \
 	--disable-kate \
@@ -131,7 +127,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-oss \
 	--disable-wasapi \
 	--disable-audioqueue \
-	--enable-jack \
+	--disable-jack \
 	--disable-opensles \
 	--enable-samplerate \
 	--disable-kai \
@@ -155,7 +151,7 @@ LIBVLC_CONF_OPTS += \
 	--enable-libxml2 \
 	--disable-libgcrypt \
 	--disable-gnutls \
-	--enable-taglib \
+	--disable-taglib \
 	--disable-update-check \
 	--disable-growl \
 	--disable-notify \
@@ -163,7 +159,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-macosx-vlc-app
 
 LIBVLC_DEPENDENCIES += \
-	dbus \
+	libdvbpsi \
 	libogg \
 	libmatroska \
 	libmodplug \
@@ -179,6 +175,7 @@ LIBVLC_DEPENDENCIES += \
 	libpng \
 	libjpeg \
 	x264 \
+	x265 \
 	libass \
 	freetype \
 	libfribidi \
@@ -186,9 +183,7 @@ LIBVLC_DEPENDENCIES += \
 	libsvg \
 	librsvg \
 	alsa-lib \
-	jack2 \
 	libsamplerate \
-	libxml2 \
-	taglib
+	libxml2
 
 $(eval $(autotools-package))

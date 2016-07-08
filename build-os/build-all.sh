@@ -54,7 +54,7 @@ if [ ! -f system-build.done ]; then
 	# Create rpi-car-system sources tarball
 	OLD_PWD=$PWD
 	cd "$SCRIPT_DIR/.."
-	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="musicindex-generator/Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
+	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
 	cd "$OLD_PWD"
 
     make
@@ -76,7 +76,7 @@ SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-${BUILDROOT_VER}/output/target"
 cd "${SYSTEM_ROOT}/../images/rpi-firmware"
 
 # Copy all files to /boot dir
-cp -r bcm2708-rpi-b.dtb bcm2708-rpi-b-plus.dtb bcm2709-rpi-2-b.dtb bootcode.bin start.elf fixup.dat overlays/ ../../target/boot/
+cp -r bootcode.bin start.elf fixup.dat overlays/ ../../target/boot/
 
 # Rename the kernel
 cd "${SYSTEM_ROOT}/boot"
@@ -102,9 +102,9 @@ install -d -m 755 "${SYSTEM_ROOT}/etc/rc.d/stop"
 install -m 644 etc/rc.d/init.d/functions "${SYSTEM_ROOT}/etc/rc.d/init.d/"
 install -m 754 etc/rc.d/startup          "${SYSTEM_ROOT}/etc/rc.d/"
 install -m 754 etc/rc.d/shutdown         "${SYSTEM_ROOT}/etc/rc.d/"
-install -m 754 etc/rc.d/init.d/syslog    "${SYSTEM_ROOT}/etc/rc.d/init.d/"
-ln -sf ../init.d/syslog "${SYSTEM_ROOT}/etc/rc.d/start/S05syslog"
-ln -sf ../init.d/syslog "${SYSTEM_ROOT}/etc/rc.d/stop/K99syslog"
+install -m 754 etc/rc.d/init.d/udev      "${SYSTEM_ROOT}/etc/rc.d/init.d/"
+ln -sf ../init.d/udev "${SYSTEM_ROOT}/etc/rc.d/start/S10udev"
+ln -sf ../init.d/udev "${SYSTEM_ROOT}/etc/rc.d/stop/K10udev"
 
 rm "${SYSTEM_ROOT}/etc/inittab"
 rm "${SYSTEM_ROOT}/etc/fstab"
@@ -119,44 +119,51 @@ install -m 644 boot/config.txt "${SYSTEM_ROOT}/boot/"
 install -m 644 boot/cmdline.txt "${SYSTEM_ROOT}/boot/"
 
 #
-# mdev file
-install -m 644 etc/mdev.conf "${SYSTEM_ROOT}/etc/"
-
-#
 # profile files
 rm "${SYSTEM_ROOT}/etc/profile"
 install -m 754 etc/profile "${SYSTEM_ROOT}/etc/"
-install -m 644 etc/nanorc "${SYSTEM_ROOT}/etc/"
 
 rm "${SYSTEM_ROOT}/etc/group"
 install -m 644 etc/group "${SYSTEM_ROOT}/etc/"
-
-#
-# i18n
-install -d -m 755 "${SYSTEM_ROOT}/etc/i18n"
-install -m 644 fr-latin9.bmap "${SYSTEM_ROOT}/etc/i18n"
-
-#
-# Copy qt platform plugin
-#install -d -m 755 "${SYSTEM_ROOT}/opt/rpi-car-system/platforms"
-#cp "${SYSTEM_ROOT}/usr/lib/qt/plugins/platforms/libqeglfs.so" "${SYSTEM_ROOT}/opt/rpi-car-system/platforms"
+install -m 600 etc/shadow "${SYSTEM_ROOT}/etc/"
+install -m 644 etc/passwd "${SYSTEM_ROOT}/etc/"
 
 set +e
 
 # Remove useless stuff
 rm "${SYSTEM_ROOT}/etc/issue"
 rm "${SYSTEM_ROOT}/etc/os-release"
+rm "${SYSTEM_ROOT}/etc/services"
+rm "${SYSTEM_ROOT}/etc/resolv.conf"
+rm "${SYSTEM_ROOT}/etc/protocols"
+rm "${SYSTEM_ROOT}/etc/nsswitch.conf"
+rm "${SYSTEM_ROOT}/etc/mtab"
+rm "${SYSTEM_ROOT}/etc/hosts"
+rm "${SYSTEM_ROOT}/etc/hostname"
+rm -r "${SYSTEM_ROOT}/etc/init.d"
+
+rm -r "${SYSTEM_ROOT}/etc/profile.d"
+rm -r "${SYSTEM_ROOT}/etc/network"
+
 rm "${SYSTEM_ROOT}/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM"
 
 rm -r "${SYSTEM_ROOT}/usr/share/applications"
+rm -r "${SYSTEM_ROOT}/usr/share/gettext"
+rm -r "${SYSTEM_ROOT}/usr/share/glib-2.0"
 rm -r "${SYSTEM_ROOT}/usr/share/icons"
 rm -r "${SYSTEM_ROOT}/usr/share/kde4"
-rm -r "${SYSTEM_ROOT}/usr/share/imlib2"
-rm -r "${SYSTEM_ROOT}/usr/share/pixmaps"
+rm -r "${SYSTEM_ROOT}/usr/share/locale"
 rm -r "${SYSTEM_ROOT}/usr/share/vlc"
-rm -r "${SYSTEM_ROOT}/usr/share/glib-2.0"
-rm -r "${SYSTEM_ROOT}/usr/share/icu"
-rm -r "${SYSTEM_ROOT}/usr/share/keyutils"
+
+rm -r "${SYSTEM_ROOT}/usr/qml/QtTest"
+
+rm "${SYSTEM_ROOT}/usr/bin/cvlc"
+rm "${SYSTEM_ROOT}/usr/bin/rvlc"
+rm "${SYSTEM_ROOT}/usr/bin/libzen-config"
+
+rm -r "${SYSTEM_ROOT}/usr/lib/qt/plugins/qmltooling"
+rm "${SYSTEM_ROOT}/usr/lib/"*.py
+rm "${SYSTEM_ROOT}/usr/lib/xml2Conf.sh"
 
 set -e
 

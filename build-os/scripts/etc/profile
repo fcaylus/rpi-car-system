@@ -1,28 +1,11 @@
 # /etc/profile
 # Set the initial path
-export PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
+export PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 # Setup some environment variables.
 export USER=`id -un`
 export LOGNAME=$USER
-export HOSTNAME=`/bin/hostname`
-export EDITOR='/bin/nano'
 export TERMINFO='/share/terminfo'
-export INPUTRC=/etc/inputrc
-
-# enable color support of ls
-alias ls='ls --color=auto'
-
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Source configuration files from /etc/profile.d
-for i in /etc/profile.d/*.sh ; do
-    if [ -r "$i" ]; then
-        . $i
-    fi
-done
 
 #
 # Launch main app

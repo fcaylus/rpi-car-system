@@ -1,7 +1,9 @@
 config BR2_PACKAGE_RPI_CAR_SYSTEM
 	bool "rpi-car-system"
 	depends on BR2_PACKAGE_QT5
-	depends on BR2_PACKAGE_EUDEV
+	select BR2_PACKAGE_EUDEV
+	select BR2_PACKAGE_NCURSES
 	select BR2_PACKAGE_LIBMEDIAINFO
 	select BR2_PACKAGE_LIBARCHIVE
+	select BR2_PACKAGE_VLC_QT
 

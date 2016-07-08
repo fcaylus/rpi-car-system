@@ -18,12 +18,6 @@ do
 	fi
 done
 
-if [ -x /sbin/hwclock ] && [ -e /dev/rtc0 ]; then
-	echo -n "Syncing system clock to hardware clock: "
-	hwclock --systohc --utc
-	check_status
-fi
-
 echo -n "Syncing all filesystems: "
 sync
 check_status

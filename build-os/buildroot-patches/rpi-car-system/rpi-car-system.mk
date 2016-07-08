@@ -14,7 +14,8 @@ RPI_CAR_SYSTEM_DEPENDENCIES = \
 	qt5quickcontrols \
 	eudev \
 	libmediainfo \
-	libarchive
+	libarchive \
+	ncurses
 
 define RPI_CAR_SYSTEM_CONFIGURE_CMDS
 	(cd $(@D); $(TARGET_MAKE_ENV) $(QT5_QMAKE) CONFIG+=READY_FOR_CARSYSTEM "HOST_BIN_DIR = $(HOST_DIR)/usr/bin")

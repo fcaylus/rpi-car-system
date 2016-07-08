@@ -1,21 +1,18 @@
 #!/bin/sh
 # This script will launch the app with the correct library path
-appname=$(basename "$0" | sed s,\.sh$,,)
- 
-dirname=$(dirname "$0")
-tmp="${dirname#?}"
- 
-if [ "${dirname%$tmp}" != "/" ]; then
-dirname="$PWD/$dirname"
-fi
 
-LD_LIBRARY_PATH=$dirname
-export LD_LIBRARY_PATH
+appname="launcher"
+dirname="/opt/rpi-car-system"
+export LD_LIBRARY_PATH="/usr/lib/qt/plugins:$dirname"
+export QT_QPA_EGLFS_DEPTH=16
+export DISPLAY=:0
 
 # Sames as specified in common.h
 REBOOT_CODE=10
 UPDATE_CODE=20
 SHUTDOWN_CODE=30
+
+count=0
 
 launch () {
 	"$dirname/$appname" "$@"
@@ -52,7 +49,11 @@ launch () {
 		poweroff
 	else
 		# Unknown return code, try to re-run the launcher
-		launch "$@"
+		echo "Unknown error"
+		if [ $count -lt 5 ];then
+			count=$((count+1))
+			launch "$@"
+		fi
 	fi 
 }
 
