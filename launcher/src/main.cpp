@@ -154,9 +154,10 @@ int main(int argc, char *argv[])
     context->setContextProperty(QStringLiteral("sysinfoManager"), sysinfoMgr);
     context->setContextProperty(QStringLiteral("updateManager"), updateMgr);
 
-    context->setContextProperty(QStringLiteral("passFileCreated"), QVariant(PasswordManager::passFileExists()));
-
-    view->setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    if(PasswordManager::passFileExists())
+        view->setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    else
+        view->setSource(QUrl(QStringLiteral("qrc:/qml/main-firstboot.qml")));
 
 #ifdef READY_FOR_CARSYSTEM
         view->showFullScreen();

@@ -18,7 +18,7 @@ Rectangle {
     radius: 5
     color: buttonMouseArea.pressed ? Qt.darker(Style.button.gradientEnd, 1.5) : Style.button.gradientEnd
 
-    StyledText {
+    Text {
         id: txt
         anchors.margins: 2
         anchors.fill: parent

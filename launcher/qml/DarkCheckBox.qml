@@ -53,10 +53,11 @@ CheckBox {
             width: control.width
         }
 
-        label: StyledText {
+        label: Text {
             text: control.text
             font.pixelSize: control.height * .6
             font.bold: control.textBold
+            color: Style.fontColor
         }
 
         spacing: 15

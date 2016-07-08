@@ -18,67 +18,16 @@
 
 import QtQuick 2.3
 import "."
-import "./keyboard"
 
 Rectangle {
     id: rootWindow
-    objectName: "LauncherWindow"
     width: Style.windowWidth
     height: Style.windowHeight
 
     color: Style.backgroundColor
 
-    Loader {
-        id: startupLoader
+    MainStackView {
         anchors.fill: parent
-
-        // Used by password prompts
-        property string firstPass
-
-        Component {
-            id: askPassword
-            PasswordPrompt {
-                titleText: qsTr("It's your first radio boot !\nPlease enter a new password :")
-                onPromptFinish: {
-                    if(text.length >= 1) {
-                        startupLoader.firstPass = text
-                        startupLoader.sourceComponent = askPasswordConfirm
-                    }
-                }
-
-                Component.onCompleted: setText(firstPass)
-            }
-        }
-
-        Component {
-            id: askPasswordConfirm
-            // Confirmation prompt
-            PasswordPrompt {
-                //visible: false
-                titleText: qsTr("Please confirm :")
-                showBackButton: true
-
-                onPromptFinish: {
-                    if(text === firstPass) {
-                        if(passwordManager.createPasswordFile(text)) {
-                            startupLoader.source = "qrc:/qml/MainStackView.qml"
-                        }
-                    }
-                }
-
-                onBackClicked: {
-                    startupLoader.sourceComponent = askPassword
-                }
-            }
-        }
-    }
-
-    Component.onCompleted: {
-        if(!passFileCreated) {
-            startupLoader.sourceComponent = askPassword
-        } else {
-            startupLoader.source = "qrc:/qml/MainStackView.qml"
-        }
     }
 }
 

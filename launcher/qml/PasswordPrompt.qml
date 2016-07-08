@@ -56,11 +56,12 @@ Rectangle {
         width: parent.width - 2*x
         spacing: 25
 
-        StyledText {
+        Text {
             width: parent.width
             text: titleText
             font.pixelSize: 27
             font.bold: true
+            color: Style.fontColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
