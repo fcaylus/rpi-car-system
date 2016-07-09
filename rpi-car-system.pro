@@ -22,6 +22,10 @@
     error(You are not in a linux system !)
 }
 
+lessThan(QT_MAJOR_VERSION, 5)|lessThan(QT_MINOR_VERSION, 6) {
+    error(Minimum Qt version is 5.6.0, please update your package.)
+}
+
 TEMPLATE = subdirs
 CONFIG += ordered
 

@@ -1,0 +1,9 @@
+--- a/package/qt5/qt5.mk	2016-05-31 23:52:36.000000000 +0200
++++ b/package/qt5/qt5.mk	2016-07-07 17:56:40.818555597 +0200
+@@ -1,5 +1,5 @@
+ QT5_VERSION_MAJOR = 5.6
+-QT5_VERSION = $(QT5_VERSION_MAJOR).0
++QT5_VERSION = $(QT5_VERSION_MAJOR).1-1
+ QT5_SITE = http://download.qt.io/official_releases/qt/$(QT5_VERSION_MAJOR)/$(QT5_VERSION)/submodules
+ include $(sort $(wildcard package/qt5/*/*.mk))
+

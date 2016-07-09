@@ -1,10 +1,7 @@
 #!/bin/bash
 set -ev
 
-export QTDIR="/opt/qt55"
-export PATH="$QTDIR/bin:$PATH"
-export LD_LIBRARY_PATH="$QTDIR/lib/x86_64-linux-gnu:$QTDIR/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="$QTDIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+. /opt/qt56/bin/qt56-env.sh
 
 mkdir tempbuild
 cd tempbuild
