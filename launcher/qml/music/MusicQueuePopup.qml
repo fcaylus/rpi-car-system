@@ -58,9 +58,12 @@ Popup {
                         spacing: 20
 
                         Image {
+                            fillMode: Image.PreserveAspectFit
                             asynchronous: true
                             width: 65
-                            height: width
+                            height: 65
+                            sourceSize.width: 65
+                            sourceSize.height: 65
                             source: cover
                         }
 

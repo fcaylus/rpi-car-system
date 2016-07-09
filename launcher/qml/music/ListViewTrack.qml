@@ -41,7 +41,9 @@ ListViewBase {
         Row {
             id: trackRow
             spacing: 20
+
             Image {
+                fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 width: 65
                 height: width

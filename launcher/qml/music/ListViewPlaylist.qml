@@ -42,6 +42,7 @@ ListViewBase {
             spacing: 20
 
             Image {
+                fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 width: 65
                 height: width
@@ -98,6 +99,7 @@ ListViewBase {
 
             visible: isRealPlaylist && !addMode
 
+            fillMode: Image.PreserveAspectFit
             asynchronous: true
             width: 60
             height: width

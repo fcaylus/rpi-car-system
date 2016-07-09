@@ -39,6 +39,7 @@ Rectangle {
 
             // Cover image
             Image {
+                fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 height: coverWidth
                 width: height
