@@ -50,10 +50,9 @@ static const QString settingsVolumeStr = "volume";
 static const QString settingsEqualizerStr = "eqconfig";
 
 // Public constructor
-MusicPlayer::MusicPlayer(QSettings *settings, VlcInstance *instance): QObject()
+MusicPlayer::MusicPlayer(QSettings *settings): QObject()
 {
     _settings = settings;
-    _vlcInstance = instance;
 }
 
 // Static
@@ -72,9 +71,7 @@ void MusicPlayer::init()
         return;
 
     // Load the engine
-    if(_vlcInstance == nullptr)
-        _vlcInstance = new VlcInstance(vlcInstanceArgs());
-
+    _vlcInstance = new VlcInstance(vlcInstanceArgs());
     _vlcMediaPlayer = new VlcMediaPlayer(_vlcInstance);
     _vlcEqualizer = new VlcEqualizer(_vlcMediaPlayer);
     _vlcAudio = new VlcAudio(_vlcMediaPlayer);

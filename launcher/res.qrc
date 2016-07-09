@@ -42,6 +42,7 @@
         <file>qml/settings/SettingsEqualizer.qml</file>
         <file>qml/settings/SettingsClean.qml</file>
         <file>qml/main-firstboot.qml</file>
+        <file>qml/Splash.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>
@@ -87,6 +88,7 @@
         <file alias="up">imgs/icons/up.png</file>
         <file alias="remove">imgs/icons/remove.png</file>
         <file alias="game">imgs/icons/game.png</file>
+        <file alias="splash">imgs/splash.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file alias="france">thirdparty/MiniFlatFlags/PNG/MiniFlatFlags_France.png</file>

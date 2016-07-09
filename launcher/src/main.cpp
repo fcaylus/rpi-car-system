@@ -48,16 +48,9 @@
 
 static const QString settingsLocaleStr = "locale";
 
-int main(int argc, char *argv[])
+// Load the "heavy" stuff
+void afterSplashScreen(QGuiApplication *app, QQuickView *view)
 {
-#ifdef READY_FOR_CARSYSTEM
-    QCoreApplication::addLibraryPath(QStringLiteral("/usr/lib/qt/plugins"));
-    qDebug() << "Car system version" << APPLICATION_VERSION;
-#endif
-
-    QGuiApplication *app = new QGuiApplication(argc, argv);
-    QGuiApplication::setApplicationName(APPLICATION_NAME);
-    QGuiApplication::setOrganizationName(APPLICATION_NAME);
     const QString appDirPath = app->applicationDirPath();
 
     // Remove useless files
@@ -134,9 +127,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<PlaylistListModel>("rpicarsystem.mediamanager", 1, 0, "PlaylistListModel");
     qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
 
-    // Vlc instance is initialized here since the function takes long time to be executed
-    VlcInstance *vlcInstance = new VlcInstance(MusicPlayer::vlcInstanceArgs());
-    MusicPlayer *musicPlayer = new MusicPlayer(settings, vlcInstance);
+    MusicPlayer *musicPlayer = new MusicPlayer(settings);
+    musicPlayer->init();
+
     MediaManager::instance()->initialScan();
 
     PasswordManager *passMgr = new PasswordManager();
@@ -144,9 +137,34 @@ int main(int argc, char *argv[])
     SysInfoManager *sysinfoMgr = new SysInfoManager();
     UpdateManager *updateMgr = new UpdateManager(app);
 
-    QQuickView *view = new QQuickView();
-    view->connect(view->engine(), &QQmlEngine::quit, app, &QGuiApplication::quit);
-    view->setResizeMode(QQuickView::SizeViewToRootObject);
+    TSHandler *tsHandler = new TSHandler(view);
+    QThread *tsThread = new QThread();
+    tsHandler->moveToThread(tsThread);
+    QObject::connect(tsThread, &QThread::finished, tsHandler, &QObject::deleteLater);
+    QObject::connect(tsThread, &QThread::started, tsHandler, &TSHandler::handle);
+    tsThread->start();
+
+    // Clean everything on shutdown
+    QObject::connect(app, &QCoreApplication::aboutToQuit,
+                     [tsHandler, tsThread, view, musicPlayer, settings, passMgr, langMgr, sysinfoMgr, updateMgr]() {
+        qDebug() << "Cleaning up ...";
+
+        view->deleteLater();
+
+        tsHandler->requestStop();
+        tsThread->terminate();
+        tsThread->deleteLater();
+
+        // Save settings
+        musicPlayer->saveSettings();
+        settings->deleteLater();
+
+        passMgr->deleteLater();
+        langMgr->deleteLater();
+        sysinfoMgr->deleteLater();
+        updateMgr->deleteLater();
+        musicPlayer->deleteLater();
+    });
 
     QQmlContext *context = view->rootContext();
     context->setContextProperty(QStringLiteral("musicPlayer"), musicPlayer);
@@ -160,44 +178,35 @@ int main(int argc, char *argv[])
         view->setSource(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     else
         view->setSource(QUrl(QStringLiteral("qrc:/qml/main-firstboot.qml")));
+}
+
+int main(int argc, char *argv[])
+{
+    QGuiApplication *app = new QGuiApplication(argc, argv);
+    QGuiApplication::setApplicationName(APPLICATION_NAME);
+    QGuiApplication::setOrganizationName(APPLICATION_NAME);
+
+    QQuickView *view = new QQuickView();
+    view->connect(view->engine(), &QQmlEngine::quit, app, &QGuiApplication::quit);
+    view->setResizeMode(QQuickView::SizeViewToRootObject);
+
+    QObject::connect(app, &QGuiApplication::applicationStateChanged, [app, view](Qt::ApplicationState state) {
+        if(state == Qt::ApplicationActive) {
+            QObject::disconnect(app, &QGuiApplication::applicationStateChanged, 0, 0);
+            afterSplashScreen(app, view);
+        }
+    });
+
+    view->setSource(QStringLiteral("qrc:/qml/Splash.qml"));
 
 #ifdef READY_FOR_CARSYSTEM
-        view->showFullScreen();
+    view->showFullScreen();
 #else
-        view->show();
+    view->show();
 #endif
-
-    TSHandler *tsHandler = new TSHandler(view);
-    QThread tsThread;
-    tsHandler->moveToThread(&tsThread);
-    QObject::connect(&tsThread, &QThread::finished, tsHandler, &QObject::deleteLater);
-    QObject::connect(&tsThread, &QThread::started, tsHandler, &TSHandler::handle);
-    tsThread.start();
 
     // Launch app
     const int resultCode = app->exec();
-
-    qDebug() << "Cleaning up ...";
-
-    tsHandler->requestStop();
-    tsThread.terminate();
-
-    delete view;
-
-    // Save settings
-    musicPlayer->saveSettings();
-
-    settings->sync();
-    delete settings;
-
-    delete passMgr;
-    delete langMgr;
-    delete sysinfoMgr;
-    delete updateMgr;
-
-    delete musicPlayer;
-
     delete app;
-
     return resultCode;
 }

@@ -23,8 +23,6 @@ import "."
 StackView {
     id: mainStackView
 
-    Component.onCompleted: musicPlayer.init()
-
     delegate: StackViewDelegate {
         function transitionFinished(properties)
         {
@@ -117,7 +115,6 @@ StackView {
                     title: qsTr("Games")
                     icon: "qrc:/images/game"
                 }
-
                 ListElement {
                     index: 8
                     isEnabled: true

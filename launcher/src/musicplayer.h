@@ -72,7 +72,7 @@ class MusicPlayer: public QObject
         Q_PROPERTY(MediaInfoList mediaQueue READ mediaQueue NOTIFY mediaQueueChanged)
 
     public:
-        MusicPlayer(QSettings *settings, VlcInstance *instance = nullptr); // ctor
+        MusicPlayer(QSettings *settings); // ctor
         ~MusicPlayer();
 
         enum RepeatMode {
