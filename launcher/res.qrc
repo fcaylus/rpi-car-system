@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/Activity.qml</file>
-        <file>qml/ActivityToolbar.qml</file>
         <file>qml/DarkButton.qml</file>
         <file>qml/Style.qml</file>
         <file>qml/qmldir</file>

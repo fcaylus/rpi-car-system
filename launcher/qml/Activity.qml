@@ -24,13 +24,14 @@ Item {
 
     property Component control
 
-    // Substract the "home" button width (it's the toolbar height)
-    property int availableToolBarWidth: toolbar.width - toolbar.height
+    // Substract the "home" button width
+    property int availableToolBarWidth: toolbar.width - back.width
 
     // Change "home" icon to "back" icon
     property bool subActivity: false
 
     Loader {
+        id: activityLoader
         sourceComponent: control
 
         anchors.left: parent.left
@@ -42,8 +43,35 @@ Item {
         visible: status == Loader.Ready
     }
 
-    ActivityToolbar {
+    // Set the toolbar
+    Rectangle {
         id: toolbar
-        subActivity: parent.subActivity
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: Style.toolbar.height
+
+        color: Style.toolbar.color
+
+        // Top Border
+        Rectangle {
+            height: 1
+            width: parent.width
+            anchors.top: parent.top
+            color: Style.toolbar.topBorderColor
+        }
+
+        // Home button
+        // Back to the main menu on click
+        DarkButton {
+            id: back
+            inToolbar: true
+            width: parent.height
+            height: parent.height
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            iconSource: subActivity ? "qrc:/images/back" : "qrc:/images/home"
+            onClicked: mainStackView.pop()
+        }
     }
 }
