@@ -50,23 +50,31 @@ static const QString settingsVolumeStr = "volume";
 static const QString settingsEqualizerStr = "eqconfig";
 
 // Public constructor
-MusicPlayer::MusicPlayer(QSettings *settings, QObject *parent): QObject(parent)
+MusicPlayer::MusicPlayer(QSettings *settings, VlcInstance *instance): QObject()
 {
     _settings = settings;
+    _vlcInstance = instance;
+}
+
+// Static
+QStringList MusicPlayer::vlcInstanceArgs()
+{
+#ifdef QT_DEBUG
+    return VlcCommon::args() << "--verbose=1" << "--no-plugins-cache";
+#else
+    return VlcCommon::args() << "--verbose=0" << "--no-plugins-cache";
+#endif
 }
 
 void MusicPlayer::init()
 {
-#ifdef QT_DEBUG
-    QStringList args = VlcCommon::args() << "--verbose=1";
-#else
-    QStringList args = VlcCommon::args() << "--verbose=0";
-#endif
-
-    args << "--no-plugins-cache";
+    if(initialized())
+        return;
 
     // Load the engine
-    _vlcInstance = new VlcInstance(args, this);
+    if(_vlcInstance == nullptr)
+        _vlcInstance = new VlcInstance(vlcInstanceArgs());
+
     _vlcMediaPlayer = new VlcMediaPlayer(_vlcInstance);
     _vlcEqualizer = new VlcEqualizer(_vlcMediaPlayer);
     _vlcAudio = new VlcAudio(_vlcMediaPlayer);
@@ -180,8 +188,9 @@ void MusicPlayer::init()
     });
 
     _init = true;
-
     qDebug() << "MusicPlayer initialized !";
+
+    emit initializedChanged();
 }
 
 bool MusicPlayer::initialized() const
@@ -219,6 +228,9 @@ void MusicPlayer::onEndReachedHandler()
 
 void MusicPlayer::play(MediaInfoList musicList, int index)
 {
+    if(!initialized())
+        return;
+
     if(musicList.isEmpty())
         return;
 

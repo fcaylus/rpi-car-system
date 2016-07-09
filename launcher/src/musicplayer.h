@@ -48,7 +48,7 @@ class MusicPlayer: public QObject
 {
         Q_OBJECT
 
-        Q_PROPERTY(bool initialized READ initialized())
+        Q_PROPERTY(bool initialized READ initialized NOTIFY initializedChanged)
 
         Q_PROPERTY(QString mediaTitle READ mediaTitle NOTIFY mediaTitleChanged)
         Q_PROPERTY(QString mediaArtist READ mediaArtist NOTIFY mediaArtistChanged)
@@ -72,7 +72,7 @@ class MusicPlayer: public QObject
         Q_PROPERTY(MediaInfoList mediaQueue READ mediaQueue NOTIFY mediaQueueChanged)
 
     public:
-        MusicPlayer(QSettings *settings, QObject *parent = nullptr); // ctor
+        MusicPlayer(QSettings *settings, VlcInstance *instance = nullptr); // ctor
         ~MusicPlayer();
 
         enum RepeatMode {
@@ -103,6 +103,8 @@ class MusicPlayer: public QObject
         static QString equalizerDefaultConfigDir();
         static QString equalizerCustomConfigDir();
         static QString equalizerMainConfigDir();
+
+        static QStringList vlcInstanceArgs();
 
     public slots:
 
@@ -187,6 +189,8 @@ class MusicPlayer: public QObject
 
         void hasHistoryEntryChanged();
         void startedChanged();
+
+        void initializedChanged();
 
     public:
         bool initialized() const;

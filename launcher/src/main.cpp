@@ -134,7 +134,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<PlaylistListModel>("rpicarsystem.mediamanager", 1, 0, "PlaylistListModel");
     qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
 
-    MusicPlayer *musicPlayer = new MusicPlayer(settings);
+    // Vlc instance is initialized here since the function takes long time to be executed
+    VlcInstance *vlcInstance = new VlcInstance(MusicPlayer::vlcInstanceArgs());
+    MusicPlayer *musicPlayer = new MusicPlayer(settings, vlcInstance);
     MediaManager::instance()->initialScan();
 
     PasswordManager *passMgr = new PasswordManager();
