@@ -21,7 +21,6 @@
 
 #include <QObject>
 #include <QQuickView>
-#include <QMutex>
 
 // Handle all touch screen events
 class TSHandler : public QObject
@@ -34,17 +33,11 @@ class TSHandler : public QObject
         // Will do all the stuff
         void handle();
 
-        void requestStop();
-
     private:
         QQuickView *_view;
-        QMutex _mutex;
 
         // Contains file descriptor
         int _fd;
-
-        bool _needToQuit = false;
-        bool needToQuit();
 };
 
 #endif // TSHANDLER_H

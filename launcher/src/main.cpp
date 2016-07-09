@@ -149,11 +149,12 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view)
                      [tsHandler, tsThread, view, musicPlayer, settings, passMgr, langMgr, sysinfoMgr, updateMgr]() {
         qDebug() << "Cleaning up ...";
 
-        view->deleteLater();
-
-        tsHandler->requestStop();
-        tsThread->terminate();
+        tsThread->requestInterruption();
+        tsThread->quit();
+        tsThread->wait();
         tsThread->deleteLater();
+
+        view->deleteLater();
 
         // Save settings
         musicPlayer->saveSettings();
