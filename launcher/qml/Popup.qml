@@ -17,7 +17,6 @@
  */
 
 import QtQuick 2.5
-import ".."
 import "."
 
 Rectangle {
@@ -42,7 +41,7 @@ Rectangle {
     property int popupContentWidth: popupWidth - (closeIcon ? (75 + 15) : 0)
     property int popupContentHeight: popupHeight
 
-    // This mouseArea disable backgound input
+    // This mouseArea disable background input
     MouseArea {
         anchors.fill: parent
         onClicked: {}
@@ -64,7 +63,7 @@ Rectangle {
         FlatButton {
             iconSource: "qrc:/images/close"
             width: 75
-            height: width
+            height: 75
             anchors.right: parent.right
             anchors.top: parent.top
 

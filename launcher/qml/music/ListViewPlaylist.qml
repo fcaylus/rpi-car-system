@@ -45,9 +45,9 @@ ListViewBase {
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 width: 65
-                height: width
-                sourceSize.width: width
-                sourceSize.height: height
+                height: 65
+                sourceSize: Qt.size(65, 65)
+
                 source: isRealPlaylist ? "qrc:/images/playlist" : "qrc:/images/playlist_add"
             }
 
@@ -102,9 +102,9 @@ ListViewBase {
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             width: 60
-            height: width
-            sourceSize.width: width
-            sourceSize.height: height
+            height: 60
+            sourceSize: Qt.size(60, 60)
+
             source: "qrc:/images/play_arrow"
 
             anchors.right: parent.right

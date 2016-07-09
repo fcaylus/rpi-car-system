@@ -89,9 +89,9 @@ Activity {
                     Image {
                         asynchronous: true
                         width: 95
-                        height: width
-                        sourceSize.width: width
-                        sourceSize.height: height
+                        height: 95
+                        sourceSize: Qt.size(95, 95)
+
                         source: icon
                     }
 

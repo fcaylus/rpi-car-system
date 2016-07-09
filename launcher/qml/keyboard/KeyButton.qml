@@ -52,10 +52,11 @@ Rectangle {
 
             Image {
                 asynchronous: true
-                source: root.customIcon
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 fillMode: Image.PreserveAspectFit
+
+                source: root.customIcon
 
                 ColorOverlay {
                     anchors.fill: parent

@@ -38,9 +38,8 @@ Popup {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 15
-                anchors.topMargin: 15
-                anchors.bottomMargin: 15
+
+                anchors.margins: 15
                 addMode: true
 
                 property string headerText: qsTr("Add %1 to ...").arg(newTitle)

@@ -40,6 +40,7 @@ Popup {
 
     Component {
         id: popupContent
+
         Rectangle {
             color: "transparent"
 
@@ -58,12 +59,13 @@ Popup {
 
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                textFormat: Text.RichText
+                textFormat: Text.StyledText
                 wrapMode: Text.Wrap
 
                 text: title
             }
 
+            //
             // Yes and no buttons
 
             PopupButton {
@@ -71,10 +73,11 @@ Popup {
                 anchors.bottomMargin: 50
                 anchors.left: parent.left
                 anchors.leftMargin: 120
+
                 height: 80
                 width: 150
                 text: qsTr("Yes")
-                yes: highlightYesButton
+                highlight: highlightYesButton
 
                 onClicked: {
                     exitSuccess()
@@ -87,14 +90,13 @@ Popup {
                 anchors.bottomMargin: 50
                 anchors.right: parent.right
                 anchors.rightMargin: 120
+
                 height: 80
                 width: 150
                 text: qsTr("No")
-                yes: highlightNoButton
+                highlight: highlightNoButton
 
-                onClicked: {
-                    confirmPopup.visible = false
-                }
+                onClicked: confirmPopup.visible = false
             }
         }
     }

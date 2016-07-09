@@ -37,12 +37,10 @@ Popup {
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 15
-                anchors.topMargin: 15
-                anchors.bottomMargin: 15
+
+                anchors.margins: 15
 
                 property string headerText: qsTr("Music queue ...")
-                property bool needToFillData: true
 
                 model: MusicQueueListModel {
                     id: model
@@ -62,8 +60,8 @@ Popup {
                             asynchronous: true
                             width: 65
                             height: 65
-                            sourceSize.width: 65
-                            sourceSize.height: 65
+                            sourceSize: Qt.size(65, 65)
+
                             source: cover
                         }
 

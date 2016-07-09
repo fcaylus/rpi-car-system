@@ -48,10 +48,14 @@ ButtonStyle {
 
             Image {
                 asynchronous: true
-                source: (hasSecondIcon && currentState == (statesNumber-1)) ? secondIcon : control.iconSource
                 height: control.height * iconScale
-                width: Math.min(sourceSize.width, height)
+                width: height
+                sourceSize.width: width
+                sourceSize.height: height
+
                 fillMode: Image.PreserveAspectFit
+
+                source: (hasSecondIcon && currentState == (statesNumber-1)) ? secondIcon : control.iconSource
 
                 ColorOverlay {
                     anchors.fill: parent

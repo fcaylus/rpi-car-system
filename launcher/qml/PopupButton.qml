@@ -19,37 +19,27 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-import QtGraphicalEffects 1.0
 import "."
 
 Button {
-
-    property bool yes: false
+    property bool highlight: false
 
     style: ButtonStyle {
         background: Rectangle {
-            color: "transparent" //Style.popupBackground
+            color: "transparent"
 
             border.width: 4
-            border.color: yes ? (control.pressed ? Style.button.clickedOverlayColor : Style.button.checkedOverlayColor)
-                              : (control.pressed ? Style.button.clickedOverlayColor : Style.fontColor)
+            border.color: control.pressed ? Style.button.clickedOverlayColor : (highlight ? Style.button.checkedOverlayColor : Style.fontColor)
         }
 
-        label: Item {
-            implicitWidth: hText.implicitWidth
-            //implicitHeight: hText.implicitHeight
+        label: StyledText {
+            text: control.text
+            font.pixelSize: control.height * .5
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.bold: true
 
-            StyledText {
-                id: hText
-                text: control.text
-                font.pixelSize: control.height * .5
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.centerIn: parent
-                font.bold: true
-
-                color: control.pressed ? Style.button.clickedOverlayColor : Style.fontColor
-            }
+            color: control.pressed ? Style.button.clickedOverlayColor : Style.fontColor
         }
     }
 

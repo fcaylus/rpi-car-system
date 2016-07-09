@@ -82,9 +82,9 @@ Activity {
                     Image {
                         asynchronous: true
                         width: 65
-                        height: width
-                        sourceSize.width: width
-                        sourceSize.height: height
+                        height: 65
+                        sourceSize: Qt.size(65, 65)
+
                         source: "qrc:/images/unarchive"
                     }
 

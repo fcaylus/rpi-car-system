@@ -46,11 +46,13 @@ Button {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     asynchronous: true
-                    source: control.iconSource
                     height: control.height * .7
-                    width: Math.min(sourceSize.width, height)
+                    width: height
+                    sourceSize: Qt.size(width, height)
                     fillMode: Image.PreserveAspectFit
                     horizontalAlignment: Image.AlignHCenter
+
+                    source: control.iconSource
                 }
 
                 StyledText {

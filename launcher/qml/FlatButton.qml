@@ -69,10 +69,13 @@ Button {
             Image {
                 id: buttonImg
                 asynchronous: true
-                source: control.iconSource
                 height: control.height
-                width: Math.min(sourceSize.width, height)
+                width: control.width
+                sourceSize.width: width
+                sourceSize.height: height
                 fillMode: Image.PreserveAspectFit
+
+                source: control.iconSource
             }
 
             ColorOverlay {

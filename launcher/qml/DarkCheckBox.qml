@@ -37,13 +37,13 @@ CheckBox {
             Image {
                 asynchronous: true
                 visible: control.checked
-                source: "qrc:/images/check"
                 anchors.margins: 2
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-
                 fillMode: Image.PreserveAspectFit
+
+                source: "qrc:/images/check"
             }
         }
 

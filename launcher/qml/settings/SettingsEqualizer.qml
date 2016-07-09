@@ -373,7 +373,8 @@ Activity {
                             Image {
                                 asynchronous: true
                                 width: 65
-                                height: width
+                                height: 65
+                                sourceSize: Qt.size(65, 65)
                                 source: "qrc:/images/equalizer"
                             }
 
@@ -401,8 +402,7 @@ Activity {
                             asynchronous: true
                             width: 50
                             height: 50
-                            sourceSize.width: width
-                            sourceSize.height: height
+                            sourceSize: Qt.size(50, 50)
                             source: "qrc:/images/remove"
 
                             anchors.right: parent.right
