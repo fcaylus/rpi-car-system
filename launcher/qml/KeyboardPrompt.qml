@@ -34,8 +34,12 @@ Rectangle {
     signal backClicked()
 
     function setText(text) {
-        passwordInput.clear()
-        passwordInput.appendText(text)
+        textInput.clear()
+        textInput.appendText(text)
+    }
+
+    function resetText() {
+        textInput.clear()
     }
 
     color: Style.backgroundColor
@@ -67,7 +71,7 @@ Rectangle {
         }
 
         DarkTextInput {
-            id: passwordInput
+            id: textInput
             width: parent.width
             height: 50
             readOnly: true
@@ -89,7 +93,7 @@ Rectangle {
         DarkCheckBox {
             visible: !standardInput
             text: qsTr("Show password")
-            onClicked: passwordInput.echoMode = checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit
+            onClicked: textInput.echoMode = checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit
         }
     }
 
@@ -98,12 +102,8 @@ Rectangle {
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height
-        onKeyPressed: passwordInput.appendText(text)
-        onBackPressed: passwordInput.doBack()
-        onEnterPressed: promptFinish(passwordInput.text)
-    }
-
-    function resetText() {
-        passwordInput.clear()
+        onKeyPressed: textInput.appendText(text)
+        onBackPressed: textInput.doBack()
+        onEnterPressed: promptFinish(textInput.text)
     }
 }

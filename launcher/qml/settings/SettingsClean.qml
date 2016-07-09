@@ -137,7 +137,7 @@ Activity {
         }
     }
 
-    PasswordPrompt {
+    KeyboardPrompt {
         id: passwordConfirm
         visible: true
         titleText: qsTr("Enter root password to continue:")

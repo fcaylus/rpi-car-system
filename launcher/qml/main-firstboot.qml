@@ -39,7 +39,7 @@ Rectangle {
         }
     }
 
-    PasswordPrompt {
+    KeyboardPrompt {
         property string firstText: qsTr("It's your first radio boot !\nPlease enter a new password :")
         property string confirmText: qsTr("Please confirm :")
         property bool confirm: false

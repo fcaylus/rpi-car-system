@@ -197,7 +197,7 @@ Activity {
     }
 
     // Used to add playlists
-    PasswordPrompt {
+    KeyboardPrompt {
         id: addPlaylistPrompt
         visible: false
         standardInput: true
