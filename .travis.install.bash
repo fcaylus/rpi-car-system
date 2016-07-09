@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 
-. /opt/qt56/bin/qt56-env.sh
+/opt/qt56/bin/qt56-env.sh
 
 mkdir tempbuild
 cd tempbuild
