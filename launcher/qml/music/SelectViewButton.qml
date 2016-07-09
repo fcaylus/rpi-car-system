@@ -20,15 +20,38 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import "."
+import ".."
 
-DarkButton {
-    fontRatio: .45
+Button {
+    height: 60
+
     style: DarkButtonStyle {
         background: Rectangle {
             color: "transparent"
             border.color: Style.separatorColor
             border.width: 3
             radius: 15
+        }
+
+        label: StyledText {
+            id: hText
+            text: control.text
+            font.pixelSize: control.height * .45
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            font.bold: true
+
+            // Handle clicked and checked states
+            Connections {
+                target: control
+                onPressedChanged: {
+                    hText.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
+                }
+                onCheckedChanged: {
+                    hText.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
+                }
+            }
         }
     }
 }

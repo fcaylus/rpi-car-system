@@ -87,116 +87,36 @@ Item {
             width: 200
             spacing: 5
 
-            BorderlessButton {
+            SelectViewButton {
                 id: artistButton
                 width: parent.width
-                height: 60
-                alignCenter: true
-                bold: true
                 text: qsTr("Artists")
 
-                onClicked: {
-                    // Do nothing if "artists tab" is already selected
-                    if(loader.source == "qrc:/qml/music/ListViewArtist.qml") {
-                        return
-                    }
-
-                    // Small trick to avoid addition of the first entry
-                    // "firstClicked" is set to true only after the first add
-                    if(firstClicked) {
-                        loader.appendLastEntry()
-                    }
-
-                    loader.headerText = qsTr("Artists list ...");
-                    loader.meta = MediaInfo.UNKNOWN
-                    loader.metaValue = undefined
-                    loader.inPlaylist = false
-                    loader.playlistFile = ""
-                    loader.source = ""
-                    loader.source = "qrc:/qml/music/ListViewArtist.qml"
-                }
+                onClicked: loader.loadTopLevelView("qrc:/qml/music/ListViewArtist.qml", qsTr("Artists list ..."))
             }
 
-            BorderlessButton {
+            SelectViewButton {
                 id: albumButton
                 width: parent.width
-                height: 60
-                alignCenter: true
-                bold: true
                 text: qsTr("Albums")
 
-                onClicked: {
-                    if(loader.source == "qrc:/qml/music/ListViewAlbum.qml"
-                            && loader.meta === MediaInfo.UNKNOWN
-                            && loader.metaValue === undefined) {
-                        return
-                    }
-                    if(firstClicked) {
-                        loader.appendLastEntry()
-                    }
-
-                    loader.headerText = qsTr("Albums list ...")
-                    loader.meta = MediaInfo.UNKNOWN
-                    loader.metaValue = undefined
-                    loader.inPlaylist = false
-                    loader.playlistFile = ""
-                    loader.source = ""
-                    loader.source = "qrc:/qml/music/ListViewAlbum.qml"
-                }
+                onClicked: loader.loadTopLevelView("qrc:/qml/music/ListViewAlbum.qml", qsTr("Albums list ..."))
             }
 
-            BorderlessButton {
+            SelectViewButton {
                 id: trackButton
                 width: parent.width
-                height: 60
-                alignCenter: true
-                bold: true
                 text: qsTr("Tracks")
 
-                onClicked: {
-                    if(loader.source == "qrc:/qml/music/ListViewTrack.qml"
-                            && loader.meta === MediaInfo.UNKNOWN
-                            && loader.metaValue === undefined
-                            && loader.inPlaylist === false) {
-                        return
-                    }
-                    if(firstClicked) {
-                        loader.appendLastEntry()
-                    }
-
-                    loader.headerText = qsTr("Tracks list ...")
-                    loader.meta = MediaInfo.UNKNOWN
-                    loader.metaValue = undefined
-                    loader.inPlaylist = false
-                    loader.playlistFile = ""
-                    loader.source = ""
-                    loader.source = "qrc:/qml/music/ListViewTrack.qml"
-                }
+                onClicked: loader.loadTopLevelView("qrc:/qml/music/ListViewTrack.qml", qsTr("Tracks list ..."))
             }
 
-            BorderlessButton {
+            SelectViewButton {
                 id: playlistButton
                 width: parent.width
-                height: 60
-                alignCenter: true
-                bold: true
                 text: qsTr("Playlists")
 
-                onClicked: {
-                    if(loader.source == "qrc:/qml/music/ListViewPlaylist.qml") {
-                        return
-                    }
-                    if(firstClicked) {
-                        loader.appendLastEntry()
-                    }
-
-                    loader.headerText = qsTr("Playlists ...")
-                    loader.meta = MediaInfo.UNKNOWN
-                    loader.metaValue = undefined
-                    loader.inPlaylist = false
-                    loader.playlistFile = ""
-                    loader.source = "qrc:/qml/music/ListViewPlaylist.qml"
-                }
+                onClicked: loader.loadTopLevelView("qrc:/qml/music/ListViewPlaylist.qml", qsTr("Playlists ..."))
             }
 
             FlatButton {
@@ -204,9 +124,7 @@ Item {
                 height: width
                 anchors.horizontalCenter: parent.horizontalCenter
                 iconSource: "qrc:/images/back"
-                onClicked: {
-                    loader.loadPreviousHistory()
-                }
+                onClicked: loader.loadPreviousHistory()
                 visible: musicPlayer.hasHistoryEntry
             }
         }
@@ -245,6 +163,31 @@ Item {
 
             function appendLastEntry() {
                 musicPlayer.addHistoryEntry(source, meta, metaValue, headerText, inPlaylist, playlistFile)
+            }
+
+            function loadTopLevelView(sourceUri, title) {
+                // Do nothing if the view is already selected
+                // Use "==" and not "===" since sourceUri is a string and source an url
+                if(source == sourceUri
+                        && meta === MediaInfo.UNKNOWN
+                        && metaValue === undefined
+                        && inPlaylist === false) {
+                    return
+                }
+
+                // Small trick to avoid addition of the first entry
+                // "firstClicked" is set to true only after the first add
+                if(firstClicked) {
+                    loader.appendLastEntry()
+                }
+
+                loader.headerText = title
+                loader.meta = MediaInfo.UNKNOWN
+                loader.metaValue = undefined
+                loader.inPlaylist = false
+                loader.playlistFile = ""
+                loader.source = ""
+                loader.source = sourceUri
             }
 
             function loadPreviousHistory() {
