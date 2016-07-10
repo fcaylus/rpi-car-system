@@ -20,36 +20,37 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import "."
-import ".."
 
 Button {
-    height: 60
+    property bool alignCenter: true
+
+    property bool bold: true
+    property real fontRatio: .35
+
+    height: Style.toolbar.height
 
     style: ButtonStyle {
         background: Rectangle {
-            color: "transparent"
-            border.color: Style.separatorColor
-            border.width: 3
-            radius: 15
+            color: control.pressed ? Style.button.colorPressed : Style.button.color
         }
 
         label: StyledText {
-            id: hText
+            id: textLabel
             text: control.text
-            font.pixelSize: control.height * .45
-            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: control.height * fontRatio
+            horizontalAlignment: alignCenter ? Text.AlignHCenter : Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
+
+            font.bold: bold
 
             // Handle clicked and checked states
             Connections {
                 target: control
                 onPressedChanged: {
-                    hText.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
+                    textLabel.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
                 }
                 onCheckedChanged: {
-                    hText.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
+                    textLabel.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
                 }
             }
         }

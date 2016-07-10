@@ -26,13 +26,11 @@ Activity {
     subActivity: true
 
     // Toolbars button
-    DarkButton {
+    ToolbarTextButton {
         id: aboutButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
         text: qsTr("About")
-        bold: true
+
         checkable: true
         x: licenseButton.x - 35 - width
         onClicked: {
@@ -44,13 +42,11 @@ Activity {
         checked: true
     }
 
-    DarkButton {
+    ToolbarTextButton {
         id: licenseButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
         text: qsTr("Licenses")
-        bold: true
+
         checkable: true
         x: availableToolBarWidth / 2 - width / 2 + 35
         onClicked: {
@@ -61,13 +57,11 @@ Activity {
         }
     }
 
-    DarkButton {
+    ToolbarTextButton {
         id: license3rdButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
         text: qsTr("3rd Licenses")
-        bold: true
+
         checkable: true
         x: licenseButton.x + licenseButton.width + 35
         onClicked: {

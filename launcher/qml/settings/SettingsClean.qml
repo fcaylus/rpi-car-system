@@ -30,13 +30,11 @@ Activity {
     property bool equalizerChecked: false
     property bool settingsChecked: false
 
-    DarkButton {
+    ToolbarTextButton {
         id: cleanButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
         text: qsTr("Clean system")
-        bold: true
+
         x: availableToolBarWidth / 2 - width / 2 + Style.toolbar.height
         onClicked: {
             var args = ""

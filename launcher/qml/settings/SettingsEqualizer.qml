@@ -124,17 +124,14 @@ Activity {
 
     // Button with the equalizer label
     // Click to show the equalizer list
-    DarkButton {
+    ToolbarTextButton {
         id: labelConfig
-        inToolbar: true
-        height: Style.toolbar.height
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.leftMargin: Style.toolbar.height
         anchors.right: parent.right
         anchors.rightMargin: equalizerModifier.width + 10
 
-        bold: true
         fontRatio: .4
 
         text: musicPlayer.equalizerConfigName()

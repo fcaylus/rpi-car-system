@@ -53,21 +53,12 @@ Item {
 
         color: Style.toolbar.color
 
-        // Top Border
-        Rectangle {
-            height: 1
-            width: parent.width
-            anchors.top: parent.top
-            color: Style.toolbar.topBorderColor
-        }
-
         // Home button
         // Back to the main menu on click
-        DarkButton {
+        ToolbarIconButton {
             id: back
-            inToolbar: true
             width: parent.height
-            height: parent.height
+
             anchors.left: parent.left
             anchors.bottom: parent.bottom
             iconSource: subActivity ? "qrc:/images/back" : "qrc:/images/home"

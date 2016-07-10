@@ -55,7 +55,7 @@ Rectangle {
 
         anchors.centerIn: parent
 
-        border.color: Style.button.topBorderColor
+        border.color: Style.popupBorder
         border.width: 1
 
         color: Style.backgroundColor

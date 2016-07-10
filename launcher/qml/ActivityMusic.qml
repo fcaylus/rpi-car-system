@@ -17,8 +17,8 @@
  */
 
 import QtQuick 2.5
-import "."
 import "music"
+import "."
 
 Activity {
     id: activityMusic
@@ -34,12 +34,11 @@ Activity {
     // Toolbar buttons
     //
 
-    DarkButton {
+    ToolbarIconButton {
         id: playButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/play"
         hasSecondIcon: true
         secondIcon: "qrc:/images/pause"
@@ -57,12 +56,11 @@ Activity {
         currentState: musicPlayer.isPlaying ? 1 : 0
     }
 
-    DarkButton {
+    ToolbarIconButton {
         id: previousButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/skip_previous"
 
         x: playButton.x - 95
@@ -70,12 +68,11 @@ Activity {
         onClicked: musicPlayer.previousMusic()
     }
 
-    DarkButton {
+    ToolbarIconButton {
         id: nextButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/skip_next"
 
         x: playButton.x + 95
@@ -83,12 +80,11 @@ Activity {
         onClicked: musicPlayer.nextMusic()
     }
 
-    DarkButton {
+    ToolbarIconButton {
         id: randomButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/shuffle"
 
         checkable: true
@@ -106,12 +102,11 @@ Activity {
         }
     }
 
-    DarkButton {
+    ToolbarIconButton {
         id: repeatButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/repeat"
 
         checkable: true
@@ -137,12 +132,11 @@ Activity {
         }
     }
 
-    DarkButton {
+    ToolbarIconButton {
         id: chooseButton
-        inToolbar: true
         anchors.bottom: parent.bottom
-        height: Style.toolbar.height
-        iconScale: .7
+
+        iconScale: .85
         iconSource: "qrc:/images/music"
 
         checkable: true

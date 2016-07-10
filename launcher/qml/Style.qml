@@ -29,14 +29,12 @@ QtObject {
         readonly property int width: windowWidth
 
         readonly property color color: "#292929"
-        readonly property color topBorderColor: "#313131"
     }
 
     property QtObject button: QtObject {
         readonly property color color: "#292929"
         readonly property color colorPressed: "#202020"
 
-        readonly property color topBorderColor: "#555"
         readonly property color borderColor: "#1a1a1a"
 
         readonly property color clickedOverlayColor: "#1A6680"
@@ -57,6 +55,7 @@ QtObject {
 
     readonly property color backgroundColor: "#1B1B1B"
     readonly property color popupBackground: "#BB101010"
+    readonly property color popupBorder: "#555"
 
     readonly property color dangerousColor: "#8B0000"
     readonly property color safeColor: "#29991D"

@@ -2,11 +2,9 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/Activity.qml</file>
-        <file>qml/DarkButton.qml</file>
         <file>qml/Style.qml</file>
         <file>qml/qmldir</file>
         <file>qml/MainMenuButton.qml</file>
-        <file>qml/DarkButtonStyle.qml</file>
         <file>qml/ActivityMusic.qml</file>
         <file>qml/ActivitySettings.qml</file>
         <file>qml/music/MusicPlayer.qml</file>
@@ -43,6 +41,8 @@
         <file>qml/main-firstboot.qml</file>
         <file>qml/Splash.qml</file>
         <file>qml/music/SelectViewButton.qml</file>
+        <file>qml/ToolbarTextButton.qml</file>
+        <file>qml/ToolbarIconButton.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

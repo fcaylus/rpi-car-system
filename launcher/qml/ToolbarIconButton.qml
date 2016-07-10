@@ -18,19 +18,17 @@
 
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.0
+import "."
 
 Button {
-    property bool inToolbar: false
-    property bool alignCenter: false
-
     property bool hasSecondIcon: false
     property url secondIcon
     property int statesNumber: 1 + (checkable ?  1 : 0) + (hasSecondIcon ? 1 : 0)
     property int currentState: 0
 
     property real iconScale: .9
-    property bool bold: false
-    property real fontRatio: .35
 
     // Disable auto-management of currentState var
     property bool disableAutoMgr: false
@@ -39,6 +37,9 @@ Button {
         checked = checkable && currentState >= 1
     }
 
+    height: Style.toolbar.height
+    width: Style.toolbar.height * iconScale
+
     onClicked: {
         // Increase current state
         if(!disableAutoMgr)
@@ -46,5 +47,29 @@ Button {
         updateCheckedState()
     }
 
-    style: DarkButtonStyle {}
+    style: ButtonStyle {
+        background: Rectangle {
+            color: control.pressed ? Style.button.colorPressed : Style.button.color
+        }
+
+        label: Image {
+            asynchronous: true
+            height: control.height
+            width: control.width
+            sourceSize.width: width
+            sourceSize.height: height
+
+            fillMode: Image.PreserveAspectFit
+
+            source: (hasSecondIcon && currentState == (statesNumber-1)) ? secondIcon : control.iconSource
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: control.pressed ? Style.button.clickedOverlayColor
+                                            : Style.button.checkedOverlayColor
+                visible: control.pressed || control.checked
+            }
+        }
+    }
 }
