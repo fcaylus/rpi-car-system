@@ -5,7 +5,6 @@ config BR2_PACKAGE_LIBVLC
 	depends on BR2_USE_WCHAR
 	depends on BR2_TOOLCHAIN_HAS_THREADS
 	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_7
-	select BR2_PACKAGE_LIBDVBPSI
 	select BR2_PACKAGE_LIBOGG
 	select BR2_PACKAGE_LIBMATROSKA
 	select BR2_PACKAGE_LIBMODPLUG
@@ -30,7 +29,6 @@ config BR2_PACKAGE_LIBVLC
 	select BR2_PACKAGE_LIBSVG
 	select BR2_PACKAGE_LIBRSVG
 	select BR2_PACKAGE_ALSA_LIB
-	select BR2_PACKAGE_LIBSAMPLERATE
 	select BR2_PACKAGE_LIBXML2
 
 comment "libvlc needs a uclibc snapshot, uclibc-ng or (e)glibc toolchain w/ C++, wchar, threads, headers >= 3.7"

@@ -56,7 +56,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-macosx-eyetv \
 	--disable-macosx-qtkit \
 	--disable-macosx-avfoundation \
-	--enable-dvbpsi \
+	--disable-dvbpsi \
 	--disable-gme \
 	--disable-sid \
 	--enable-ogg \
@@ -129,7 +129,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-audioqueue \
 	--disable-jack \
 	--disable-opensles \
-	--enable-samplerate \
+	--disable-samplerate \
 	--disable-kai \
 	--disable-chromaprint \
 	--disable-qt \
@@ -159,7 +159,6 @@ LIBVLC_CONF_OPTS += \
 	--disable-macosx-vlc-app
 
 LIBVLC_DEPENDENCIES += \
-	libdvbpsi \
 	libogg \
 	libmatroska \
 	libmodplug \
@@ -183,7 +182,6 @@ LIBVLC_DEPENDENCIES += \
 	libsvg \
 	librsvg \
 	alsa-lib \
-	libsamplerate \
 	libxml2
 
 $(eval $(autotools-package))
