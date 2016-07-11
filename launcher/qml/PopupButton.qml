@@ -17,30 +17,28 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import "."
 
-Button {
+BasicButton {
+    id: but
     property bool highlight: false
+    property string text
 
-    style: ButtonStyle {
-        background: Rectangle {
-            color: "transparent"
+    background: Rectangle {
+        color: "transparent"
 
-            border.width: 4
-            border.color: control.pressed ? Style.button.clickedOverlayColor : (highlight ? Style.button.checkedOverlayColor : Style.fontColor)
-        }
-
-        label: StyledText {
-            text: control.text
-            font.pixelSize: control.height * .5
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.bold: true
-
-            color: control.pressed ? Style.button.clickedOverlayColor : Style.fontColor
-        }
+        border.width: 4
+        border.color: but.pressed ? Style.button.clickedOverlayColor : (highlight ? Style.button.checkedOverlayColor : Style.fontColor)
     }
 
+    label: StyledText {
+        text: but.text
+        font.pixelSize: but.height * .5
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        font.bold: true
+
+        color: but.pressed ? Style.button.clickedOverlayColor : Style.fontColor
+    }
 }

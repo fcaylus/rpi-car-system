@@ -17,59 +17,42 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import QtGraphicalEffects 1.0
 import "."
 
-Button {
-    property bool hasSecondIcon: false
-    property url secondIcon
-    property int statesNumber: 1 + (checkable ?  1 : 0) + (hasSecondIcon ? 1 : 0)
-    property int currentState: 0
+BasicButton {
+    id: but
+
+    property url iconSource
+    property url secondIconSource
 
     property real iconScale: .9
-
-    // Disable auto-management of currentState var
-    property bool disableAutoMgr: false
-
-    function updateCheckedState() {
-        checked = checkable && currentState >= 1
-    }
 
     height: Style.toolbar.height
     width: Style.toolbar.height * iconScale
 
-    onClicked: {
-        // Increase current state
-        if(!disableAutoMgr)
-            currentState = (currentState + 1) % statesNumber
-        updateCheckedState()
+    background: Rectangle {
+        color: but.pressed ? Style.button.colorPressed : Style.button.color
     }
 
-    style: ButtonStyle {
-        background: Rectangle {
-            color: control.pressed ? Style.button.colorPressed : Style.button.color
-        }
+    label: Image {
+        asynchronous: true
+        height: but.height
+        width: but.width
+        sourceSize.width: width
+        sourceSize.height: height
 
-        label: Image {
-            asynchronous: true
-            height: control.height
-            width: control.width
-            sourceSize.width: width
-            sourceSize.height: height
+        fillMode: Image.PreserveAspectFit
 
-            fillMode: Image.PreserveAspectFit
+        source: but.currentState == 2 ? secondIconSource : iconSource
 
-            source: (hasSecondIcon && currentState == (statesNumber-1)) ? secondIcon : control.iconSource
-
-            ColorOverlay {
-                anchors.fill: parent
-                source: parent
-                color: control.pressed ? Style.button.clickedOverlayColor
-                                            : Style.button.checkedOverlayColor
-                visible: control.pressed || control.checked
-            }
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: but.pressed ? Style.button.clickedOverlayColor
+                                        : Style.button.checkedOverlayColor
+            visible: but.pressed || but.checked
         }
     }
 }

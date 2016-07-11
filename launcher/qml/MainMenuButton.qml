@@ -17,55 +17,57 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import "."
 
-Button {
-    style: ButtonStyle {
-        background: Rectangle {
-            radius: 20
+BasicButton {
+    id: but
 
-            color: control.pressed ? Style.button.colorPressed : Style.button.color
+    property url iconSource
+    property string text
 
-            border.color: Style.button.borderColor
-            border.width: 1
-        }
+    background: Rectangle {
+        radius: 20
 
-        label: Item {
-            implicitWidth: col.implicitWidth
-            implicitHeight: col.implicitHeight
+        color: but.pressed ? Style.button.colorPressed : Style.button.color
 
-            Column {
-                id: col
+        border.color: Style.button.borderColor
+        border.width: 1
+    }
+
+    label: Item {
+        implicitWidth: col.implicitWidth
+        implicitHeight: col.implicitHeight
+
+        Column {
+            id: col
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: 5
+
+            Image {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                spacing: 5
+                asynchronous: true
+                height: but.height * .7
+                width: height
+                sourceSize: Qt.size(width, height)
+                fillMode: Image.PreserveAspectFit
+                horizontalAlignment: Image.AlignHCenter
 
-                Image {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    asynchronous: true
-                    height: control.height * .7
-                    width: height
-                    sourceSize: Qt.size(width, height)
-                    fillMode: Image.PreserveAspectFit
-                    horizontalAlignment: Image.AlignHCenter
+                source: but.iconSource
+            }
 
-                    source: control.iconSource
-                }
+            StyledText {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: but.text
+                font.pixelSize: but.height * .13
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
 
-                StyledText {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: control.text
-                    font.pixelSize: control.height * .13
-                    font.bold: true
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                    color: control.enabled ? Style.fontColor : Style.fontColorDisabled
-                }
+                color: but.enabled ? Style.fontColor : Style.fontColorDisabled
             }
         }
     }

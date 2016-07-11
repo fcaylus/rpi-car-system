@@ -37,33 +37,24 @@ Activity {
     ToolbarIconButton {
         id: playButton
         anchors.bottom: parent.bottom
-
-        iconScale: .85
-        iconSource: "qrc:/images/play"
-        hasSecondIcon: true
-        secondIcon: "qrc:/images/pause"
-
         x: availableToolBarWidth / 2 + Style.toolbar.height + 30
 
-        disableAutoMgr: true
-        onClicked: {
-            if(currentState == 0)
-                musicPlayer.resumeMusic()
-            else
-                musicPlayer.pauseMusic()
-        }
+        iconScale: .7
+        iconSource: "qrc:/images/play"
+        hasSecondState: true
+        secondIconSource: "qrc:/images/pause"
 
-        currentState: musicPlayer.isPlaying ? 1 : 0
+        onCurrentStateChanged: currentState == 2 ? musicPlayer.resumeMusic() : musicPlayer.pauseMusic()
+        secondStateEnabled: musicPlayer.isPlaying
     }
 
     ToolbarIconButton {
         id: previousButton
         anchors.bottom: parent.bottom
-
-        iconScale: .85
-        iconSource: "qrc:/images/skip_previous"
-
         x: playButton.x - 95
+
+        iconScale: .7
+        iconSource: "qrc:/images/skip_previous"
 
         onClicked: musicPlayer.previousMusic()
     }
@@ -71,11 +62,10 @@ Activity {
     ToolbarIconButton {
         id: nextButton
         anchors.bottom: parent.bottom
-
-        iconScale: .85
-        iconSource: "qrc:/images/skip_next"
-
         x: playButton.x + 95
+
+        iconScale: .7
+        iconSource: "qrc:/images/skip_next"
 
         onClicked: musicPlayer.nextMusic()
     }
@@ -83,17 +73,15 @@ Activity {
     ToolbarIconButton {
         id: randomButton
         anchors.bottom: parent.bottom
+        x: playButton.x + 2 * 95
 
-        iconScale: .85
+        iconScale: .7
         iconSource: "qrc:/images/shuffle"
 
         checkable: true
-        disableAutoMgr: true
-
-        x: playButton.x + 2 * 95
-
-        onClicked: musicPlayer.setRandom(checked)
-        currentState: musicPlayer.random ? 0 : 1
+        onCheckedChanged: {
+            musicPlayer.setRandom(checked)
+        }
 
         Component.onCompleted: {
             if(musicPlayer.random) {
@@ -105,75 +93,51 @@ Activity {
     ToolbarIconButton {
         id: repeatButton
         anchors.bottom: parent.bottom
+        x: playButton.x - 2 * 95
 
-        iconScale: .85
+        iconScale: .7
         iconSource: "qrc:/images/repeat"
 
         checkable: true
-        hasSecondIcon: true
-        secondIcon: "qrc:/images/repeat_one"
+        hasSecondState: true
+        secondIconSource: "qrc:/images/repeat_one"
 
-        x: playButton.x - 2 * 95
-
-        disableAutoMgr: true
-        onClicked: musicPlayer.setRepeatMode((currentState + 1) % 3)
-
-        Connections {
-            target: musicPlayer
-            onRepeatModeChanged: {
-                repeatButton.currentState = musicPlayer.repeatMode
-                repeatButton.updateCheckedState()
-            }
-        }
+        onCurrentStateChanged: musicPlayer.setRepeatMode(currentState)
 
         Component.onCompleted: {
-            repeatButton.currentState = musicPlayer.repeatMode
-            repeatButton.updateCheckedState()
+            var mode = musicPlayer.repeatMode
+            if(mode !== 0) {
+                checked = true
+            }
+            if(mode === 2) {
+                secondStateEnabled = true
+            }
         }
     }
 
     ToolbarIconButton {
         id: chooseButton
         anchors.bottom: parent.bottom
+        x: playButton.x - 3.5 * 95
 
-        iconScale: .85
+        iconScale: .7
         iconSource: "qrc:/images/music"
 
         checkable: true
-        x: playButton.x - 3.5 * 95
-
         enabled: musicPlayer.started
 
-        disableAutoMgr: true
-        Component.onCompleted: {
-            if(musicPlayer.isPlayerVisible()) {
-                currentState = 0
-                updateCheckedState()
-                playerVisible = true
-            } else {
-                currentState = 1
-                updateCheckedState()
-                playerVisible = false
-            }
-        }
+        onCheckedChanged: playerVisible = !checked
 
-        onClicked: {
-            if(playerVisible) {
-                currentState = 1
-                checked = true
-                playerVisible = false
-            } else {
-                currentState = 0
-                checked = false
-                playerVisible = true
-            }
+        Component.onCompleted: {
+            playerVisible = musicPlayer.isPlayerVisible()
+            checked = !playerVisible
         }
 
         Connections {
             target: musicPlayer
             onNewMediaListPlayed: {
                 if(musicPlayer.started) {
-                    chooseButton.clicked()
+                    chooseButton.checked = false
                 }
             }
         }
@@ -185,7 +149,7 @@ Activity {
         target: musicPlayer
         onStartedChanged: {
             if(!musicPlayer.started) {
-                chooseButton.clicked();
+                chooseButton.checked = true
             }
         }
     }

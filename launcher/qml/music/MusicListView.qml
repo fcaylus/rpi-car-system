@@ -35,16 +35,16 @@ Item {
         var lastMainView = musicPlayer.lastMainViewType
         switch(lastMainView) {
             case 0:
-                artistButton.clicked()
+                artistButton.click()
                 break;
             case 1:
-                albumButton.clicked()
+                albumButton.click()
                 break;
             case 2:
-                trackButton.clicked()
+                trackButton.click()
                 break;
             case 3:
-                playlistButton.clicked()
+                playlistButton.click()
                 break;
         }
 

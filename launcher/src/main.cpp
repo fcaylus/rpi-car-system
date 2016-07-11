@@ -46,6 +46,8 @@
 #include "mediamanager/playlistlistmodel.h"
 #include "mediamanager/playlist.h"
 
+#include "basicbutton.h"
+
 static const QString settingsLocaleStr = "locale";
 
 // Load the "heavy" stuff
@@ -127,6 +129,8 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view)
     qmlRegisterType<PlaylistListModel>("rpicarsystem.mediamanager", 1, 0, "PlaylistListModel");
     qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
 
+    qmlRegisterType<BasicButton>("rpicarsystem.controls", 1, 0, "BasicButton");
+
     MusicPlayer *musicPlayer = new MusicPlayer(settings);
     musicPlayer->init();
 
@@ -158,6 +162,7 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view)
 
         // Save settings
         musicPlayer->saveSettings();
+        settings->sync();
         settings->deleteLater();
 
         passMgr->deleteLater();

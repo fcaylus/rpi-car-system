@@ -17,41 +17,41 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import "."
 
-Button {
+BasicButton {
+    id: but
     property bool alignCenter: true
 
     property bool bold: true
     property real fontRatio: .35
 
+    property string text
+
     height: Style.toolbar.height
 
-    style: ButtonStyle {
-        background: Rectangle {
-            color: control.pressed ? Style.button.colorPressed : Style.button.color
-        }
+    background: Rectangle {
+        color: but.pressed ? Style.button.colorPressed : Style.button.color
+    }
 
-        label: StyledText {
-            id: textLabel
-            text: control.text
-            font.pixelSize: control.height * fontRatio
-            horizontalAlignment: alignCenter ? Text.AlignHCenter : Text.AlignLeft
-            verticalAlignment: Text.AlignVCenter
+    label: StyledText {
+        id: textLabel
+        text: but.text
+        font.pixelSize: but.height * fontRatio
+        horizontalAlignment: alignCenter ? Text.AlignHCenter : Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
 
-            font.bold: bold
+        font.bold: bold
 
-            // Handle clicked and checked states
-            Connections {
-                target: control
-                onPressedChanged: {
-                    textLabel.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
-                }
-                onCheckedChanged: {
-                    textLabel.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
-                }
+        // Handle clicked and checked states
+        Connections {
+            target: but
+            onPressedChanged: {
+                textLabel.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
+            }
+            onCheckedChanged: {
+                textLabel.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
             }
         }
     }

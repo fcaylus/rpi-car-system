@@ -17,74 +17,34 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import QtGraphicalEffects 1.0
 import "."
 
-Button {
-    id: button
+BasicButton {
+    id: but
+    property url iconSource
 
-    property bool repeatClick: false
-    property int repeatFirstDelay: 500
-    property int repeatInterval: 100
-
-    Timer {
-        id: repeatTimer
-        running: false
-        onTriggered: {
-            if(button.pressed) {
-                button.clicked()
-
-                if(interval === button.repeatFirstDelay) {
-                    interval = button.repeatInterval
-                    repeat = true
-                    start()
-                }
-            }
-        }
+    background: Rectangle {
+        color: "transparent"
     }
 
-    onPressedChanged: {
-        if(repeatClick) {
-            repeatTimer.stop()
-            if(pressed) {
-                repeatTimer.interval = button.repeatFirstDelay
-                repeatTimer.repeat = false
-                repeatTimer.start()
-            }
+    label: Image {
+        id: buttonImg
+        asynchronous: true
+        height: but.height
+        width: but.width
+        sourceSize.width: width
+        sourceSize.height: height
+        fillMode: Image.PreserveAspectFit
+
+        source: but.iconSource
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: Style.button.clickedOverlayColor
+            visible: but.pressed
         }
     }
-
-
-    style: ButtonStyle {
-        background: Rectangle {
-            color: "transparent"
-        }
-
-        label: Item {
-            implicitWidth: buttonImg.implicitWidth
-            implicitHeight: buttonImg.implicitHeight
-
-            Image {
-                id: buttonImg
-                asynchronous: true
-                height: control.height
-                width: control.width
-                sourceSize.width: width
-                sourceSize.height: height
-                fillMode: Image.PreserveAspectFit
-
-                source: control.iconSource
-            }
-
-            ColorOverlay {
-                anchors.fill: buttonImg
-                source: buttonImg
-                color: Style.button.clickedOverlayColor
-                visible: control.pressed
-            }
-        }
-    }
-
 }

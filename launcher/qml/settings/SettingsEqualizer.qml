@@ -45,8 +45,8 @@ Activity {
             iconSource: "qrc:/images/minus"
             anchors.verticalCenter: parent.verticalCenter
 
-            repeatClick: true
             repeatInterval: 30
+            autoRepeat: true
             onClicked: {
                 if(equalizerModifier.preamp) {
                     musicPlayer.increaseEqualizerPreamp(-0.2)
@@ -86,8 +86,8 @@ Activity {
             iconSource: "qrc:/images/plus"
             anchors.verticalCenter: parent.verticalCenter
 
-            repeatClick: true
             repeatInterval: 30
+            autoRepeat: true
             onClicked: {
                 if(equalizerModifier.preamp) {
                     musicPlayer.increaseEqualizerPreamp(0.2)

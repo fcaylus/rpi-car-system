@@ -17,40 +17,40 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import "."
 import ".."
 
-Button {
+BasicButton {
+    id: but
+    property string text
+
     height: 60
 
-    style: ButtonStyle {
-        background: Rectangle {
-            color: "transparent"
-            border.color: Style.separatorColor
-            border.width: 3
-            radius: 15
-        }
+    background: Rectangle {
+        color: "transparent"
+        border.color: Style.separatorColor
+        border.width: 3
+        radius: 15
+    }
 
-        label: StyledText {
-            id: hText
-            text: control.text
-            font.pixelSize: control.height * .45
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.bold: true
+    label: StyledText {
+        id: hText
+        text: but.text
+        font.pixelSize: but.height * .45
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.bold: true
 
-            // Handle clicked and checked states
-            Connections {
-                target: control
-                onPressedChanged: {
-                    hText.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
-                }
-                onCheckedChanged: {
-                    hText.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
-                }
+        // Handle clicked and checked states
+        Connections {
+            target: but
+            onPressedChanged: {
+                hText.color = pressed ? Style.button.clickedOverlayColor : Style.fontColor
+            }
+            onCheckedChanged: {
+                hText.color = checked ? Style.button.checkedOverlayColor : Style.fontColor
             }
         }
     }

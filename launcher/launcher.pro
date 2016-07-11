@@ -84,7 +84,8 @@ SOURCES += \
     src/mediamanager/metadatalistmodel.cpp \
     src/musicqueuelistmodel.cpp \
     src/mediamanager/playlistlistmodel.cpp \
-    src/sysinfomanager.cpp
+    src/sysinfomanager.cpp \
+    src/basicbutton.cpp
 
 HEADERS += \
     src/dirutility.h \
@@ -103,7 +104,8 @@ HEADERS += \
     src/mediamanager/musiclistmodel.h \
     src/mediamanager/metadatalistmodel.h \
     src/musicqueuelistmodel.h \
-    src/mediamanager/playlistlistmodel.h
+    src/mediamanager/playlistlistmodel.h \
+    src/basicbutton.h
 
 RESOURCES += \
     res.qrc
