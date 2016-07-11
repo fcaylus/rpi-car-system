@@ -17,7 +17,6 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
 import ".."
 import "."
 
@@ -31,7 +30,6 @@ ListView {
     header: Item {
         width: headerRow.implicitWidth
         height: headerRow.implicitHeight + 10
-        //clip: true
 
         Column {
             id: headerRow
