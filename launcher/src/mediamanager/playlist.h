@@ -43,21 +43,21 @@ class Playlist : public MediaSource
         QString name() const;
         QString fileName() const;
 
-        QString identifier();
-        Type type();
-        bool cacheSupported();
+        QString identifier() override;
+        Type type() override;
+        bool cacheSupported() override;
 
         // No media have a playlist as source, so this function should never be called
         // Always return an empty QVariant
-        QVariant accessMediaMetadata(const QString& mediaUri, MediaInfo::MetadataType type);
+        QVariant accessMediaMetadata(const QString& mediaUri, MediaInfo::MetadataType type) override;
 
         MediaInfoList availableMedias(MediaInfo::MetadataType onlyWithMeta = MediaInfo::UNKNOWN,
-                                      QVariant onlyWithMetaValue = QVariant());
+                                      QVariant onlyWithMetaValue = QVariant()) override;
 
         // Not implemented since it's never used, always return an empty list
         QList<QVariantList> listMetadata(MetadataTypeList metadataToRetrieve,
                                          MediaInfo::MetadataType requiredMeta = MediaInfo::UNKNOWN,
-                                         QVariant requiredMetaValue = QVariant());
+                                         QVariant requiredMetaValue = QVariant()) override;
 
         static QString playlistDirectory();
         static QList<Playlist *> findAllPlaylists(QObject *parent = nullptr);

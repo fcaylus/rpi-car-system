@@ -111,14 +111,14 @@ class BasicButton : public QQuickItem
 
     protected:
 
-        void focusOutEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
-        void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-        void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-        void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-        void mouseUngrabEvent() Q_DECL_OVERRIDE;
-        void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
+        void focusOutEvent(QFocusEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
+        void mouseUngrabEvent() override;
+        void timerEvent(QTimerEvent *event) override;
 
-        void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) Q_DECL_OVERRIDE;
+        void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
 
     private:
 
