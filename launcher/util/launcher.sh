@@ -4,7 +4,12 @@
 appname="launcher"
 dirname="/opt/rpi-car-system"
 export LD_LIBRARY_PATH="/usr/lib/qt/plugins:$dirname"
+
 export QT_QPA_EGLFS_DEPTH=16
+export QT_QPA_EGLFS_WIDTH=800
+export QT_QPA_EGLFS_HEIGHT=480
+export QT_QPA_EGLFS_PHYSICAL_WIDTH=154
+export QT_QPA_EGLFS_PHYSICAL_HEIGHT=86
 export DISPLAY=:0
 
 # Sames as specified in common.h
