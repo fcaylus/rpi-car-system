@@ -51,7 +51,7 @@
 static const QString settingsLocaleStr = "locale";
 
 // Load the "heavy" stuff
-void afterSplashScreen(QGuiApplication *app, QQuickView *view)
+void afterSplashScreen(QGuiApplication *app, QQuickView *view, QSettings *settings, const QString& locale)
 {
     const QString appDirPath = app->applicationDirPath();
 
@@ -99,18 +99,6 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view)
             dir.removeRecursively();
         }
     }
-
-    QSettings *settings = new QSettings(Common::configDir() + QLatin1String("/settings.ini"), QSettings::IniFormat);
-    settings->setFallbacksEnabled(false);
-
-    // Get locale (system locale by default)
-    const QString locale = settings->value(settingsLocaleStr, QLocale::system().name().section('_', 0, 0)).toString();
-    settings->setValue(settingsLocaleStr, locale);
-
-    // Load translations
-    QTranslator appTranslator;
-    appTranslator.load(QString(APPLICATION_TARGET "_") + locale + QStringLiteral(".qm"), appDirPath);
-    app->installTranslator(&appTranslator);
 
     //
     // QML Stuff
@@ -192,14 +180,26 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName(APPLICATION_NAME);
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
 
+    QSettings *settings = new QSettings(Common::configDir() + QLatin1String("/settings.ini"), QSettings::IniFormat);
+    settings->setFallbacksEnabled(false);
+
+    // Get locale
+    const QString locale = settings->value(settingsLocaleStr, "fr").toString();
+    settings->setValue(settingsLocaleStr, locale);
+
+    // Load translations
+    QTranslator appTranslator;
+    appTranslator.load(QString(APPLICATION_TARGET "_") + locale, QCoreApplication::applicationDirPath() + QStringLiteral("/translations"));
+    app->installTranslator(&appTranslator);
+
     QQuickView *view = new QQuickView();
     view->connect(view->engine(), &QQmlEngine::quit, app, &QGuiApplication::quit);
     view->setResizeMode(QQuickView::SizeViewToRootObject);
 
-    QObject::connect(app, &QGuiApplication::applicationStateChanged, [app, view](Qt::ApplicationState state) {
+    QObject::connect(app, &QGuiApplication::applicationStateChanged, [app, view, settings, &locale](Qt::ApplicationState state) {
         if(state == Qt::ApplicationActive) {
             QObject::disconnect(app, &QGuiApplication::applicationStateChanged, 0, 0);
-            afterSplashScreen(app, view);
+            afterSplashScreen(app, view, settings, locale);
         }
     });
 
