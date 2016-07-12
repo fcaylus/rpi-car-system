@@ -59,7 +59,7 @@ void MediaManager::initialScan()
     // Search for new USB sources
     //
 
-    _sources.append(UsbSource::listAllUsbSources(this));
+    _sources.append(UsbSource::listAllUsbSources(this, true));
     qDebug() << "Available USB sources: ";
     for(MediaSource* source : _sources)
     {

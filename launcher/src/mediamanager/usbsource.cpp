@@ -40,7 +40,7 @@
 
 UsbSource::UsbSource(const QString &devPath, const QString &mountPoint,
                      const QString &idVendor, const QString &idProduct,
-                     const QString &serial, const QString &sysPath,
+                     const QString &serial, const QString &sysPath, bool scanInSameThread,
                      QObject *parent): MediaSource(parent)
 {
     _devPath = devPath;
@@ -53,7 +53,7 @@ UsbSource::UsbSource(const QString &devPath, const QString &mountPoint,
     if(!MediaManager::instance()->isCachePersistent())
         deleteCache();
 
-    scan();
+    scan(scanInSameThread);
 }
 
 UsbSource::~UsbSource()
@@ -452,7 +452,7 @@ void UsbSource::requestDisconnection()
 }
 
 // Static
-MediaSourceList UsbSource::listAllUsbSources(QObject *sourceParent)
+MediaSourceList UsbSource::listAllUsbSources(QObject *sourceParent, bool firstScan)
 {
     MediaSourceList sourcesList;
 
@@ -475,8 +475,11 @@ MediaSourceList UsbSource::listAllUsbSources(QObject *sourceParent)
         {
             if(mountPt.first == device.devPath)
             {
+                // Search for new media in the same thread for the first scan since there is
+                // a splash screen to wait
                 MediaSource *source = new UsbSource(device.devPath, mountPt.second, device.idVendor,
-                                                    device.idProduct, device.serial, device.sysPath, sourceParent);
+                                                    device.idProduct, device.serial, device.sysPath,
+                                                    firstScan, sourceParent);
                 sourcesList.append(source);
                 break;
             }
@@ -487,12 +490,9 @@ MediaSourceList UsbSource::listAllUsbSources(QObject *sourceParent)
 }
 
 // Private
-void UsbSource::scan()
+void UsbSource::scan(bool scanInSameThread)
 {
     UsbSourceUtil::SearchMediaWorker *worker = new UsbSourceUtil::SearchMediaWorker(this);
-    worker->moveToThread(&_searchThread);
-    connect(&_searchThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(&_searchThread, &QThread::started, worker, &UsbSourceUtil::SearchMediaWorker::search);
     connect(worker, &UsbSourceUtil::SearchMediaWorker::searchFinished, this, [this](MediaInfoList list) {
         while(!_mediaList.empty())
             delete _mediaList.takeFirst();
@@ -505,7 +505,17 @@ void UsbSource::scan()
         emit newMediaAvailable();
     });
 
-    _searchThread.start();
+    if(scanInSameThread)
+    {
+        worker->search();
+    }
+    else
+    {
+        worker->moveToThread(&_searchThread);
+        connect(&_searchThread, &QThread::finished, worker, &QObject::deleteLater);
+        connect(&_searchThread, &QThread::started, worker, &UsbSourceUtil::SearchMediaWorker::search);
+        _searchThread.start();
+    }
 }
 
 //

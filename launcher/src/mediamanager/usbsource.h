@@ -54,7 +54,7 @@ class UsbSource: public MediaSource
         UsbSource(const QString& devPath, const QString& mountPoint,
                   const QString& idVendor, const QString& idProduct,
                   const QString& serial, const QString& sysPath,
-                  QObject* parent = nullptr);
+                  bool scanInSameThread = false, QObject* parent = nullptr);
 
         ~UsbSource();
 
@@ -62,19 +62,19 @@ class UsbSource: public MediaSource
         // Re-implemented
         //
 
-        Type type();
-        QString identifier();
-        bool cacheSupported();
-        void deleteCache();
+        Type type() override;
+        QString identifier() override;
+        bool cacheSupported() override;
+        void deleteCache() override;
 
-        QVariant accessMediaMetadata(const QString& mediaUri, MediaInfo::MetadataType type);
+        QVariant accessMediaMetadata(const QString& mediaUri, MediaInfo::MetadataType type) override;
 
         MediaInfoList availableMedias(MediaInfo::MetadataType onlyWithMeta = MediaInfo::UNKNOWN,
-                                      QVariant onlyWithMetaValue = QVariant());
+                                      QVariant onlyWithMetaValue = QVariant()) override;
 
         QList<QVariantList> listMetadata(MetadataTypeList metadataToRetrieve,
                                          MediaInfo::MetadataType requiredMeta = MediaInfo::UNKNOWN,
-                                         QVariant requiredMetaValue = QVariant());
+                                         QVariant requiredMetaValue = QVariant()) override;
 
         // Getters
         QString devPath() const;
@@ -86,7 +86,7 @@ class UsbSource: public MediaSource
 
         QString configDir() const;
 
-        static MediaSourceList listAllUsbSources(QObject *sourceParent = nullptr);
+        static MediaSourceList listAllUsbSources(QObject *sourceParent = nullptr, bool firstScan = false);
 
     public slots:
 
@@ -110,7 +110,7 @@ class UsbSource: public MediaSource
         QString saveCoverData(const QString& mediaUri, const QString& base64Data);
 
         // Launch the search thread
-        void scan();
+        void scan(bool scanInSameThread = false);
 };
 
 
