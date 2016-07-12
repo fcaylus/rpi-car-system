@@ -28,6 +28,9 @@ GridView {
     cellWidth: Style.mainMenu.buttonWidth + Style.mainMenu.margin
     cellHeight: Style.mainMenu.buttonHeight + Style.mainMenu.margin
 
+    // Disable flickable
+    interactive: false
+
     property int expectedDepth: 1
     // Must be filled
     property var map
