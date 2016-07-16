@@ -154,7 +154,6 @@ rm "${SYSTEM_ROOT}/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM"
 
 rm -r "${SYSTEM_ROOT}/usr/share/applications"
 rm -r "${SYSTEM_ROOT}/usr/share/gettext"
-rm -r "${SYSTEM_ROOT}/usr/share/glib-2.0"
 rm -r "${SYSTEM_ROOT}/usr/share/icons"
 rm -r "${SYSTEM_ROOT}/usr/share/kde4"
 rm -r "${SYSTEM_ROOT}/usr/share/locale"

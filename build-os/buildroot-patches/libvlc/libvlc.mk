@@ -115,8 +115,8 @@ LIBVLC_CONF_OPTS += \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-fontconfig \
-	--enable-svg \
-	--enable-svgdec \
+	--disable-svg \
+	--disable-svgdec \
 	--disable-directfb \
 	--disable-aa \
 	--disable-caca \
@@ -179,8 +179,6 @@ LIBVLC_DEPENDENCIES += \
 	freetype \
 	libfribidi \
 	fontconfig \
-	libsvg \
-	librsvg \
 	alsa-lib \
 	libxml2
 
