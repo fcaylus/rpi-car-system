@@ -148,7 +148,7 @@ LIBVLC_CONF_OPTS += \
 	--disable-udev \
 	--disable-mtp \
 	--disable-upnp \
-	--enable-libxml2 \
+	--disable-libxml2 \
 	--disable-libgcrypt \
 	--disable-gnutls \
 	--disable-taglib \
@@ -179,7 +179,6 @@ LIBVLC_DEPENDENCIES += \
 	freetype \
 	libfribidi \
 	fontconfig \
-	alsa-lib \
-	libxml2
+	alsa-lib
 
 $(eval $(autotools-package))

@@ -27,7 +27,6 @@ config BR2_PACKAGE_LIBVLC
 	select BR2_PACKAGE_LIBFRIBIDI
 	select BR2_PACKAGE_FONTCONFIG
 	select BR2_PACKAGE_ALSA_LIB
-	select BR2_PACKAGE_LIBXML2
 
 comment "libvlc needs a uclibc snapshot, uclibc-ng or (e)glibc toolchain w/ C++, wchar, threads, headers >= 3.7"
 	depends on !(BR2_UCLIBC_VERSION_SNAPSHOT || BR2_UCLIBC_VERSION_NG || BR2_TOOLCHAIN_USES_GLIBC) \
