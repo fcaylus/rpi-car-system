@@ -12,7 +12,7 @@ Project components
     (using buildroot)
   - build-os/flash-all.sh : Flash the tarball into a SD-Card
 - launcher: Main GUI app. This app will be launched on startup.
-- musicindex-generator: Creates and updates the media index.
+- updater: Load an archive and try to apply the update on the system.
 
 Third-parties
 -------------
