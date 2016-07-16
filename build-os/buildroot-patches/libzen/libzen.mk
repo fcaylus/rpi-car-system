@@ -15,9 +15,5 @@ LIBZEN_INSTALL_STAGING = YES
 
 LIBZEN_SUBDIR = Project/GNU/Library
 
-LIBZEN_CONF_OPTS += \
-	--disable-static \
-	--enable-shared
-
 $(eval $(autotools-package))
 

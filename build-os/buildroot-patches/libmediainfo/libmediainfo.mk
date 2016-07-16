@@ -16,8 +16,10 @@ LIBMEDIAINFO_INSTALL_STAGING = YES
 LIBMEDIAINFO_SUBDIR = Project/GNU/Library
 
 LIBMEDIAINFO_CONF_OPTS += \
-	--disable-static \
-	--enable-shared
+	--enable-minimize-size \
+	--disable-trace \
+	--disable-events \
+	--disable-pdf
 
 LIBMEDIAINFO_DEPENDENCIES += libzen zlib
 
