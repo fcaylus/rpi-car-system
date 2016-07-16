@@ -45,7 +45,7 @@ Activity {
     ToolbarTextButton {
         id: licenseButton
         anchors.bottom: parent.bottom
-        text: qsTr("Licenses")
+        text: qsTr("License")
 
         checkable: true
         x: availableToolBarWidth / 2 - width / 2 + 35
@@ -72,58 +72,19 @@ Activity {
         }
     }
 
-    property Component about: Column {
+    property Component about: StyledText {
         anchors.fill: parent
-        anchors.topMargin: 25
 
-        spacing: 21
-
-        StyledText {
-            width: parent.width
-            font.pixelSize: 50
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.bold: true
-            text: "RPI Car System"
-        }
-
-        StyledText {
-            width: parent.width
-            font.pixelSize: 20
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            text: "Copyright (c) 2016 Fabien CAYLUS"
-        }
-
-        StyledText {
-            width: parent.width
-            font.pixelSize: 30
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            text: qsTr("Full featured headunit system !");
-        }
-
-        StyledText {
-            width: parent.width
-            font.pixelSize: 22
-            font.italic: true
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            text: "<b>" +  qsTr("Version:") + "</b>   " + sysinfoManager.programVersion
-                  + "<br><b>" + qsTr("Hardware version:") + "</b>   " + sysinfoManager.hardwareVersion
-        }
-
-        StyledText {
-            width: parent.width
-            font.pixelSize: 15
-            font.italic: true
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            text: "<b>" +  qsTr("LibVLC version:") + "</b>   " + sysinfoManager.vlcVersion
-                  + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + sysinfoManager.vlcqtVersion
-        }
+        font.pixelSize: 20
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        textFormat: Text.StyledText
+        text: "<h1>RPI Car System</h1><h6>Copyright (c) 2016 Fabien CAYLUS</h6><br><h3>"
+              + qsTr("Full featured headunit system !") + "</h3><br>"
+              + "<b>" +  qsTr("Version:") + "</b>   " + sysinfoManager.programVersion
+              + "<br><b>" + qsTr("Hardware version:") + "</b>   " + sysinfoManager.hardwareVersion
+              + "<br><b>" +  qsTr("LibVLC version:") + "</b>   " + sysinfoManager.vlcVersion
+              + "<br><b>" + qsTr("VLC-Qt version:") + "</b>   " + sysinfoManager.vlcqtVersion
     }
 
     property Component license: Flickable {

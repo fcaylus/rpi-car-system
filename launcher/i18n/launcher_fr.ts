@@ -250,8 +250,8 @@
     </message>
     <message>
         <location filename="../qml/settings/SettingsAbout.qml" line="48"/>
-        <source>Licenses</source>
-        <translation>Licenses</translation>
+        <source>License</source>
+        <translation>License</translation>
     </message>
     <message>
         <location filename="../qml/settings/SettingsAbout.qml" line="63"/>
@@ -259,27 +259,27 @@
         <translation>Licenses Tièrces</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsAbout.qml" line="103"/>
+        <location filename="../qml/settings/SettingsAbout.qml" line="83"/>
         <source>Full featured headunit system !</source>
         <translation>Système d&apos;autoradio complet !</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsAbout.qml" line="113"/>
+        <location filename="../qml/settings/SettingsAbout.qml" line="84"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsAbout.qml" line="114"/>
+        <location filename="../qml/settings/SettingsAbout.qml" line="85"/>
         <source>Hardware version:</source>
         <translation>Version matèrielle:</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsAbout.qml" line="124"/>
+        <location filename="../qml/settings/SettingsAbout.qml" line="86"/>
         <source>LibVLC version:</source>
         <translation>Version de LibVLC:</translation>
     </message>
     <message>
-        <location filename="../qml/settings/SettingsAbout.qml" line="125"/>
+        <location filename="../qml/settings/SettingsAbout.qml" line="87"/>
         <source>VLC-Qt version:</source>
         <translation>Version de VLC-Qt:</translation>
     </message>
