@@ -90,10 +90,10 @@ Rectangle {
             }
         }
 
-        DarkCheckBox {
+        CheckBox {
             visible: !standardInput
             text: qsTr("Show password")
-            onClicked: textInput.echoMode = checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit
+            onCheckedChanged: textInput.echoMode = (checked ? TextInput.Normal : TextInput.PasswordEchoOnEdit)
         }
     }
 

@@ -17,18 +17,27 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import rpicarsystem.controls 1.0
 import "."
 
-CheckBox {
+BasicButton {
+    id: checkbox
 
+    property string text
     property bool textBold: false
 
-    style: CheckBoxStyle {
-        indicator: Rectangle {
+    checkable: true
+
+    implicitWidth: label.implicitWidth
+    implicitHeight: label.implicitHeight
+
+    label: Row {
+        spacing: 10
+
+        Rectangle {
+            id: borderRect
             border.width: 2
-            border.color: control.checked ? Style.button.checkedOverlayColor : Style.progressBar.borderColor
+            border.color: checkbox.checked ? Style.button.checkedOverlayColor : Style.progressBar.borderColor
             radius: 5
             color: "#F2111111"
             implicitWidth: 40
@@ -36,7 +45,7 @@ CheckBox {
 
             Image {
                 asynchronous: true
-                visible: control.checked
+                visible: checkbox.checked
                 anchors.margins: 2
                 anchors.fill: parent
                 horizontalAlignment: Text.AlignHCenter
@@ -47,19 +56,15 @@ CheckBox {
             }
         }
 
-        background: Rectangle {
-            color: "transparent"
-            height: control.height
-            width: control.width
-        }
-
-        label: Text {
-            text: control.text
-            font.pixelSize: control.height * .6
-            font.bold: control.textBold
+        Text {
+            height: borderRect.implicitHeight
+            font.pixelSize: height * .6
+            font.bold: checkbox.textBold
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             color: Style.fontColor
-        }
 
-        spacing: 15
+            text: checkbox.text
+        }
     }
 }

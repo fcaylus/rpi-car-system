@@ -73,32 +73,32 @@ Activity {
                 text: qsTr("Remove:")
             }
 
-            DarkCheckBox {
+            CheckBox {
                 id: checkAll
                 text: qsTr("All caches/configs")
                 textBold: true
                 onCheckedChanged: settingsClean.allChecked = checked
             }
 
-            DarkCheckBox {
+            CheckBox {
                 id: checkUsbCover
                 text: qsTr("USB devices cache")
                 onCheckedChanged: settingsClean.usbChecked = checked
             }
 
-            DarkCheckBox {
+            CheckBox {
                 id: checkPlaylist
                 text: qsTr("Playlists")
                 onCheckedChanged: settingsClean.playlistChecked = checked
             }
 
-            DarkCheckBox {
+            CheckBox {
                 id: checkEqualizer
                 text: qsTr("Equalizer configs")
                 onCheckedChanged: settingsClean.equalizerChecked = checked
             }
 
-            DarkCheckBox {
+            CheckBox {
                 id: checkSettings
                 text: qsTr("Settings")
                 onCheckedChanged: settingsClean.settingsChecked = checked
