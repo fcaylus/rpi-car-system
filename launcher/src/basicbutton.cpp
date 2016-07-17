@@ -371,9 +371,9 @@ void BasicButton::timerEvent(QTimerEvent *event)
 void BasicButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    updateImplicitWidth();
     resizeBackground();
     resizeLabel();
-    updateImplicitWidth();
 }
 
 //
@@ -405,8 +405,9 @@ void BasicButton::updateImplicitWidth()
 {
     setImplicitWidth(qMax(_background ? _background->implicitWidth() : 0,
                           _label ? _label->implicitWidth() : 0));
+
     setImplicitHeight(qMax(_background ? _background->implicitHeight() : 0,
-                           _label ? _label->implicitWidth() : 0));
+                           _label ? _label->implicitHeight() : 0));
 }
 
 //
