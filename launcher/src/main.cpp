@@ -48,6 +48,7 @@
 
 #include "controls/basicbutton.h"
 #include "controls/abstractprogressbar.h"
+#include "controls/abstractstackview.h"
 
 static const QString settingsLocaleStr = "locale";
 
@@ -120,6 +121,7 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view, QSettings *settin
 
     qmlRegisterType<BasicButton>("rpicarsystem.controls", 1, 0, "BasicButton");
     qmlRegisterType<AbstractProgressBar>("rpicarsystem.controls", 1, 0, "AbstractProgressBar");
+    qmlRegisterType<AbstractStackView>("rpicarsystem.controls", 1, 0, "AbstractStackView");
 
     MusicPlayer *musicPlayer = new MusicPlayer(settings);
     musicPlayer->init();

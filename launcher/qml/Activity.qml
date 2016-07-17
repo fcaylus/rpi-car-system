@@ -17,11 +17,17 @@
  */
 
 import QtQuick 2.5
+import rpicarsystem.controls 1.0
 import "."
 
-Item {
+Rectangle {
     id: view
+    color: Style.backgroundColor
 
+    property AbstractStackView mainStackView
+    // Depth in the stack view
+    // Usually 2 for top activities and 3 for subActivities
+    property int activityDepth: 2
     property Component control
 
     // Substract the "home" button width
@@ -65,4 +71,37 @@ Item {
             onClicked: mainStackView.pop()
         }
     }
+
+    PropertyAnimation {
+        id: pushAnim
+        target: view
+        property: "x"
+        from: Style.windowWidth
+        to: 0
+
+        onStopped: mainStackView.finishPush()
+    }
+
+    // Started when the activity is poped
+    PropertyAnimation {
+        id: popAnim
+        target: view
+        property: "x"
+        from: 0
+        to: Style.windowWidth
+
+        onStopped: mainStackView.finishPop()
+    }
+
+    Connections {
+        target: mainStackView
+        onItemPoped: {
+            if(mainStackView.depth === activityDepth - 1) {
+                z = 1
+                popAnim.start()
+            }
+        }
+    }
+
+    Component.onCompleted: pushAnim.start()
 }

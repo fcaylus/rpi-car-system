@@ -17,111 +17,75 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
+import rpicarsystem.controls 1.0
 import "."
 
-StackView {
+AbstractStackView {
     id: mainStackView
+    animate: true
 
-    delegate: StackViewDelegate {
-        function transitionFinished(properties)
-        {
-            properties.exitItem.x = 0
+    property Item initialItem: GridMenu {
+        expectedDepth: 1
+
+        property Component activityMusic: ActivityMusic {}
+        property Component activitySettings: ActivitySettings {}
+
+        map: {
+            1: activityMusic,
+            8: activitySettings
         }
 
-        pushTransition: StackViewTransition {
-            PropertyAnimation {
-                target: enterItem
-                property: "x"
-                from: Style.windowWidth
-                to: 0
+        model: ListModel {
+            ListElement {
+                index: 1
+                isEnabled: true
+                title: qsTr("My Music")
+                icon: "qrc:/images/music"
             }
-            PropertyAnimation {
-                target: exitItem
-                property: "x"
-                from: 0
-                to: -Style.windowWidth
+            ListElement {
+                index: 2
+                isEnabled: false
+                title: qsTr("Radio")
+                icon: "qrc:/images/radio"
             }
-        }
-
-        popTransition: StackViewTransition {
-            PropertyAnimation {
-                target: enterItem
-                property: "x"
-                from: -Style.windowWidth
-                to: 0
+            ListElement {
+                index: 3
+                isEnabled: false
+                title: qsTr("My Videos")
+                icon: "qrc:/images/video"
             }
-            PropertyAnimation {
-                target: exitItem
-                property: "x"
-                from: 0
-                to: Style.windowWidth
+            ListElement {
+                index: 4
+                isEnabled: false
+                title: qsTr("Informations")
+                icon: "qrc:/images/car"
             }
-        }
-    }
-
-    initialItem: Item {
-        GridMenu {
-            expectedDepth: 1
-
-            property Component activityMusic: ActivityMusic {}
-            property Component activitySettings: ActivitySettings {}
-
-            map: {
-                1: activityMusic,
-                8: activitySettings
+            ListElement {
+                index: 5
+                isEnabled: false
+                title: qsTr("GPS")
+                icon: "qrc:/images/map"
             }
-
-            model: ListModel {
-                ListElement {
-                    index: 1
-                    isEnabled: true
-                    title: qsTr("My Music")
-                    icon: "qrc:/images/music"
-                }
-                ListElement {
-                    index: 2
-                    isEnabled: false
-                    title: qsTr("Radio")
-                    icon: "qrc:/images/radio"
-                }
-                ListElement {
-                    index: 3
-                    isEnabled: false
-                    title: qsTr("My Videos")
-                    icon: "qrc:/images/video"
-                }
-                ListElement {
-                    index: 4
-                    isEnabled: false
-                    title: qsTr("Informations")
-                    icon: "qrc:/images/car"
-                }
-                ListElement {
-                    index: 5
-                    isEnabled: false
-                    title: qsTr("GPS")
-                    icon: "qrc:/images/map"
-                }
-                ListElement {
-                    index: 6
-                    isEnabled: false
-                    title: qsTr("Call")
-                    icon: "qrc:/images/phone"
-                }
-                ListElement {
-                    index: 7
-                    isEnabled: false
-                    title: qsTr("Games")
-                    icon: "qrc:/images/game"
-                }
-                ListElement {
-                    index: 8
-                    isEnabled: true
-                    title: qsTr("Settings")
-                    icon: "qrc:/images/settings"
-                }
+            ListElement {
+                index: 6
+                isEnabled: false
+                title: qsTr("Call")
+                icon: "qrc:/images/phone"
+            }
+            ListElement {
+                index: 7
+                isEnabled: false
+                title: qsTr("Games")
+                icon: "qrc:/images/game"
+            }
+            ListElement {
+                index: 8
+                isEnabled: true
+                title: qsTr("Settings")
+                icon: "qrc:/images/settings"
             }
         }
     }
+
+    Component.onCompleted: mainStackView.pushItem(initialItem)
 }

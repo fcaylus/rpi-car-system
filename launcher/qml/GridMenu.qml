@@ -56,8 +56,10 @@ GridView {
 
         onClicked: {
             if(enabled && mainStackView.depth === gridMenu.expectedDepth) {
-                mainStackView.push({item: map[index]});
+                mainStackView.push(map[index]);
                 mainStackView.currentItem.forceActiveFocus();
+                mainStackView.currentItem.mainStackView = mainStackView
+                mainStackView.currentItem.activityDepth = expectedDepth + 1
             }
         }
     }
