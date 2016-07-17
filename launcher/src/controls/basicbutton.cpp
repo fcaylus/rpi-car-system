@@ -282,10 +282,13 @@ void BasicButton::mouseMoveEvent(QMouseEvent *event)
     event->accept();
     setPressed(contains(event->pos()));
 
-    if(_autoRepeat)
-        stopPressRepeat();
-    else if(_holdTimer > 0 && QLineF(_pressPoint, event->localPos()).length() > QGuiApplication::styleHints()->startDragDistance())
-        stopPressAndHold();
+    if(!contains(event->pos()))
+    {
+        if(_autoRepeat)
+            stopPressRepeat();
+        else if(_holdTimer > 0)
+            stopPressAndHold();
+    }
 }
 
 void BasicButton::mouseReleaseEvent(QMouseEvent *event)
