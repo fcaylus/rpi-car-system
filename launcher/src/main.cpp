@@ -46,7 +46,7 @@
 #include "mediamanager/playlistlistmodel.h"
 #include "mediamanager/playlist.h"
 
-#include "basicbutton.h"
+#include "controls/basicbutton.h"
 
 static const QString settingsLocaleStr = "locale";
 
