@@ -35,40 +35,29 @@ BasicButton {
         border.width: 1
     }
 
-    label: Item {
-        implicitWidth: col.implicitWidth
-        implicitHeight: col.implicitHeight
+    label: Column {
+        spacing: 5
 
-        Column {
-            id: col
-            anchors.left: parent.left
-            anchors.right: parent.right
-            spacing: 5
+        Image {
+            asynchronous: true
+            height: but.height * .7
+            width: but.width
+            sourceSize: Qt.size(height, height)
+            fillMode: Image.PreserveAspectFit
+            horizontalAlignment: Image.AlignHCenter
 
-            Image {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                asynchronous: true
-                height: but.height * .7
-                width: height
-                sourceSize: Qt.size(width, height)
-                fillMode: Image.PreserveAspectFit
-                horizontalAlignment: Image.AlignHCenter
+            source: but.iconSource
+        }
 
-                source: but.iconSource
-            }
+        StyledText {
+            width: but.width
+            text: but.text
+            font.pixelSize: but.height * .13
+            font.bold: true
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
 
-            StyledText {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                text: but.text
-                font.pixelSize: but.height * .13
-                font.bold: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-
-                color: but.enabled ? Style.fontColor : Style.fontColorDisabled
-            }
+            color: but.enabled ? Style.fontColor : Style.fontColorDisabled
         }
     }
 }
