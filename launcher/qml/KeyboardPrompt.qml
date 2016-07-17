@@ -70,23 +70,39 @@ Rectangle {
             verticalAlignment: Text.AlignVCenter
         }
 
-        DarkTextInput {
-            id: textInput
+        Rectangle {
             width: parent.width
             height: 50
-            readOnly: true
-            echoMode: standardInput ? TextInput.Normal : TextInput.PasswordEchoOnEdit
 
-            function appendText(newText) {
-                text = text + newText
-            }
-            function doBack() {
-                if (text.length >= 1) {
-                    text = text.substring(0, text.length - 1)
+            border.width: 2
+            border.color: Style.button.checkedOverlayColor
+            radius: 4
+            color: "#F2111111"
+
+            TextInput {
+                id: textInput
+                anchors.fill: parent
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+
+                readOnly: true
+                echoMode: standardInput ? TextInput.Normal : TextInput.PasswordEchoOnEdit
+                passwordCharacter: "*"
+                font.pixelSize: height * .6
+                color: Style.fontColor
+
+
+                function appendText(newText) {
+                    text = text + newText
                 }
-            }
-            function clear() {
-                text = ""
+                function doBack() {
+                    if (text.length >= 1) {
+                        text = text.substring(0, text.length - 1)
+                    }
+                }
+                function clear() {
+                    text = ""
+                }
             }
         }
 

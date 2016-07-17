@@ -20,7 +20,6 @@
         <file>qml/keyboard/InputPanel.qml</file>
         <file>qml/keyboard/KeyButton.qml</file>
         <file>qml/keyboard/KeyModel.qml</file>
-        <file>qml/DarkTextInput.qml</file>
         <file>qml/CheckBox.qml</file>
         <file>qml/KeyboardPrompt.qml</file>
         <file>qml/settings/SettingsLanguage.qml</file>
