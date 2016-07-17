@@ -15,7 +15,6 @@ RPI_CAR_SYSTEM_DEPENDENCIES = \
 	vlc-qt \
 	qt5base \
 	qt5declarative \
-	qt5quickcontrols \
 	eudev \
 	libmediainfo \
 	libarchive \
