@@ -10,7 +10,7 @@
         <file>qml/music/MusicPlayer.qml</file>
         <file>qml/StyledText.qml</file>
         <file>qml/FlatButton.qml</file>
-        <file>qml/DarkProgressBar.qml</file>
+        <file>qml/ProgressBar.qml</file>
         <file>qml/music/MusicListView.qml</file>
         <file>qml/music/ListViewTrack.qml</file>
         <file>qml/music/ListViewAlbum.qml</file>

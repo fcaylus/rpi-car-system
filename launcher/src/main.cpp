@@ -47,6 +47,7 @@
 #include "mediamanager/playlist.h"
 
 #include "controls/basicbutton.h"
+#include "controls/abstractprogressbar.h"
 
 static const QString settingsLocaleStr = "locale";
 
@@ -118,6 +119,7 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view, QSettings *settin
     qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
 
     qmlRegisterType<BasicButton>("rpicarsystem.controls", 1, 0, "BasicButton");
+    qmlRegisterType<AbstractProgressBar>("rpicarsystem.controls", 1, 0, "AbstractProgressBar");
 
     MusicPlayer *musicPlayer = new MusicPlayer(settings);
     musicPlayer->init();

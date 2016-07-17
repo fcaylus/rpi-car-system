@@ -109,7 +109,7 @@ Rectangle {
                         }
                     }
 
-                    DarkProgressBar {
+                    ProgressBar {
                         id: volumeBar
                         width: 150
                         anchors.verticalCenter: parent.verticalCenter
@@ -177,7 +177,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 18
 
-            DarkProgressBar {
+            ProgressBar {
                 id: timeBar
                 width: Style.windowWidth - 160
                 anchors.verticalCenter: parent.verticalCenter

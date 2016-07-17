@@ -168,11 +168,11 @@ Activity {
                     anchors.fill: parent
                     spacing: 7
 
-                    DarkProgressBar {
+                    ProgressBar {
                         id: preampSelect
                         orientation: Qt.Vertical
-                        maximumValue: 40
-                        minimumValue: 0
+                        maximumValue: 20
+                        minimumValue: -20
 
                         selected: preampColumn.itemSelected
 
@@ -181,7 +181,7 @@ Activity {
 
                         anchors.horizontalCenter: parent.horizontalCenter
 
-                        value: musicPlayer.equalizerPreamplification() + 20
+                        value: musicPlayer.equalizerPreamplification()
                     }
 
                     StyledText {
@@ -207,7 +207,7 @@ Activity {
                     Connections {
                         target: musicPlayer
                         onEqualizerConfigChanged: {
-                            preampSelect.value = musicPlayer.equalizerPreamplification() + 20
+                            preampSelect.value = musicPlayer.equalizerPreamplification()
                             labelPreAmpVal.text = musicPlayer.equalizerPreamplificationString()
                         }
                     }
@@ -256,15 +256,15 @@ Activity {
                         anchors.fill: parent
                         spacing: 7
 
-                        DarkProgressBar {
+                        ProgressBar {
                             id: ampSelect
                             orientation: Qt.Vertical
-                            maximumValue: 40
-                            minimumValue: 0
+                            maximumValue: 20
+                            minimumValue: -20
 
                             selected: itemSelected
 
-                            value: musicPlayer.equalizerAmplification(index) + 20
+                            value: musicPlayer.equalizerAmplification(index)
 
                             height: parent.height - labelAmp.height - labelAmpVal.height - 2*parent.spacing
                             width: 20
@@ -293,7 +293,7 @@ Activity {
                         Connections {
                             target: musicPlayer
                             onEqualizerConfigChanged: {
-                                ampSelect.value = musicPlayer.equalizerAmplification(index) + 20
+                                ampSelect.value = musicPlayer.equalizerAmplification(index)
                                 labelAmpVal.text = musicPlayer.equalizerAmplificationString(index)
                             }
                         }
