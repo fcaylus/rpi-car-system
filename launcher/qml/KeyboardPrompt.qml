@@ -115,9 +115,7 @@ Rectangle {
 
     InputPanel {
         id: keyboard
-        anchors.bottom: parent.bottom
-        width: parent.width
-        height: parent.height
+
         onKeyPressed: textInput.appendText(text)
         onBackPressed: textInput.doBack()
         onEnterPressed: promptFinish(textInput.text)

@@ -87,7 +87,8 @@ SOURCES += \
     src/gui/models/playlistlistmodel.cpp \
     src/gui/controls/button.cpp \
     src/gui/controls/stackview.cpp \
-    src/gui/controls/progressbar.cpp
+    src/gui/controls/progressbar.cpp \
+    src/gui/models/keyboardlayoutmodel.cpp
 
 HEADERS += \
     src/core/dirutility.h \
@@ -109,7 +110,8 @@ HEADERS += \
     src/gui/models/playlistlistmodel.h \
     src/gui/controls/stackview.h \
     src/gui/controls/progressbar.h \
-    src/gui/controls/button.h
+    src/gui/controls/button.h \
+    src/gui/models/keyboardlayoutmodel.h
 
 RESOURCES += \
     res.qrc

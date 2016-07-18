@@ -17,24 +17,28 @@
  */
 
 import QtQuick 2.5
-import rpicarsystem.controls 1.0
+import QtGraphicalEffects 1.0
 import ".."
 
-AbstractButton {
+// Replace the text label by an icon
+KeyButton {
     id: but
 
-    property alias text: txt.text
+    property color color: Style.fontColor
+    property string iconSource
 
-    background: Rectangle {
-        radius: 5
-        color: but.pressed ? Style.button.colorPressed : Style.button.color
-    }
-
-    label: StyledText {
-        id: txt
-        font.pixelSize: height * .6
+    label: Image {
+        asynchronous: true
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        font.bold: true
+        fillMode: Image.PreserveAspectFit
+
+        source: but.iconSource
+
+        ColorOverlay {
+            anchors.fill: parent
+            source: parent
+            color: but.color
+        }
     }
 }

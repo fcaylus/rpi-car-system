@@ -19,7 +19,6 @@
         <file>qml/music/MusicQueuePopup.qml</file>
         <file>qml/keyboard/InputPanel.qml</file>
         <file>qml/keyboard/KeyButton.qml</file>
-        <file>qml/keyboard/KeyModel.qml</file>
         <file>qml/CheckBox.qml</file>
         <file>qml/KeyboardPrompt.qml</file>
         <file>qml/settings/SettingsLanguage.qml</file>
@@ -42,6 +41,7 @@
         <file>qml/music/SelectViewButton.qml</file>
         <file>qml/ToolbarTextButton.qml</file>
         <file>qml/ToolbarIconButton.qml</file>
+        <file>qml/keyboard/KeyIconButton.qml</file>
     </qresource>
     <qresource prefix="/fonts">
         <file alias="OpenSans-Regular">fonts/OpenSans-Regular.ttf</file>

@@ -44,6 +44,7 @@
 #include "gui/models/metadatalistmodel.h"
 #include "gui/models/musiclistmodel.h"
 #include "gui/models/playlistlistmodel.h"
+#include "gui/models/keyboardlayoutmodel.h"
 #include "gui/musicplayer.h"
 
 #include "gui/controls/button.h"
@@ -118,6 +119,11 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view, QSettings *settin
     qmlRegisterType<MusicQueueListModel>("rpicarsystem.mediamanager", 1, 0, "MusicQueueListModel");
     qmlRegisterType<PlaylistListModel>("rpicarsystem.mediamanager", 1, 0, "PlaylistListModel");
     qmlRegisterUncreatableType<MediaInfo>("rpicarsystem.mediamanager", 1, 0, "MediaInfo", "MediaInfo is only used for its enums.");
+
+    qmlRegisterType<KeyboardLayoutModel>("rpicarsystem.keyboard", 1, 0, "KeyboardLayoutModel");
+    qmlRegisterUncreatableType<KeyboardFirstRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardFirstRowModel", "Use KeyboardLayoutModel instead.");
+    qmlRegisterUncreatableType<KeyboardSecondRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardSecondRowModel", "Use KeyboardLayoutModel instead.");
+    qmlRegisterUncreatableType<KeyboardThirdRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardThirdRowModel", "Use KeyboardLayoutModel instead.");
 
     qmlRegisterType<Button>("rpicarsystem.controls", 1, 0, "AbstractButton");
     qmlRegisterType<ProgressBar>("rpicarsystem.controls", 1, 0, "AbstractProgressBar");
