@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "abstractstackview.h"
+#include "stackview.h"
 
-#include <QDebug>
+#include <QQmlComponent>
 
-AbstractStackView::AbstractStackView(QQuickItem *parent): QQuickItem(parent)
+StackView::StackView(QQuickItem *parent): QQuickItem(parent)
 {
 
 }
@@ -29,19 +29,19 @@ AbstractStackView::AbstractStackView(QQuickItem *parent): QQuickItem(parent)
 // Getters
 //
 
-QQuickItem* AbstractStackView::currentItem() const
+QQuickItem* StackView::currentItem() const
 {
     if(_stack.isEmpty())
         return nullptr;
     return _stack.top().first;
 }
 
-int AbstractStackView::depth() const
+int StackView::depth() const
 {
     return _stack.size();
 }
 
-bool AbstractStackView::animate() const
+bool StackView::animate() const
 {
     return _anim;
 }
@@ -50,7 +50,7 @@ bool AbstractStackView::animate() const
 // Public slots
 //
 
-void AbstractStackView::setAnimate(bool anim)
+void StackView::setAnimate(bool anim)
 {
     if(_anim != anim)
     {
@@ -59,7 +59,7 @@ void AbstractStackView::setAnimate(bool anim)
     }
 }
 
-void AbstractStackView::pushItem(QQuickItem *item, bool deleteOnPop)
+void StackView::pushItem(QQuickItem *item, bool deleteOnPop)
 {
     if(item)
     {
@@ -81,7 +81,7 @@ void AbstractStackView::pushItem(QQuickItem *item, bool deleteOnPop)
     }
 }
 
-void AbstractStackView::push(QQmlComponent *component)
+void StackView::push(QQmlComponent *component)
 {
     if(component)
     {
@@ -96,13 +96,13 @@ void AbstractStackView::push(QQmlComponent *component)
 }
 
 // Remove parent of the previous item
-void AbstractStackView::finishPush()
+void StackView::finishPush()
 {
     if(_stack.size() > 1)
         _stack.at(_stack.size() - 2).first->setParentItem(nullptr);
 }
 
-void AbstractStackView::pop()
+void StackView::pop()
 {
     // Don't pop the first item
     if(_stack.size() < 2)
@@ -124,7 +124,7 @@ void AbstractStackView::pop()
 }
 
 // Handle the poped item
-void AbstractStackView::finishPop()
+void StackView::finishPop()
 {
     if(!_pair.first)
         return;

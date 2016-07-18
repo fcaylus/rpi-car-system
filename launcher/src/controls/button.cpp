@@ -16,20 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "basicbutton.h"
+#include "button.h"
 
 #include <QMouseEvent>
 #include <QFocusEvent>
 #include <QTimerEvent>
-#include <QGuiApplication>
-#include <QStyleHints>
 #include <QPointF>
-#include <QLineF>
 #include <QRectF>
 
-#include <QDebug>
-
-BasicButton::BasicButton(QQuickItem *parent): QQuickItem(parent)
+Button::Button(QQuickItem *parent): QQuickItem(parent)
 {
     setAcceptedMouseButtons(Qt::LeftButton);
 }
@@ -38,57 +33,57 @@ BasicButton::BasicButton(QQuickItem *parent): QQuickItem(parent)
 // Getters
 //
 
-bool BasicButton::isPressed() const
+bool Button::isPressed() const
 {
     return _pressed;
 }
 
-bool BasicButton::isChecked() const
+bool Button::isChecked() const
 {
     return _checked;
 }
 
-bool BasicButton::isCheckable() const
+bool Button::isCheckable() const
 {
     return _checkable;
 }
 
-bool BasicButton::autoRepeat() const
+bool Button::autoRepeat() const
 {
     return _autoRepeat;
 }
 
-bool BasicButton::isPressAndHoldEnabled() const
+bool Button::isPressAndHoldEnabled() const
 {
     return _pressAndHoldEnabled;
 }
 
-int BasicButton::repeatInterval() const
+int Button::repeatInterval() const
 {
     return _repeatInterval;
 }
 
-bool BasicButton::hasSecondState() const
+bool Button::hasSecondState() const
 {
     return _hasSecond;
 }
 
-bool BasicButton::isSecondStateEnabled() const
+bool Button::isSecondStateEnabled() const
 {
     return _secondEnabled;
 }
 
-int BasicButton::currentState() const
+int Button::currentState() const
 {
     return _hasSecond && _secondEnabled ? 2 : (_checkable && _checked ? 1 : 0);
 }
 
-QQuickItem* BasicButton::background() const
+QQuickItem* Button::background() const
 {
     return _background;
 }
 
-QQuickItem* BasicButton::label() const
+QQuickItem* Button::label() const
 {
     return _label;
 }
@@ -97,7 +92,7 @@ QQuickItem* BasicButton::label() const
 // Setters
 //
 
-void BasicButton::setPressed(bool pressed)
+void Button::setPressed(bool pressed)
 {
     if(_pressed != pressed)
     {
@@ -106,7 +101,7 @@ void BasicButton::setPressed(bool pressed)
     }
 }
 
-void BasicButton::setChecked(bool checked)
+void Button::setChecked(bool checked)
 {
     if(checked && !_checkable)
         setCheckable(true);
@@ -119,7 +114,7 @@ void BasicButton::setChecked(bool checked)
     }
 }
 
-void BasicButton::setCheckable(bool checkable)
+void Button::setCheckable(bool checkable)
 {
     if(_checkable != checkable)
     {
@@ -128,7 +123,7 @@ void BasicButton::setCheckable(bool checkable)
     }
 }
 
-void BasicButton::setAutoRepeat(bool repeat)
+void Button::setAutoRepeat(bool repeat)
 {
     if(_autoRepeat != repeat)
     {
@@ -138,7 +133,7 @@ void BasicButton::setAutoRepeat(bool repeat)
     }
 }
 
-void BasicButton::setRepeatInterval(int repeat)
+void Button::setRepeatInterval(int repeat)
 {
     if(_repeatInterval != repeat)
     {
@@ -150,7 +145,7 @@ void BasicButton::setRepeatInterval(int repeat)
     }
 }
 
-void BasicButton::setEnablePressAndHold(bool enable)
+void Button::setEnablePressAndHold(bool enable)
 {
     if(_pressAndHoldEnabled != enable)
     {
@@ -161,7 +156,7 @@ void BasicButton::setEnablePressAndHold(bool enable)
     }
 }
 
-void BasicButton::setHasSecondState(bool hasSecondState)
+void Button::setHasSecondState(bool hasSecondState)
 {
     if(hasSecondState != _hasSecond)
     {
@@ -174,7 +169,7 @@ void BasicButton::setHasSecondState(bool hasSecondState)
     }
 }
 
-void BasicButton::setSecondStateEnabled(bool enabled)
+void Button::setSecondStateEnabled(bool enabled)
 {
     if(_secondEnabled != enabled)
     {
@@ -187,7 +182,7 @@ void BasicButton::setSecondStateEnabled(bool enabled)
     }
 }
 
-void BasicButton::setBackground(QQuickItem *background)
+void Button::setBackground(QQuickItem *background)
 {
     if(background != _background)
     {
@@ -207,7 +202,7 @@ void BasicButton::setBackground(QQuickItem *background)
     }
 }
 
-void BasicButton::setLabel(QQuickItem *label)
+void Button::setLabel(QQuickItem *label)
 {
     if(_label != label)
     {
@@ -226,13 +221,13 @@ void BasicButton::setLabel(QQuickItem *label)
     }
 }
 
-void BasicButton::toggle()
+void Button::toggle()
 {
     setChecked(!_checked);
 }
 
 // Simulate a click
-void BasicButton::click()
+void Button::click()
 {
     setPressed(true);
     emit pressed();
@@ -246,7 +241,7 @@ void BasicButton::click()
 // Re-implemented
 //
 
-void BasicButton::focusOutEvent(QFocusEvent *event)
+void Button::focusOutEvent(QFocusEvent *event)
 {
     QQuickItem::focusOutEvent(event);
     if(_pressed)
@@ -257,7 +252,7 @@ void BasicButton::focusOutEvent(QFocusEvent *event)
 
 }
 
-void BasicButton::mousePressEvent(QMouseEvent *event)
+void Button::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
     event->accept();
@@ -276,7 +271,7 @@ void BasicButton::mousePressEvent(QMouseEvent *event)
         stopPressAndHold();
 }
 
-void BasicButton::mouseMoveEvent(QMouseEvent *event)
+void Button::mouseMoveEvent(QMouseEvent *event)
 {
     QQuickItem::mouseMoveEvent(event);
     event->accept();
@@ -291,7 +286,7 @@ void BasicButton::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void BasicButton::mouseReleaseEvent(QMouseEvent *event)
+void Button::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickItem::mouseReleaseEvent(event);
     event->accept();
@@ -338,7 +333,7 @@ void BasicButton::mouseReleaseEvent(QMouseEvent *event)
         stopPressAndHold();
 }
 
-void BasicButton::mouseUngrabEvent()
+void Button::mouseUngrabEvent()
 {
     QQuickItem::mouseUngrabEvent();
     if(_pressed)
@@ -350,7 +345,7 @@ void BasicButton::mouseUngrabEvent()
     }
 }
 
-void BasicButton::timerEvent(QTimerEvent *event)
+void Button::timerEvent(QTimerEvent *event)
 {
     QQuickItem::timerEvent(event);
     if(event->timerId() == _holdTimer)
@@ -371,7 +366,7 @@ void BasicButton::timerEvent(QTimerEvent *event)
     }
 }
 
-void BasicButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void Button::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     updateImplicitWidth();
@@ -383,7 +378,7 @@ void BasicButton::geometryChanged(const QRectF &newGeometry, const QRectF &oldGe
 // Resize
 //
 
-void BasicButton::resizeBackground()
+void Button::resizeBackground()
 {
     if(_background)
     {
@@ -395,7 +390,7 @@ void BasicButton::resizeBackground()
     }
 }
 
-void BasicButton::resizeLabel()
+void Button::resizeLabel()
 {
     if(_label)
     {
@@ -404,7 +399,7 @@ void BasicButton::resizeLabel()
     }
 }
 
-void BasicButton::updateImplicitWidth()
+void Button::updateImplicitWidth()
 {
     setImplicitWidth(qMax(_background ? _background->implicitWidth() : 0,
                           _label ? _label->implicitWidth() : 0));
@@ -417,15 +412,15 @@ void BasicButton::updateImplicitWidth()
 // Press and hold
 //
 
-void BasicButton::startPressAndHold()
+void Button::startPressAndHold()
 {
     _wasHeld = false;
     stopPressAndHold();
     if(isPressAndHoldEnabled())
-        _holdTimer = startTimer(QGuiApplication::styleHints()->mousePressAndHoldInterval());
+        _holdTimer = startTimer(800);
 }
 
-void BasicButton::stopPressAndHold()
+void Button::stopPressAndHold()
 {
     if(_holdTimer > 0)
     {
@@ -438,19 +433,19 @@ void BasicButton::stopPressAndHold()
 // Auto repeat
 //
 
-void BasicButton::startRepeatDelay()
+void Button::startRepeatDelay()
 {
     stopPressRepeat();
     _delayTimer = startTimer(300);
 }
 
-void BasicButton::startPressRepeat()
+void Button::startPressRepeat()
 {
     stopPressRepeat();
     _repeatTimer = startTimer(_repeatInterval);
 }
 
-void BasicButton::stopPressRepeat()
+void Button::stopPressRepeat()
 {
     if(_delayTimer > 0)
     {

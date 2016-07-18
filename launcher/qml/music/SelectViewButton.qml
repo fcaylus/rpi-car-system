@@ -21,7 +21,7 @@ import rpicarsystem.controls 1.0
 import "."
 import ".."
 
-BasicButton {
+AbstractButton {
     id: but
     property string text
 

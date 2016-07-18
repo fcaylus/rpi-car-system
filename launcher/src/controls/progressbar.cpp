@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "abstractprogressbar.h"
+#include "progressbar.h"
 
-AbstractProgressBar::AbstractProgressBar(QQuickItem *parent): QQuickItem(parent)
+ProgressBar::ProgressBar(QQuickItem *parent): QQuickItem(parent)
 {
 }
 
@@ -26,39 +26,39 @@ AbstractProgressBar::AbstractProgressBar(QQuickItem *parent): QQuickItem(parent)
 // Getters
 //
 
-qreal AbstractProgressBar::minimumValue() const
+qreal ProgressBar::minimumValue() const
 {
     return _min;
 }
 
-qreal AbstractProgressBar::maximumValue() const
+qreal ProgressBar::maximumValue() const
 {
     return _max;
 }
 
-qreal AbstractProgressBar::value() const
+qreal ProgressBar::value() const
 {
     return _value;
 }
 
-qreal AbstractProgressBar::position() const
+qreal ProgressBar::position() const
 {
     if(qFuzzyCompare(_min, _max))
         return 0.0;
     return (_value - _min) / (_max - _min);
 }
 
-Qt::Orientation AbstractProgressBar::orientation() const
+Qt::Orientation ProgressBar::orientation() const
 {
     return _orientation;
 }
 
-QQuickItem* AbstractProgressBar::background() const
+QQuickItem* ProgressBar::background() const
 {
     return _background;
 }
 
-QQuickItem* AbstractProgressBar::indicator() const
+QQuickItem* ProgressBar::indicator() const
 {
     return _indicator;
 }
@@ -67,7 +67,7 @@ QQuickItem* AbstractProgressBar::indicator() const
 // Setters
 //
 
-void AbstractProgressBar::setMinimumValue(qreal min)
+void ProgressBar::setMinimumValue(qreal min)
 {
     if(!qFuzzyCompare(min, _min) && min < _max)
     {
@@ -79,7 +79,7 @@ void AbstractProgressBar::setMinimumValue(qreal min)
     }
 }
 
-void AbstractProgressBar::setMaximumValue(qreal max)
+void ProgressBar::setMaximumValue(qreal max)
 {
     if(!qFuzzyCompare(max, _max) && max > _min)
     {
@@ -91,7 +91,7 @@ void AbstractProgressBar::setMaximumValue(qreal max)
     }
 }
 
-void AbstractProgressBar::setValue(qreal val)
+void ProgressBar::setValue(qreal val)
 {
     val = qBound(_min, val, _max);
     if(!qFuzzyCompare(val, _value))
@@ -102,7 +102,7 @@ void AbstractProgressBar::setValue(qreal val)
     }
 }
 
-void AbstractProgressBar::setOrientation(Qt::Orientation orientation)
+void ProgressBar::setOrientation(Qt::Orientation orientation)
 {
     if(_orientation != orientation)
     {
@@ -111,7 +111,7 @@ void AbstractProgressBar::setOrientation(Qt::Orientation orientation)
     }
 }
 
-void AbstractProgressBar::setBackground(QQuickItem *background)
+void ProgressBar::setBackground(QQuickItem *background)
 {
     if(background != _background)
     {
@@ -129,7 +129,7 @@ void AbstractProgressBar::setBackground(QQuickItem *background)
     }
 }
 
-void AbstractProgressBar::setIndicator(QQuickItem *indicator)
+void ProgressBar::setIndicator(QQuickItem *indicator)
 {
     if(_indicator != indicator)
     {
@@ -145,7 +145,7 @@ void AbstractProgressBar::setIndicator(QQuickItem *indicator)
 // Re-implemented
 //
 
-void AbstractProgressBar::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void ProgressBar::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     resizeBackground();
@@ -155,7 +155,7 @@ void AbstractProgressBar::geometryChanged(const QRectF &newGeometry, const QRect
 // Resize
 //
 
-void AbstractProgressBar::resizeBackground()
+void ProgressBar::resizeBackground()
 {
     if(_background)
     {

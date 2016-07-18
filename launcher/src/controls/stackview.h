@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTSTACKVIEW_H
-#define ABSTRACTSTACKVIEW_H
+#ifndef STACKVIEW_H
+#define STACKVIEW_H
 
 #include <QQuickItem>
-#include <QQmlComponent>
 #include <QStack>
 
-class AbstractStackView : public QQuickItem
+class QQmlComponent;
+
+class StackView : public QQuickItem
 {
         Q_OBJECT
 
@@ -34,7 +35,7 @@ class AbstractStackView : public QQuickItem
         Q_PROPERTY(bool animate READ animate WRITE setAnimate NOTIFY animateChanged)
 
     public:
-        AbstractStackView(QQuickItem* parent = nullptr);
+        StackView(QQuickItem* parent = nullptr);
 
         QQuickItem* currentItem() const;
         int depth() const;
@@ -74,4 +75,4 @@ class AbstractStackView : public QQuickItem
         QPair<QQuickItem*, bool> _pair;
 };
 
-#endif // ABSTRACTSTACKVIEW_H
+#endif // STACKVIEW_H

@@ -20,7 +20,7 @@ import QtQuick 2.5
 import rpicarsystem.controls 1.0
 import "."
 
-BasicButton {
+AbstractButton {
     id: but
     property bool alignCenter: true
 

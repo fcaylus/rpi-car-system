@@ -85,9 +85,9 @@ SOURCES += \
     src/musicqueuelistmodel.cpp \
     src/mediamanager/playlistlistmodel.cpp \
     src/sysinfomanager.cpp \
-    src/controls/basicbutton.cpp \
-    src/controls/abstractprogressbar.cpp \
-    src/controls/abstractstackview.cpp
+    src/controls/button.cpp \
+    src/controls/stackview.cpp \
+    src/controls/progressbar.cpp
 
 HEADERS += \
     src/dirutility.h \
@@ -107,9 +107,9 @@ HEADERS += \
     src/mediamanager/metadatalistmodel.h \
     src/musicqueuelistmodel.h \
     src/mediamanager/playlistlistmodel.h \
-    src/controls/basicbutton.h \
-    src/controls/abstractprogressbar.h \
-    src/controls/abstractstackview.h
+    src/controls/stackview.h \
+    src/controls/progressbar.h \
+    src/controls/button.h
 
 RESOURCES += \
     res.qrc

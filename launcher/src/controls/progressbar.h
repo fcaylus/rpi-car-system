@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTPROGRESSBAR_H
-#define ABSTRACTPROGRESSBAR_H
+#ifndef PROGRESSBAR_H
+#define PROGRESSBAR_H
 
 #include <QQuickItem>
 
-class AbstractProgressBar: public QQuickItem
+class ProgressBar: public QQuickItem
 {
         Q_OBJECT
 
@@ -37,7 +37,7 @@ class AbstractProgressBar: public QQuickItem
         Q_PROPERTY(QQuickItem* indicator READ indicator WRITE setIndicator NOTIFY indicatorChanged)
 
     public:
-        AbstractProgressBar(QQuickItem* parent = nullptr);
+        ProgressBar(QQuickItem* parent = nullptr);
 
         qreal minimumValue() const;
         qreal maximumValue() const;
@@ -90,4 +90,4 @@ class AbstractProgressBar: public QQuickItem
         void resizeBackground();
 };
 
-#endif // ABSTRACTPROGRESSBAR_H
+#endif // PROGRESSBAR_H

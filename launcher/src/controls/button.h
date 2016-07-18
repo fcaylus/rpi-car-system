@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BASICBUTTON_H
-#define BASICBUTTON_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include <QQuickItem>
 
 // It's a lightweight alternative to QtQuickControl Button's
-class BasicButton : public QQuickItem
+class Button : public QQuickItem
 {
         Q_OBJECT
 
@@ -49,7 +49,7 @@ class BasicButton : public QQuickItem
         Q_PROPERTY(QQuickItem* label READ label WRITE setLabel NOTIFY labelChanged)
 
     public:
-        BasicButton(QQuickItem* parent = nullptr);
+        Button(QQuickItem* parent = nullptr);
 
         bool isPressed() const;
         bool isChecked() const;
@@ -156,4 +156,4 @@ class BasicButton : public QQuickItem
         QPointF _pressPoint;
 };
 
-#endif // BASICBUTTON_H
+#endif // BUTTON_H

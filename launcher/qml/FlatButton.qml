@@ -21,7 +21,7 @@ import rpicarsystem.controls 1.0
 import QtGraphicalEffects 1.0
 import "."
 
-BasicButton {
+AbstractButton {
     id: but
     property url iconSource
 
