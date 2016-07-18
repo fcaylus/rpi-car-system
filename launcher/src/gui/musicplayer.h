@@ -19,7 +19,7 @@
 #ifndef MUSICPLAYER_H
 #define MUSICPLAYER_H
 
-#include "mediamanager/mediainfo.h"
+#include "../core/mediamanager/mediainfo.h"
 
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/MediaPlayer.h>

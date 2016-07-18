@@ -17,7 +17,7 @@
  */
 
 #include "metadatalistmodel.h"
-#include "mediamanager.h"
+#include "../../core/mediamanager/mediamanager.h"
 
 #include <algorithm>
 

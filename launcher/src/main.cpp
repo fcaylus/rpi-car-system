@@ -32,23 +32,23 @@
 #include <QFont>
 #include <QFontDatabase>
 
-#include "languagemanager.h"
-#include "passwordmanager.h"
-#include "sysinfomanager.h"
-#include "updatemanager.h"
-#include "tshandler.h"
+#include "core/languagemanager.h"
+#include "core/passwordmanager.h"
+#include "core/sysinfomanager.h"
+#include "core/updatemanager.h"
+#include "gui/tshandler.h"
 
-#include "musicplayer.h"
-#include "musicqueuelistmodel.h"
-#include "mediamanager/mediamanager.h"
-#include "mediamanager/metadatalistmodel.h"
-#include "mediamanager/musiclistmodel.h"
-#include "mediamanager/playlistlistmodel.h"
-#include "mediamanager/playlist.h"
+#include "core/mediamanager/playlist.h"
+#include "core/mediamanager/mediamanager.h"
+#include "gui/models/musicqueuelistmodel.h"
+#include "gui/models/metadatalistmodel.h"
+#include "gui/models/musiclistmodel.h"
+#include "gui/models/playlistlistmodel.h"
+#include "gui/musicplayer.h"
 
-#include "controls/button.h"
-#include "controls/progressbar.h"
-#include "controls/stackview.h"
+#include "gui/controls/button.h"
+#include "gui/controls/progressbar.h"
+#include "gui/controls/stackview.h"
 
 static const QString settingsLocaleStr = "locale";
 

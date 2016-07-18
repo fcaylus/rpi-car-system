@@ -17,8 +17,9 @@
  */
 
 #include "musiclistmodel.h"
-#include "mediamanager.h"
-#include "playlist.h"
+
+#include "../../core/mediamanager/mediamanager.h"
+#include "../../core/mediamanager/playlist.h"
 
 #include <algorithm>
 

@@ -25,7 +25,7 @@
 #include <QString>
 #include <QDebug>
 
-#include "dirutility.h"
+#include "core/dirutility.h"
 #include "updatercodes.h"
 
 namespace DecompressUtilInternal

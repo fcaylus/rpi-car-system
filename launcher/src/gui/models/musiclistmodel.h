@@ -21,7 +21,7 @@
 
 #include <QAbstractListModel>
 
-#include "mediainfo.h"
+#include "../../core/mediamanager/mediainfo.h"
 
 class MusicListModel : public QAbstractListModel
 {

@@ -74,42 +74,42 @@ include(../thirdparty/mediainfolib.pri)
 
 SOURCES += \
     src/main.cpp \
-    src/tshandler.cpp \
-    src/mediamanager/mediamanager.cpp \
-    src/mediamanager/playlist.cpp \
-    src/mediamanager/usbsource.cpp \
-    src/mediamanager/mediainfo.cpp \
-    src/musicplayer.cpp \
-    src/mediamanager/musiclistmodel.cpp \
-    src/mediamanager/metadatalistmodel.cpp \
-    src/musicqueuelistmodel.cpp \
-    src/mediamanager/playlistlistmodel.cpp \
-    src/sysinfomanager.cpp \
-    src/controls/button.cpp \
-    src/controls/stackview.cpp \
-    src/controls/progressbar.cpp
+    src/core/sysinfomanager.cpp \
+    src/core/mediamanager/mediamanager.cpp \
+    src/core/mediamanager/playlist.cpp \
+    src/core/mediamanager/usbsource.cpp \
+    src/core/mediamanager/mediainfo.cpp \
+    src/gui/musicplayer.cpp \
+    src/gui/tshandler.cpp \
+    src/gui/models/musiclistmodel.cpp \
+    src/gui/models/metadatalistmodel.cpp \
+    src/gui/models/musicqueuelistmodel.cpp \
+    src/gui/models/playlistlistmodel.cpp \
+    src/gui/controls/button.cpp \
+    src/gui/controls/stackview.cpp \
+    src/gui/controls/progressbar.cpp
 
 HEADERS += \
-    src/dirutility.h \
-    src/passwordmanager.h \
-    src/common.h \
-    src/languagemanager.h \
-    src/sysinfomanager.h \
-    src/updatemanager.h \
-    src/tshandler.h \
-    src/mediamanager/mediamanager.h \
-    src/mediamanager/playlist.h \
-    src/mediamanager/mediasource.h \
-    src/mediamanager/usbsource.h \
-    src/mediamanager/mediainfo.h \
-    src/musicplayer.h \
-    src/mediamanager/musiclistmodel.h \
-    src/mediamanager/metadatalistmodel.h \
-    src/musicqueuelistmodel.h \
-    src/mediamanager/playlistlistmodel.h \
-    src/controls/stackview.h \
-    src/controls/progressbar.h \
-    src/controls/button.h
+    src/core/dirutility.h \
+    src/core/passwordmanager.h \
+    src/core/common.h \
+    src/core/languagemanager.h \
+    src/core/sysinfomanager.h \
+    src/core/updatemanager.h \
+    src/core/mediamanager/mediamanager.h \
+    src/core/mediamanager/playlist.h \
+    src/core/mediamanager/mediasource.h \
+    src/core/mediamanager/usbsource.h \
+    src/core/mediamanager/mediainfo.h \
+    src/gui/tshandler.h \
+    src/gui/musicplayer.h \
+    src/gui/models/musiclistmodel.h \
+    src/gui/models/metadatalistmodel.h \
+    src/gui/models/musicqueuelistmodel.h \
+    src/gui/models/playlistlistmodel.h \
+    src/gui/controls/stackview.h \
+    src/gui/controls/progressbar.h \
+    src/gui/controls/button.h
 
 RESOURCES += \
     res.qrc

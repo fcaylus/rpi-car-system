@@ -21,7 +21,7 @@
 
 #include <QAbstractListModel>
 
-#include "musicplayer.h"
+#include "../musicplayer.h"
 
 // Used in QML by MusicQueuePopup.qml
 class MusicQueueListModel : public QAbstractListModel

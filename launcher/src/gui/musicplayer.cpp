@@ -36,11 +36,11 @@
 
 #include <algorithm>
 
-#include "dirutility.h"
-#include "common.h"
+#include "../core/dirutility.h"
+#include "../core/common.h"
 
-#include "mediamanager/mediamanager.h"
-#include "mediamanager/playlist.h"
+#include "../core/mediamanager/mediamanager.h"
+#include "../core/mediamanager/playlist.h"
 
 static const QString settingsGroupStr = "music";
 static const QString settingsRandomStr = "random";
