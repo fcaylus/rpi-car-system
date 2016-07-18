@@ -184,7 +184,10 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName(APPLICATION_NAME);
     QGuiApplication::setOrganizationName(APPLICATION_NAME);
 
-    QSettings *settings = new QSettings(Common::configDir() + QLatin1String("/settings.ini"), QSettings::IniFormat);
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, Common::configDir());
+    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, Common::configDir());
+    QSettings *settings = new QSettings();
     settings->setFallbacksEnabled(false);
 
     // Get locale
