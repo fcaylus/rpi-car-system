@@ -33,9 +33,9 @@ class PlaylistListModel : public QAbstractListModel
 
         PlaylistListModel(QObject *parent = nullptr);
 
-        int rowCount(const QModelIndex &parent) const;
-        QVariant data(const QModelIndex &index, int role) const;
-        QHash<int, QByteArray> roleNames() const;
+        int rowCount(const QModelIndex &parent) const override;
+        QVariant data(const QModelIndex &index, int role) const override;
+        QHash<int, QByteArray> roleNames() const override;
 
     public slots:
 
