@@ -7,7 +7,7 @@ cd "$SCRIPT_DIR"
 mkdir -pv build
 cd build
 
-BUILDROOT_VER="2016.05"
+BUILDROOT_VER="2016.08-rc1"
 
 # Check if a clean is requested
 if [ "$1" = "--remove-rpi-car-system-pkg" ]; then
