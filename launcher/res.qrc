@@ -24,7 +24,6 @@
         <file>qml/settings/SettingsLanguage.qml</file>
         <file>qml/settings/SettingsAbout.qml</file>
         <file>LICENSE.html</file>
-        <file>ThirdpartyLicenses.xml</file>
         <file>qml/ConfirmationPopup.qml</file>
         <file>qml/PopupButton.qml</file>
         <file>qml/settings/SettingsUpdate.qml</file>

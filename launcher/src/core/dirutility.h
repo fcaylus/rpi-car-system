@@ -36,7 +36,6 @@
 
 namespace DirUtility
 {
-
     static inline QString readFile(const QString &fileName)
     {
         QFile file(fileName);

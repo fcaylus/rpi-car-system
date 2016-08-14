@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.5
-import QtQuick.XmlListModel 2.0
+import rpicarsystem.licenses 1.0
 import ".."
 import "."
 
@@ -37,7 +37,6 @@ Activity {
             licenseButton.checked = false
             license3rdButton.checked = false
             control = about
-            checked = true
         }
         checked: true
     }
@@ -53,7 +52,6 @@ Activity {
             aboutButton.checked = false
             license3rdButton.checked = false
             control = license
-            checked = true
         }
     }
 
@@ -67,8 +65,14 @@ Activity {
         onClicked: {
             licenseButton.checked = false
             aboutButton.checked = false
+
+            // Reload the component if already loader
+            if(control === license3rd) {
+                control = null
+                checked = false
+            }
+
             control = license3rd
-            checkable = true
         }
     }
 
@@ -88,15 +92,15 @@ Activity {
     }
 
     property Component license: Flickable {
-        id: flick
         anchors.fill: parent
         anchors.topMargin: 25
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
         contentHeight: text.height
 
         StyledText {
             id: text
-            x: 20
-            width: parent.width - 40
+            width: parent.width
             textFormat: Text.RichText
             wrapMode: Text.Wrap
             verticalAlignment: Text.AlignVCenter
@@ -104,34 +108,61 @@ Activity {
         }
     }
 
-    property Component license3rd: ListViewBase {
-        id: listView3rd
-
+    property Component license3rd: Item {
+        id: license3rdView
         anchors.fill: parent
         anchors.margins: 20
+        anchors.bottomMargin: 0
 
-        spacing: 20
+        property string licenseText
 
-        // Reset header
-        header: Item {
+        Flickable {
+            id: licenseViewer
+            anchors.fill: parent
+            contentHeight: licenseTextView.height
+
+            visible: false
+
+            StyledText {
+                id: licenseTextView
+                width: parent.width
+                //textFormat: Text.StyledText
+                wrapMode: Text.Wrap
+                verticalAlignment: Text.AlignVCenter
+                text: licenseText
+            }
         }
 
-        model: XmlListModel {
-            id: model
+        ListViewBase {
+            id: listView3rd
 
-            source: "qrc:/ThirdpartyLicenses.xml"
-            query: "/deps/dep"
+            anchors.fill: parent
+            spacing: 5
 
-            XmlRole { name: "name"; query: "name/string()" }
-            XmlRole { name: "license"; query: "license/string()" }
-        }
+            // Reset header
+            header: Item {
+            }
 
-        delegate: StyledText {
-            width: listView3rd.width
-            textFormat: Text.RichText
-            wrapMode: Text.Wrap
-            verticalAlignment: Text.AlignVCenter
-            text: "<h1><b>" + name + "</b></h1>\n" + license
+            model: LicensesListModel {
+            }
+
+            delegate: StyledText {
+                width: listView3rd.width
+                textFormat: Text.StyledText
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.Wrap
+                font.pixelSize: 18
+                text: "<b>" + packageName + " " + version + " : </b>" + licenseName
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        license3rdView.licenseText = licenseText
+                        licenseViewer.visible = true
+                        listView3rd.visible = false
+                    }
+                }
+            }
         }
     }
 

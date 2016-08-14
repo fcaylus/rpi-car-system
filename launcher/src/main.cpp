@@ -45,6 +45,7 @@
 #include "gui/models/musiclistmodel.h"
 #include "gui/models/playlistlistmodel.h"
 #include "gui/models/keyboardlayoutmodel.h"
+#include "gui/models/licenseslistmodel.h"
 #include "gui/musicplayer.h"
 
 #include "gui/controls/button.h"
@@ -124,6 +125,8 @@ void afterSplashScreen(QGuiApplication *app, QQuickView *view, QSettings *settin
     qmlRegisterUncreatableType<KeyboardFirstRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardFirstRowModel", "Use KeyboardLayoutModel instead.");
     qmlRegisterUncreatableType<KeyboardSecondRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardSecondRowModel", "Use KeyboardLayoutModel instead.");
     qmlRegisterUncreatableType<KeyboardThirdRowModel>("rpicarsystem.keyboard", 1, 0, "KeyboardThirdRowModel", "Use KeyboardLayoutModel instead.");
+
+    qmlRegisterType<LicensesListModel>("rpicarsystem.licenses", 1, 0, "LicensesListModel");
 
     qmlRegisterType<Button>("rpicarsystem.controls", 1, 0, "AbstractButton");
     qmlRegisterType<ProgressBar>("rpicarsystem.controls", 1, 0, "AbstractProgressBar");

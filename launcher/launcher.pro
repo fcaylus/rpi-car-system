@@ -35,7 +35,17 @@ DEFINES += LAUNCHER_APP
 include(../common.pri)
 
 # Create version file in build dir
-QMAKE_POST_LINK = echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION";
+system(mkdir -p "$${DESTDIR}"; echo "$${APPLICATION_VERSION}" > "$${DESTDIR}/VERSION")
+
+# Copy licenses files to build dir
+system(mkdir -p "$${DESTDIR}/licenses/files/pugixml-1.7")
+system(cp "$$_PRO_FILE_PWD_/../thirdparty/pugixml/LICENSE.txt" "$${DESTDIR}/licenses/files/pugixml-1.7")
+system(mkdir -p "$${DESTDIR}/licenses/files/MiniFlatFlags")
+system(cp "$$_PRO_FILE_PWD_/thirdparty/MiniFlatFlags/LICENSE.txt" "$${DESTDIR}/licenses/files/MiniFlatFlags")
+system(mkdir -p "$${DESTDIR}/licenses/files/OpenSansFont")
+system(cp "$$_PRO_FILE_PWD_/fonts/LICENSE-OpenSans.txt" "$${DESTDIR}/licenses/files/OpenSansFont")
+system(mkdir -p "$${DESTDIR}/licenses/files/MaterialIcons")
+system(cp "$$_PRO_FILE_PWD_/imgs/LICENSE-MaterialIcons.txt" "$${DESTDIR}/licenses/files/MaterialIcons")
 
 #
 # Thirdparty stuff
@@ -88,7 +98,8 @@ SOURCES += \
     src/gui/controls/button.cpp \
     src/gui/controls/stackview.cpp \
     src/gui/controls/progressbar.cpp \
-    src/gui/models/keyboardlayoutmodel.cpp
+    src/gui/models/keyboardlayoutmodel.cpp \
+    src/gui/models/licenseslistmodel.cpp
 
 HEADERS += \
     src/core/dirutility.h \
@@ -111,7 +122,8 @@ HEADERS += \
     src/gui/controls/stackview.h \
     src/gui/controls/progressbar.h \
     src/gui/controls/button.h \
-    src/gui/models/keyboardlayoutmodel.h
+    src/gui/models/keyboardlayoutmodel.h \
+    src/gui/models/licenseslistmodel.h
 
 RESOURCES += \
     res.qrc
@@ -142,7 +154,17 @@ CONFIG(READY_FOR_CARSYSTEM) {
 
     install_utils.path = $${RPI_INSTALL_PATH}
     install_utils.files = util/*
+
+    message($${DESTDIR}/VERSION)
+
+    install_version.path = $${RPI_INSTALL_PATH}
+    install_version.files = $${DESTDIR}/VERSION
+
     install_qm.path = $${RPI_INSTALL_PATH}/translations
     install_qm.files = i18n/$${APPLICATION_TARGET}_fr.qm
-    INSTALLS += install_utils install_qm
+
+    install_licenses.path = $${RPI_INSTALL_PATH}/licenses
+    install_licenses.files = $${DESTDIR}/licenses/*
+
+    INSTALLS += install_utils install_version install_qm install_licenses
 }

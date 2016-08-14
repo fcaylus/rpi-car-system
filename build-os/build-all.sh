@@ -12,10 +12,12 @@ BUILDROOT_VER="2016.08-rc1"
 # Check if a clean is requested
 if [ "$1" = "--remove-rpi-car-system-pkg" ]; then
 	set +e
+
 	rm -f system-build.done
 	rm -f rpi-car-system-sources.tar.gz
 	rm -f buildroot-${BUILDROOT_VER}/dl/rpi-car-system-sources.tar.gz
-	rm -rf buildroot-${BUILDROOT_VER}/output/build/rpi-car-system-undefined
+	rm -rf buildroot-${BUILDROOT_VER}/output/build/rpi-car-system
+	rm -rf buildroot-${BUILDROOT_VER}/package/rpi-car-system
 
 	cd buildroot-${BUILDROOT_VER}
 	make skeleton-rebuild
@@ -64,7 +66,12 @@ if [ ! -f system-build.done ]; then
 
     make
 
-	cp output/build/rpi-car-system-undefined/build/bin/release/VERSION output/target/opt/rpi-car-system/VERSION
+	# Manage licenses files
+    make legal-info
+	set +e
+	cp output/legal-info/manifest.csv output/target/opt/rpi-car-system/licenses
+	cp -r output/legal-info/licenses/* output/target/opt/rpi-car-system/licenses/files
+	set -e
 
     # This file is used to check if the system has been built
     > "$SCRIPT_DIR/build/system-build.done"
