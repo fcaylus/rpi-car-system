@@ -56,7 +56,7 @@ LicensesListModel::LicensesListModel(QObject *parent) : QAbstractListModel(paren
             line.remove(0, 1);
             QStringList elements = line.split("\",\"", QString::KeepEmptyParts);
 
-            if(elements.size() >= 4 && elements.at(0) != "rpi-car-system")
+            if(elements.size() >= 4)
             {
                 License lic;
                 lic.package = elements.at(0);

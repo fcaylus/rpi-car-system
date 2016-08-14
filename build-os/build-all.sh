@@ -69,6 +69,8 @@ if [ ! -f system-build.done ]; then
     make legal-info
 	set +e
 	cp output/legal-info/manifest.csv output/target/opt/rpi-car-system/licenses
+	# Remove "rpi-car-system" line since it contains hard coded path
+	sed -i -n '/rpi-car-system/!p' output/target/opt/rpi-car-system/licenses/manifest.csv
 	cp -r output/legal-info/licenses/* output/target/opt/rpi-car-system/licenses/files
 	set -e
 
@@ -149,7 +151,7 @@ rm "${SYSTEM_ROOT}/etc/resolv.conf"
 rm "${SYSTEM_ROOT}/etc/protocols"
 rm "${SYSTEM_ROOT}/etc/nsswitch.conf"
 rm "${SYSTEM_ROOT}/etc/mtab"
-rm "${SYSTEM_ROOT}/etc/hosts"
+#rm "${SYSTEM_ROOT}/etc/hosts"
 rm "${SYSTEM_ROOT}/etc/hostname"
 rm -r "${SYSTEM_ROOT}/etc/init.d"
 
