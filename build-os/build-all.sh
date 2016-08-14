@@ -38,47 +38,38 @@ if [ ! -d buildroot-${BUILDROOT_VER} ]; then
     tar xzf buildroot-${BUILDROOT_VER}.tar.gz
 fi
 
-if [ ! -f system-build.done ]; then
-
-	cd buildroot-${BUILDROOT_VER}
+cd buildroot-${BUILDROOT_VER}
     
-    # Copy config files
-    cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
-	cp "$SCRIPT_DIR/buildroot-patches/busybox.config" busybox.config
-	cp "$SCRIPT_DIR/buildroot-patches/kernel.config" kernel.config
-	cp "$SCRIPT_DIR/buildroot-patches/kernel.patch" kernel.patch
-	cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
-	cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
-	cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
-	cp -r "$SCRIPT_DIR/buildroot-patches/libmediainfo" package/
-	cp -r "$SCRIPT_DIR/buildroot-patches/libzen" package/
-	
-	set +e
-	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"
-	set -e
+# Copy config files
+cp "$SCRIPT_DIR/buildroot-patches/buildroot.config" .config
+cp "$SCRIPT_DIR/buildroot-patches/busybox.config" busybox.config
+cp "$SCRIPT_DIR/buildroot-patches/kernel.config" kernel.config
+cp "$SCRIPT_DIR/buildroot-patches/kernel.patch" kernel.patch
+cp -r "$SCRIPT_DIR/buildroot-patches/libvlc" package/
+cp -r "$SCRIPT_DIR/buildroot-patches/vlc-qt" package/
+cp -r "$SCRIPT_DIR/buildroot-patches/rpi-car-system" package/
+cp -r "$SCRIPT_DIR/buildroot-patches/libmediainfo" package/
+cp -r "$SCRIPT_DIR/buildroot-patches/libzen" package/
 
-	# Create rpi-car-system sources tarball
-	OLD_PWD=$PWD
-	cd "$SCRIPT_DIR/.."
-	tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
-	cd "$OLD_PWD"
+set +e
+patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"
+set -e
 
-    make
+# Create rpi-car-system sources tarball
+OLD_PWD=$PWD
+cd "$SCRIPT_DIR/.."
+tar --exclude="build" --exclude="*~" --exclude="build-os" --exclude=".git" --exclude="Makefile" --exclude="launcher/Makefile" -zcf "$OLD_PWD/../rpi-car-system-sources.tar.gz" .
+cd "$OLD_PWD"
 
-	# Manage licenses files
-    make legal-info
-	set +e
-	cp output/legal-info/manifest.csv output/target/opt/rpi-car-system/licenses
-	# Remove "rpi-car-system" line since it contains hard coded path
-	sed -i -n '/rpi-car-system/!p' output/target/opt/rpi-car-system/licenses/manifest.csv
-	cp -r output/legal-info/licenses/* output/target/opt/rpi-car-system/licenses/files
-	set -e
-
-    # This file is used to check if the system has been built
-    > "$SCRIPT_DIR/build/system-build.done"
-else
-    echo "System already built !!!"
-fi
+make
+# Manage licenses files
+make legal-info
+set +e
+cp output/legal-info/manifest.csv output/target/opt/rpi-car-system/licenses
+# Remove "rpi-car-system" line since it contains hard coded path
+sed -i -n '/rpi-car-system/!p' output/target/opt/rpi-car-system/licenses/manifest.csv
+cp -r output/legal-info/licenses/* output/target/opt/rpi-car-system/licenses/files
+set -e
 
 SYSTEM_ROOT="${SCRIPT_DIR}/build/buildroot-${BUILDROOT_VER}/output/target"
 
@@ -94,7 +85,7 @@ cp -r bootcode.bin start.elf fixup.dat overlays/ ../../target/boot/
 # Rename the kernel
 cd "${SYSTEM_ROOT}/boot"
 set +e
-mv zImage kernel.img
+cp zImage kernel.img
 set -e
 
 #
@@ -175,7 +166,6 @@ rm "${SYSTEM_ROOT}/usr/bin/libzen-config"
 
 rm -r "${SYSTEM_ROOT}/usr/lib/qt/plugins/qmltooling"
 rm "${SYSTEM_ROOT}/usr/lib/"*.py
-rm "${SYSTEM_ROOT}/usr/lib/xml2Conf.sh"
 
 set -e
 
