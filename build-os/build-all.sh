@@ -55,7 +55,6 @@ if [ ! -f system-build.done ]; then
 	
 	set +e
 	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/Config.in.patch"
-	patch -f -p 1 < "$SCRIPT_DIR/buildroot-patches/qt5.patch"
 	set -e
 
 	# Create rpi-car-system sources tarball
