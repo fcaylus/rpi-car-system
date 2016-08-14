@@ -27,17 +27,7 @@
 
 LicensesListModel::LicensesListModel(QObject *parent) : QAbstractListModel(parent)
 {
-    // Add some licenses that are bundled directly in the app
-
-    /*struct License
-        {
-            QString package;
-            QString version;
-            QString name;
-
-            QStringList files;
-        };*/
-
+    // Add some licenses of packages bundled directly in the app
     _list.append(License({"pugixml", "1.7", "MIT", QStringList() << "LICENSE.txt"}));
     _list.append(License({"MiniFlatFlags", "", "CC0 1.0 Universal", QStringList() << "LICENSE.txt"}));
     _list.append(License({"OpenSansFont", "", "Apache 2.0", QStringList() << "LICENSE-OpenSans.txt"}));
