@@ -55,57 +55,6 @@ namespace DirUtility
         }
     }
 
-    static inline QString fileNameFromPath(QString path)
-    {
-        QFileInfo info(path);
-        return info.fileName();
-    }
-
-    // Return the file path for the specified URI
-    static inline QString filePathForURI(QString uri)
-    {
-        if(uri.startsWith(QLatin1String("file://")))
-            uri.remove(0, 7);
-
-        return QUrl::fromPercentEncoding(uri.toUtf8());
-    }
-
-    static inline bool removeIfExists(const QString& path)
-    {
-        QFile file(path);
-        if(file.exists())
-            return file.remove();
-        return true;
-    }
-
-    static inline uint countFilesRecursively(QDirIterator *it)
-    {
-        uint count = 0;
-        while(it->hasNext())
-        {
-            it->next();
-            count += 1;
-        }
-        return count;
-    }
-
-    static inline uint countFilesRecursively(const QString& dirPath, const QStringList& filters)
-    {
-        QDirIterator it(dirPath,
-                        filters,
-                        QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Hidden,
-                        QDirIterator::Subdirectories);
-        return countFilesRecursively(&it);
-    }
-
-    static inline uint countFilesRecursively(const QString& dirPath)
-    {
-        QDirIterator it(dirPath,
-                        QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Writable | QDir::Hidden,
-                        QDirIterator::Subdirectories);
-        return countFilesRecursively(&it);
-    }
-
     static inline qint64 dirSize(const QString& dirPath)
     {
         qint64 size = 0;
