@@ -85,7 +85,7 @@ cp -r bootcode.bin start.elf fixup.dat overlays/ ../../target/boot/
 # Rename the kernel
 cd "${SYSTEM_ROOT}/boot"
 set +e
-cp zImage kernel.img
+mv zImage kernel.img
 set -e
 
 #
