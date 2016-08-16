@@ -159,13 +159,19 @@ rm -r "${SYSTEM_ROOT}/usr/share/locale"
 rm -r "${SYSTEM_ROOT}/usr/share/vlc"
 
 rm -r "${SYSTEM_ROOT}/usr/qml/QtTest"
+rm -r "${SYSTEM_ROOT}/usr/qml/Qt"
 
 rm "${SYSTEM_ROOT}/usr/bin/cvlc"
 rm "${SYSTEM_ROOT}/usr/bin/rvlc"
 rm "${SYSTEM_ROOT}/usr/bin/libzen-config"
+rm "${SYSTEM_ROOT}/usr/bin/pintest"
 
 rm -r "${SYSTEM_ROOT}/usr/lib/qt/plugins/qmltooling"
 rm "${SYSTEM_ROOT}/usr/lib/"*.py
+rm "${SYSTEM_ROOT}/usr/lib/libQt5QuickParticles.so"*
+rm "${SYSTEM_ROOT}/usr/lib/libQt5QuickTest.so"*
+rm "${SYSTEM_ROOT}/usr/lib/libQt5Test.so"*
+rm "${SYSTEM_ROOT}/usr/lib/libQt5Sql.so"*
 
 set -e
 
