@@ -670,7 +670,7 @@ void UsbSourceUtil::HotplugWorker::start()
             }
         }
 
-        usleep(500*1000);
+        usleep(1000*1000);
     }
 
     udev_unref(udev);
