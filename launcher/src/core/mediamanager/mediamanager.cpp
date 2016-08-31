@@ -37,7 +37,6 @@ MediaManager* MediaManager::instance()
 // Private
 MediaManager::MediaManager()
 {
-    qDebug() << "MediaManager created !";
 }
 
 // Private
@@ -69,7 +68,7 @@ void MediaManager::initialScan()
             if(idx != -1)
             {
                 _lastList.clear();
-                emit sourceAboutToBeDeleted(source);
+                emit sourceAboutToBeDeleted(source->identifier());
                 _sources.takeAt(idx)->deleteLater();
                 emit availableMediasChanged();
                 emit sourcesListChanged();
@@ -97,7 +96,7 @@ void MediaManager::initialScan()
             if(idx != -1)
             {
                 _lastList.clear();
-                emit sourceAboutToBeDeleted(source);
+                emit sourceAboutToBeDeleted(source->identifier());
                 _sources.takeAt(idx)->deleteLater();
                 emit availableMediasChanged();
                 emit sourcesListChanged();

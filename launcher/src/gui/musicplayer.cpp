@@ -119,8 +119,11 @@ void MusicPlayer::init()
     // Connect to the MediaManager events
     //
 
-    connect(MediaManager::instance(), &MediaManager::sourceAboutToBeDeleted, this, [this](MediaSource *source) {
-        //
+    connect(MediaManager::instance(), &MediaManager::sourceAboutToBeDeleted, this, [this](const QString& sourceIdentifier) {
+        // Check if the media list is not empty
+        if(_playRandom ? _currentMediaListRandomized.empty() : _currentMediaList.empty())
+            return;
+
         // Remove all medias from the deleted source in the current queue
         MediaInfo *currentInfo = _playRandom ? _currentMediaListRandomized[_currentMediaIndex] : _currentMediaList[_currentMediaIndex];
         bool currentInfoAffected = false;
@@ -129,7 +132,7 @@ void MusicPlayer::init()
         int i=0;
         while (i < _currentMediaList.size())
         {
-            if(_currentMediaList.at(i)->sourceId() == source->identifier())
+            if(_currentMediaList.at(i)->sourceId() == sourceIdentifier)
             {
                 if(_currentMediaList.at(i) == currentInfo)
                     currentInfoAffected = true;
@@ -143,7 +146,7 @@ void MusicPlayer::init()
 
         while (i < _currentMediaListRandomized.size())
         {
-            if(_currentMediaListRandomized.at(i)->sourceId() == source->identifier())
+            if(_currentMediaListRandomized.at(i)->sourceId() == sourceIdentifier)
             {
                 somethingChanged = true;
                 _currentMediaListRandomized.removeAt(i);

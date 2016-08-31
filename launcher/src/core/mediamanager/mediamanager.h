@@ -88,9 +88,7 @@ class MediaManager : public QObject
         void removeMediaFromPlaylist(const QString& playlistFileName, const QString& mediaUri);
 
     signals:
-        // When this signals is sending, it's not safe to use any of the function of MediaSource object
-        // except MediaSource::identifier
-        void sourceAboutToBeDeleted(MediaSource *source);
+        void sourceAboutToBeDeleted(const QString& sourceIdentifier);
         void sourcesListChanged();
         void availableMediasChanged();
         void availablePlaylistsChanged();
