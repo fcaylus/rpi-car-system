@@ -779,7 +779,10 @@ QList<UdevUtil::UsbDeviceInfo> UdevUtil::enumerateUsbMassStorage()
         }
 
         if(block)
+        {
             udev_device_unref(block);
+            udev_device_unref(scsi);
+        }
 
         if(scsi_disk)
             udev_device_unref(scsi_disk);
