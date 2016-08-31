@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-LIBMEDIAINFO_VERSION = 0.7.87
+LIBMEDIAINFO_VERSION = 0.7.88
 LIBMEDIAINFO_SITE = https://github.com/MediaArea/MediaInfoLib/archive
 LIBMEDIAINFO_SOURCE = v$(LIBMEDIAINFO_VERSION).tar.gz
 LIBMEDIAINFO_LICENSE = BSD-2-Clause
